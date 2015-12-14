@@ -1,0 +1,389 @@
+ 
+ <style type="text/css">
+    .bs-example{
+    	margin: 20px;
+    }
+  .accordion-toggle {cursor: pointer;}
+  .accordion-content {display: none;}
+  .accordion-content.default {display: block;}
+ 
+  .accordion h4{
+	background-color:#f9f9f9;
+	padding:10px; 
+	font-size:16px;
+	border-bottom:1px solid #ccc; 
+  }
+  a, a:hover, a:focus{
+outline:0;	
+}
+#accordion{
+border:1px solid #ccc;
+margin:0;
+border-bottom:0;	
+}
+.accordion h4{
+margin:0;	
+}
+#ininventory span{margin:20px;font-weight: bold;font-size:14px;}
+#ininventory span input{margin-right:10px;}
+.DTTT_container{display:none;}
+</style>
+   
+  
+<div class="span1" ></div>
+     
+<div class="span10" id="content">
+    
+    
+<!-- CLIENTS LIST-->
+      
+    <div class="row-fluid">
+                        <div class="span12">
+                            <!-- block -->
+                            <div class="block">
+                                <div class="navbar navbar-inner block-header">
+                                    <div class="muted pull-left" style="text-align: center;">
+                                        <h4 style="text-align: center;"><span style="color:red;">SO#: </span><?php if($this->salesno){echo 'AAPL/SO/'.$this->salesno;}?></h4>
+                                    </div>
+                                   
+                                </div>
+                                 <div class="accordion block-content collapse in" id="accordion2">
+  
+                                  <ul class="nav nav-tabs" id="myTab">
+  <li class="active remove_soclosedtab"><a href="#workorderlist">Items to be Produced</a></li>
+  <li class="addstatus remove_soclosedtab"><a href="#items_inventory">Items in Inventory</a></li>
+  <li class="addstatus remove_soclosedtab"><a href="#items_purchase">Items to be Purchased</a></li>
+   <li class="addstatus remove_soclosedtab"><a href="#items_overall">Over All Status</a></li>
+  <li class="addstatus"><a href="#close"></a></li>
+  </ul>
+ 
+<div class="tab-content">
+  <div class="tab-pane active" id="workorderlist">
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:40px;">SI No</th>
+                                                <th>WO #</th>
+                                                 <th>SO #</th>
+                                                <th>Part no</th>
+                                                <th>Project</th>
+                                                <th>WO date</th>
+                                                 <th>Current BOM Status</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                           <?php $i=1; foreach($this->wo as $wo){?>
+                                            <tr>
+                                                <td><?=$i++;?></td>
+                                                <td><?=$wo['wono']?></td>
+                                                 <td><?=$wo['so']?></td>
+                                                 <td>
+                                                     <a target="_blank"  href="<?php echo $this->baseUrl();?>/admin/bom/index/bomid/<?=$wo['bomid']?>" class="add-bom" id="<?=$wo['bomid']?>">
+                                                        <?=$wo['partno']?>
+                                                     </a>
+                                                 </td>
+                                                 <td><?=$wo['project']?></td>
+                                                 <td><?=$wo['date']?></td>
+                                                 <td><?php if($wo['bom_status']=='1'){echo 'Active';}else{echo 'InActive';}?></td>
+                                              
+                                                <td>
+                                                       <?php if($wo['status']=='0'){?>
+                                                <a  class="viewwo" href="<?php echo $this->baseUrl();?>/admin/sales/closewo/partid/<?=$wo['part_id']?>/woid/<?=$wo['id']?>/so_id/<?=$wo['so_id']?>" id="<?php echo $wo[id]; ?>" style="cursor:pointer;"><?php echo 'Add To Inventory'; ?></a>
+                                                       <?php } else{?>
+                <a  class="viewwo" id="<?php echo $value[id]; ?>" style="cursor:pointer;"><?php echo ' CLOSED'; ?></a>
+                                                       <?php }?>
+
+                                                </td>
+                                                
+                                            </tr>
+                                           <?php }?>
+                                            
+                                        </tbody>
+                                    </table>
+  </div>
+    
+    
+  <div class="tab-pane" id="items_inventory">
+     
+     <div class="accordion-content default">
+<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example1">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:40px;">SI No</th>
+                                                <th>Part no</th>
+                                                <th>SO Qty</th>
+                                                <th>In Inventory</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          <?php $i=1;foreach($this->inventory as $inventory){?>
+                                            <tr>
+                                                <td><?=$i++?></td>
+                                               <?php // echo $inventory['sales_id']$inventory['itemid'],?>
+                                                <td><?=$inventory['partno']?></td>
+                                                 <td><?=$inventory['required']?></td>
+                                                 <td><?=$inventory['actual_qty']?></td>
+                                                <td>
+                                               <?php if($inventory['required']<=$inventory['status']){echo 'CLOSED';}?>
+                                                    
+                                                </td>
+                                                
+                                            </tr>
+                                          <?php }?>
+                                           
+                                            
+                                        </tbody>
+           </table>
+       
+
+  </div>
+      
+      
+    </div>
+    <div class="tab-pane" id="items_overall" style='margin-bottom: 40px;'>
+     
+     <div class="accordion-content default">
+<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example2">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:40px;">SI No</th>
+                                                <th>Part no</th>
+                                                <th>SO Qty</th>
+                                                <th>In Inventory</th>
+                                                <th>Action</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          <?php $i=1;foreach($this->ovrallstatus as $overall){?>
+                                            <tr>
+                                                <td><?=$i++?></td>
+                                               <?php // echo $inventory['sales_id']$inventory['itemid'],?>
+                                                <td><?=$overall['partno']?></td>
+                                                 <td><?=$overall['required']?></td>
+                                                 <td><?=$overall['actual_qty']?></td>
+                                                <td>
+                                                    <?php if($overall['required']<=$overall['actual_qty']){?>
+                                                     
+                                                    <a  class="close_inventory" req="<?=$overall['required']?>" itemid="<?php echo $overall['itemid']; ?>" salesid="<?php echo $overall['sales_id']; ?>" id="<?php echo $overall['id']; ?>" style="cursor:pointer;">
+                                                    <?php echo ' CLOSE'; ?>
+                                                    </a><?php }?>
+                                                    <?php if($overall['required']<=$overall['status']){ 
+                                                       echo 'CLOSED';
+                                                       }?>
+                                                </td>
+                                                <td> <?php if($overall['required']<=$overall['status']){echo 'CLOSED';}else{ echo 'NOT CLOSED';}?></td>
+                                                
+                                            </tr>
+                                          <?php }?>
+                                           
+                                            
+                                        </tbody>
+                                       
+                                           
+                                      
+           </table>
+       
+
+
+  </div>
+        <input type='submit'  name="generate_pdf" id="generate_pdf" value="Print" class="btn btn-primary" style='margin-right: 10px;width: 100px;float:right;' />
+
+      
+    </div>
+    <div class="tab-pane" id="items_purchase">
+        
+        <div class="accordion-content default">
+<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example3">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:40px;">SI No</th>
+                                                <th>Part no</th>
+                                                <th>SO Qty</th>
+                                                <th>In Inventory</th>
+                                                <th>Action</th>
+                                                <th style="width:200px;">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          <?php $i=1;foreach($this->vendor_material as $purchase){?>
+                                            <tr>
+                                                <td><?=$i++?></td>
+                                               <?php // echo $purchase['sales_id']$purchase['itemid'],?>
+                                                <td><?=$purchase['partno']?></td>
+                                                 <td><?=$purchase['required']?></td>
+                                                 <td><?=$purchase['actual_qty']?></td>
+                                                <td>
+                                                    <a target="_blank" class="close_purchase" href="<?php echo $this->baseUrl();?>/admin/vendor/vendorpo" id="<?php echo $purchase[id]; ?>" style="cursor:pointer;"><?php echo ' Create Vendo PO'; ?></a>
+                                                </td>
+                                  <td> <?php if($purchase['required']<=$purchase['status']){echo 'CLOSED';}else{ echo 'NOT CLOSED';}?></td>
+
+                                            </tr>
+                                          <?php }?>
+                                           
+                                            
+                                        </tbody>
+                                      
+           </table>
+       
+<div class="clearfix"></div>
+  </div></div>
+         <div class="tab-pane" id="close">
+        
+                 <form enctype="application/x-www-form-urlencoded" onsubmit="return CheckForm(this)" action="<?=$this->url(array('controller'=>'sales','action'=>'status'))?>" method="post" name="so_close" id="so_close">
+
+             <div class="accordion-content default">
+               <div class="row">
+            <div class="span2" ></div>
+        <input type="hidden" id="required" name="required" value=""/>
+         <input type="hidden" id="sales_id" name="sales_id" value=""/>
+          <input type="hidden" id="sales_line" name="sales_line" value=""/>
+           
+       <div class="span8" >
+           <h5 class="req" ></h5>
+           <h5 class="inv" ></h5>
+           <div id="ininventory" ></div>
+                 </div>
+             </div>
+                 
+         </div>
+    <input type="submit" name="close_inventory" id="close_inventory" value="Close Item" class="btn btn-primary" style='float:right;' >
+                 </form>
+</div></div>
+ 
+
+                                     
+                                     
+                                     
+</div>
+        
+                            </div>
+                            <!-- /block -->
+                        </div>
+                        
+                    </div>
+   
+
+ <script type="text/javascript">
+     
+      function CheckForm() {
+          var inputElems = document.getElementsByClassName("inventory_close"),
+count = 0;
+var msg='Please choose Required no.of item to close';
+for (var i=0; i<inputElems.length; i++) {
+if (inputElems[i].type === "checkbox" && inputElems[i].checked === true) 
+{
+    count++;
+   
+}
+    }
+     var req = document.getElementById("required").value;
+   var a=parseInt(req);
+   var b= parseInt(count);
+   
+   if(a==b){
+       
+       return true;
+   }
+    if(a<b){
+         alert(msg);
+       return false;
+   }
+   if(a>b){
+        alert(msg);
+       return false;
+   }
+   alert(msg);
+      
+     return false;    
+    }
+    
+    
+  $(document).ready(function($) {
+       var url='/asteria/admin/sales';
+       
+        function getinventory(id,r){
+            var req=r;
+         
+           $.ajax({
+            url: url+'/getinventory',
+            type: 'post',
+            data: '&id=' + id,
+            success: function(j) {
+               var json = $.parseJSON(j);
+               console.log(json);
+               
+               var stock ='';
+                  $(json.item).each(function(k, v) {
+                      stock +='<span><input class="inventory_close" type="checkbox" name=inventory[] value="'+v.id+'" />'+v.uniqueid+'</span>';
+                  });
+                  $('#ininventory').html(stock);
+                  var total='Tolal Item quanty in Inventory is  '+json.total;
+                   $('.inv').html(total);
+                    var required='Required Item Quanty  '+req;
+                   $('.req').html(required);
+                   $('#required').val(req);
+                  jQuery('#myTab a[href="#close"]').tab('show');
+            }
+        });
+      }
+      $(document).on('click', '.close_inventory', function(event) {
+             var itemid = $(this).attr("itemid");
+             var sales_line = $(this).attr("id");
+             var sales_id = $(this).attr("salesid");
+              var req = $(this).attr("req");
+            $('#sales_line').val(sales_line);
+              $('#sales_id').val(sales_id);
+             getinventory(itemid,req);
+               
+      });
+      
+       $(document).on('click', '.remove_soclosedtab', function(event) {
+           
+            $('#sales_line').val('');
+              $('#sales_id').val('');
+                $('#required').val('');
+             $('#ininventory').html('');
+              $('.req').html('');   
+              $('.inv').html('');
+               
+      });
+    
+    $('#accordion').find('.accordion-toggle').click(function(){
+
+      $(this).next().slideToggle('fast'); 
+//      $(".accordion-content").not($(this).next()).slideUp('fast');
+
+    });
+    
+    jQuery(document).ready(function () {
+            jQuery('#example2').dataTable({
+                "sDom": 'T<"clear">lfrtip',
+                "oTableTools": {
+                    "sSwfPath": "/asteria/public/media/swf/copy_csv_xls_pdf.swf"
+                }
+                 
+            });
+            
+            jQuery('#example3').dataTable({
+                "sDom": 'T<"clear">lfrtip',
+                "oTableTools": {
+                    "sSwfPath": "/asteria/public/media/swf/copy_csv_xls_pdf.swf"
+                }
+            });
+        });
+        
+
+
+  });
+</script>
+     
+    
+
+</div>
+
+
+
+

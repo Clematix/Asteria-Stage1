@@ -1,0 +1,665 @@
+  
+<style>
+     .DTTT_container{display:none;}
+     td select{
+    background-color: transparent;
+    box-shadow: none;
+    margin: 0px !important;}
+td input.qty ,td input.qty ,
+td input.qty ,td input.uom,
+td input.currency,td input.uom,
+td input.unitprice,
+td input.lineprice{width: 80px !important;
+    box-shadow: none !important;
+    margin: 0px !important;}
+#example2 .table td{    padding: 8px 4px 0 5px !important;}
+.dataTables_info{display:none;}
+#example2_paginate{display:none;}
+#example2_filter{display:none;}
+
+  .bs-example{
+    	margin: 20px;
+    }
+  .accordion-toggle {cursor: pointer;}
+  .accordion-content {display: none;}
+  .accordion-content.default {display: block;}
+  .accordion-content{padding:10px; border-bottom:1px solid #ccc;}
+  .accordion h4{
+	background-color:#f9f9f9;
+	padding:10px; 
+	font-size:16px;
+	border-bottom:1px solid #ccc; 
+  }
+  a, a:hover, a:focus{
+outline:0;	
+}
+#accordion{
+border:1px solid #ccc;
+margin:0;
+border-bottom:0;	
+}
+.accordion h4{
+margin:0;	
+}	
+.unitprice{width:150px !important;}
+.lineprice{width:150px !important;}
+td select.partno{width:180px !important;}
+td select.project{width:150px !important;}
+
+ </style>
+     
+        
+   
+<div class="span12" id="content">
+    
+    
+   <?php echo $this->render('globalmessage/globalmessage.phtml'); ?>
+      
+    <div class="row-fluid">
+                        <div class="span12" id="myDiv">
+                            <!-- block -->
+                            <div class="block">
+                                <div class="navbar navbar-inner block-header">
+                                    <div class="muted pull-left">Sales Order</div>
+                                   
+
+                                  
+                                </div>
+                                 <div class="accordion block-content collapse in">
+  
+                                  <ul class="nav nav-tabs" id="myTab">
+  <li class="active" id="list"><a href="#salesorderlist">Sales Order List</a></li>
+  <li class="addso"><a href="#createsalesorder" class="addredit">Create Sales Order</a></li>
+  </ul>
+ 
+<div class="tab-content">
+  <div class="tab-pane active" id="salesorderlist">
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:40px;">SI No</th>
+                                                                                                
+                                                <th>SO #</th>
+                                                 <th>Status</th>
+                                                <th>Customer PO</th>
+                                               
+                                                <th>Customer Name</th>
+                                                <th>Invoice Date</th>
+                                                 <th>Total</th>
+                                                                                              
+                                                <th>Action</th>
+                                                <th>Approval</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php $i=1; foreach ($this->salesorder as $value) { ?>
+                                            <tr><td><?php echo $i++; ?></td>
+                                                <td><?php  if($value['status'] == '1'){echo 'AAPL/SO/'.$value['so_no']; }else{ echo 'NA';} ?></td>
+                                            <td><?php  if($value['status'] == '1'){?>
+                                                <a target="_blank" href="<?php echo $this->baseUrl();?>/admin/sales/status/sales_id/<?php echo $value[id]; ?>" style="cursor:pointer;">View Status</a>    
+                                                <?php }else{ echo 'NA';} ?></td>
+                                                <td><?php echo $value['customer_po'] ?></td>
+                                                 <td><?php echo $value['customer_name'] ?></td>
+                                                <td><?php echo $value['invoice_date'] ?></td>
+                                                <td><?php echo 'Rs. '.$value['total']; ?></td>
+                                                
+                                                <td>
+                                                    <a  class="viewso" id="<?php echo $value[id]; ?>" style="cursor:pointer;"><?php echo ' VIEW'; ?></a>
+                                                     <?php  if($value[status] == '0'){ ?>
+                                                    <a  class="editso" id="<?php echo $value[id]; ?>" style="cursor:pointer;"><?php echo '/ EDIT'; ?></a>
+                                                    <a href="<?php echo $this->baseUrl();?>/admin/sales/deleteso/delete/<?php echo $value[id]; ?>" class="delete" style="cursor:pointer;"><?php echo '/ DEL '; ?></a>
+                                                     <?php  } ?>
+                                                </td>
+                                                <td>
+                                                    <?php if($value[status] == '0'){ ?>
+                                                    <a   href="<?php echo $this->baseUrl();?>/admin/sales/changestatus/id/<?php echo $value[id]; ?>/status/1" style="cursor:pointer;">
+                                                    <img class="imgswap1" id="approval_<?php echo $value[id]; ?>" src="<?php echo $this->baseUrl();?>/public/images/tick_off.png"/>
+                                                    </a>
+                                                    <?php }  if($value[status] == '1'){ ?>
+                                        <a   href="<?php echo $this->baseUrl();?>/admin/sales/changestatus/id/<?php echo $value[id]; ?>/status/0" style="cursor:pointer;">
+                                                    <img class="imgswap1 on" id="approval_<?php echo $value[id]; ?>" src="<?php echo $this->baseUrl();?>/public/images/tick_on.png"/>
+                                        </a></td>
+                                                <?php } ?>
+                                            <?php  } ?>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+  </div>
+    
+    
+  <div class="tab-pane" id="createsalesorder">
+      <form enctype="application/x-www-form-urlencoded" onsubmit="return CheckForm(this)" action="<?=$this->url(array('controller'=>'sales','action'=>'index'))?>" method="post" name="soform" id="soform">
+        <input type="hidden" name="id" id="id" value="" >
+          
+        <div class="bs-example">
+  <div id="accordion">
+  <h4 class="accordion-toggle">Customer Detail</h4>
+  <div class="accordion-content default">
+<div class="row">
+        <div class="span6">
+                 
+              <div class="form-left pull-left"><label for="customer_name" class="required">Customer Name:</label></div>
+              <div class="form-right pull-left">
+                  <select class="customer_name" name="customer_name" id='customer_name' style="width: 297px;" id="customer_name" required="true">
+                      <option value="">Select Customer</option>
+                      <?php   foreach ($this->customer as $customerlist) { ?>
+                                <option  value="<?php echo $customerlist['customer_id'] ?>"><?php echo $customerlist['company_name'] ?></option>
+                       <?php } ?>
+                  </select>
+              </div>
+              <div class="form-left pull-left"><label for="customer address" class="required">Customer Address:</label></div>
+              <div class="form-right pull-left">
+                  <textarea rows="3" columns="5" name="customer_address" id='customer_address' style="width: 283px;" disabled="true" required="true"></textarea>
+              </div>
+        
+              <div class="form-left pull-left"><label for="Supplier Address" class="required">Supplier Address:</label></div>
+              <div class="form-right pull-left">
+                  <textarea rows="3" name="supplier_address" id='supplier_address' columns="5" style="width: 283px;" disabled="true" required="true"><?=$this->supllier;?></textarea>
+          </div>
+      </div>
+        <div class="span6">
+            
+            <div class="form-left pull-left"><label for="supplier_name" class="required">Suplier Name:</label></div>
+              <div class="form-right pull-left"><input type="text" name="supplier_name" id="supplier_name" required="true" value="<?=$this->firstname;?>" class="form-control" ></div>
+     
+              <div class="form-left pull-left"><label for="so_no" class="required">SO #:</label></div>
+              <div class="form-right pull-left"><input type="text" name="so_no" id="so_no" value="" class="form-control" disabled="true"></div>
+              
+              <div class="form-left pull-left"><label for="customer_po" class="required">Customer PO #:</label></div>
+              <div class="form-right pull-left"><input type="text" name="customer_po" maxlength="20" id="customer_po" value="" class="form-control" required="true"></div>
+       
+        
+    
+              <div class="form-left pull-left"><label for="invoice date" class="required">Invoice Date:</label></div>
+              <div class="form-right pull-left"><input type="text" name="invoice_date" id="invoice_date" value="<?php echo date("d-m-Y"); ?>" class="form-control" readonly='true' required="true"></div>
+      
+        
+     
+              <div class="form-left pull-left"><label for="vendor_po" class="required" >Shipping method:</label></div>
+              <div class="form-right pull-left">
+                  <select name="shipping_method" id="shipping_method" required="true">
+                      <option value="">Select Shipping Method</option>
+                       <?php   foreach ($this->shipping as $shipping) { ?>
+                                <option  value="<?php echo $shipping[id] ?>"><?php echo $shipping['name'] ?></option>
+                       <?php } ?>
+                  </select>
+              </div>
+         
+      
+          
+     </div>   
+  </div>
+       
+<div class="clearfix"></div>
+  </div>
+  <h4 class="accordion-toggle">Order Item Details</h4>
+  <div class="accordion-content" id="orderitemdetails" style="overflow-x: scroll;">
+
+        <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example2">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:20px;">#</th>
+                                              
+                                                <th>Item Code</th>
+                                                <th>Description</th>
+                                                <th>QTY</th>
+                                                <th>UOM</th>
+                                                <th>Project</th>
+                                                <th>Currency</th>
+                                                <th>Unit Price</th>
+                                                <th>Line Total</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          
+                                        </tbody>
+                                    </table>
+     
+      <div style="float:right;">
+      <div style="float:left; font-weight: bold; margin: 10px 25px;">SubTotal: <span id="subtotal">0</span></div>
+      <input type="hidden" name="total_amt" id="total_amt" value="" />
+       <input class='btn btn-primary pull-left' type="button"  id="additem" value="Add Item" class="btn btn-default"/>
+       </div>
+      
+      
+ <div class="clearfix"></div>
+  </div>
+ 
+  
+  <h4 class="accordion-toggle">Additional Charges</h4>
+  <div class="accordion-content">
+
+         <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="shipping_charge" class="required">Shipping Charges:</label></div>
+              <div class="form-right pull-left">
+                  <input type="text" name="shipping_charge" id="shipping_charge" value="" onkeypress="return isNumber(event)" class="form-control" ></div>
+          </div>
+      
+       <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="vat_charge" class="required">VAT:</label></div>
+              <div class="form-right pull-left">
+                  <input type="text" name="vat_charge" id="vat_charge" value="" onkeypress="return isNumber(event)" class="form-control" ></div>
+          </div>
+      
+       <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="cst_charge" class="required">CST:</label></div>
+              <div class="form-right pull-left">
+                  <input type="text" name="cst_charge" id="cst_charge" value="" onkeypress="return isNumber(event)" class="form-control" ></div>
+          </div>
+      
+       <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="st_charge" class="required">Service Tax:</label></div>
+              <div class="form-right pull-left">
+                  <input type="text" name="st_charge" id="st_charge" value="" onkeypress="return isNumber(event)" class="form-control" ></div>
+          </div>
+      
+      
+ <div class="clearfix"></div>
+  </div>
+  
+  
+  
+</div>
+</div>
+  
+  
+         
+
+ 
+ 
+
+
+<div id="button_div" class="clearfix span7" style="float: right;" >
+<div class="span2" id="save_button">
+ <input class='btn btn-primary' type="submit" name="soformsubmit" id="soformsubmit" value="Save" class="btn btn-default" />
+</div>
+ 
+
+      </div>
+
+</form>
+      
+      </div>
+  
+  
+</div>
+  
+                                     
+                                     
+                                     
+</div>
+        
+                            </div>
+                        </div>
+                        
+                    </div>
+   
+<script type="text/javascript">
+    
+   function CheckForm()
+    {
+          var i = $('#example2').dataTable().fnSettings().fnRecordsTotal();
+          if(i>0){return true;}else{
+              alert('Please add Line item');return false;}
+    }
+  $(document).ready(function() {
+      
+      $(document).ready( function() {
+  $('#example2').dataTable( {
+    "iDisplayLength": 50
+  } );
+} )
+        var url ='/asteria/admin/sales';
+   
+      function customer(id)
+      {
+           $.ajax({
+            url: url+'/customeraddress',
+            type: 'post',
+            data: '&id=' + id,
+            success: function(data) {
+
+               $('#customer_address').html(data);
+        }
+          
+      });}
+      
+       $(document).on("change", "#customer_name", function() {
+         var id = $("#customer_name option:selected" ).val();
+         customer(id);
+
+    });
+    
+    function additem(id)
+    {
+         var id =$( "#customer_name option:selected" ).val();
+        
+        if(id){
+            
+             $.ajax({
+            url: url+'/additem',
+            type: 'post',
+            data: '&id=' + id,
+
+            success: function(j) {
+                var json = $.parseJSON(j);
+
+                var i = $('#example2').dataTable().fnSettings().fnRecordsTotal();
+                var itemcode = '<select class="partno partno' + i + '" name="partnonew[]" required="true"><option value="">Select Item Code</option>';
+                $(json.material).each(function(k, v) {
+                    itemcode += '<option value="' + v.id + '">' + v.partno + '</option>';
+                });
+                itemcode += '</select>';
+                  var project='<select class="project priject'+i+'" name="projectnew[]" required="true"><option value="">Select Project</option>';
+                 $(json.project).each(function(l, o) {
+                        project += '<option value="' +o.project_id + '">' + o.project_name + '</option>';
+                });
+               project += '</select>';
+               
+                var desc = '<input  type="text" value="" class="desc" disabled="true" required="true" >';
+                var qty = '<input name="qtynew[]" type="text" value="" maxlength="9" onkeypress="return IsNumeric(event)" class="qty " required="true">';
+                var uom = '<input name="uomnew[]" type="text" value="" class="uom" required="true" disabled="true">';
+                var currency ='<input type="text" name="currencynew[]" value="INR" class="currency" required="true" disabled="true">';
+                var unitprice ='<input type="text" maxlength="9" name="unitpricepnew[]"  value="" class="unitprice" required="true">';
+                var lineprice ='<input type="text" pattern="^(?=.*[1-9])\d*(?:\.\d{1,2})?$" name="linepricenew[]" value="" class="lineprice" required="true" disabled="true">';
+
+                $('#example2').dataTable().fnAddData(
+                    [i + 1, itemcode, desc,  qty, uom,project, currency,unitprice,lineprice,'<a style="cursor:pointer"  class="deleterow">DEL</a>']);
+            }
+            
+        });
+            
+        
+        }else{alert('Please select Customer Name')}
+    }
+    
+     $("#additem").click(function() {
+     
+     additem();
+       
+    });
+    
+    $(document).on("change", "#example2 tbody tr td .partno", function() {
+        var id = $(this).val();
+
+        var row = $(this).parent('td').parent('tr').addClass('current-bom');
+        if (id == 0) {
+            $('.current-bom td .desc').val('');
+            $('.current-bom td .uom').val('');
+            $('#example2 tbody tr').removeClass('current-bom');
+        }
+        if (id != 0) {
+            $.ajax({
+                type: 'POST',
+                url:url+'/addlineitem',
+                data: '&add=' + id,
+                async: false,
+                success: function(response) {
+                    var json = $.parseJSON(response);
+                    $('.current-bom td .desc').val(json.desc);
+                    $('.current-bom td .uom').val(json.uom);
+                    $('#example2 tbody tr').removeClass('current-bom');
+
+                }
+            });
+        }
+
+
+    });
+    
+    function total(){
+        var sum=0;
+         $("#example2 tbody tr td .lineprice").each(function(){
+       var val = $(this).val();
+       if (val) {
+            sum = parseFloat(sum * 100 + val * 100)/100;
+       }         
+});
+$('#subtotal').html(sum);   
+    }
+     $(document).on("keyup", "#example2 tbody tr td .unitprice", function(){
+       
+      var row = $(this).parent('td').parent('tr').addClass('current-weight');
+      var qty=$('.current-weight td .qty').val();
+      
+      if(qty>=1){
+          var up = $(this).val();var lt=qty*up;
+           $('.current-weight td .lineprice').val(lt);
+          total();
+      }  
+      
+      $('#example2 tbody tr').removeClass('current-weight');
+     });
+     
+      $(document).on("keyup", "#example2 tbody tr td .qty", function(){
+      var row = $(this).parent('td').parent('tr').addClass('current-weight');
+      var up=$('.current-weight td .unitprice').val();
+      if(up>=1){
+          
+          var qty = $(this).val();var lt=qty*up;
+           $('.current-weight td .lineprice').val(lt);
+            total();
+      }  
+      
+      $('#example2 tbody tr').removeClass('current-weight');
+     });
+     
+       $(document).on("click", "#example tbody tr td .editso", function() {
+           $('#mask').show();
+            var id = $(this).attr("id");
+            $('.addredit').html('Edit Sales Order');
+             $('#id').val(id);
+             refresh_sales_item(id);
+               $('#so_no').attr('disabled','true');
+             $('#myTab a[href="#createsalesorder"]').tab('show');
+            
+       });
+       
+       $(document).on("click", "#example tbody tr td .viewso", function() {
+           $('#mask').show();
+           $('#additem').hide();
+           $('#deptregister').hide();
+         
+            var id = $(this).attr("id");
+            $("#soform input, #soform select").attr('disabled',true);
+           
+            $('.addredit').html('View Sales Order');
+             $('#id').val(id);
+             refresh_sales_item(id,'1');
+              
+             $('#myTab a[href="#createsalesorder"]').tab('show');
+            
+       });
+       
+     function refresh_sales_item(id,view)
+     {
+         if(id){
+            
+             $.ajax({
+            url: url+'/refresh',
+            type: 'post',
+            data: '&id=' + id,
+
+            success: function(j) {
+                $('#example2').dataTable().fnClearTable();
+                var json = $.parseJSON(j);
+                $('#customer_name').val(json.so.customer);
+                $('#customer_address').html(json.address);
+                if(json.so.status==1){
+                $('#so_no').val('AAPL/SO/'+json.so.so_no);
+                
+            }
+          var i = $('#example2').dataTable().fnSettings().fnRecordsTotal();
+                $('#customer_po').val(json.so.customer_po);
+                $('#shipping_method').val(json.so.shipping_method);
+                $('#customer_address').html(json.address);
+                $('#shipping_charge').val(json.so.shipping_charges);
+                 $('#supplier_name').val(json.so.supplier);
+                $('#vat_charge').val(json.so.vat);
+                $('#cst_charge').val(json.so.cst);
+                $('#st_charge').val(json.so.service_tax);
+                     var j=0;         
+               $('#subtotal').html(json.total);   
+                 $(json.lineitem).each(function(k, v) {
+                     j++;
+                var itemcode = '<select class="partno partno' + j + '" name="partno[]" required="true"><option value="">Select Item Code</option>';
+                $(json.material).each(function(m, n) {
+                    if(n.id==v.part_id){
+                        itemcode += '<option value="' + n.id + '" selected="true">' + n.part_no + '</option>';
+                    }else{
+                    itemcode += '<option value="' + n.id + '">' + n.part_no + '</option>';
+                }
+                });
+                itemcode += '</select>';
+                    var project='<select class="project project'+i+'" name="project[]" required="true"><option value="">Select Project</option>';
+                 $(json.project).each(function(l, o) {
+                      if(o.project_id==v.project){
+                        project += '<option value="' +o.project_id + '" selected="true">' + o.project_name + '</option>';
+                    }else{
+                    project += '<option value="' + o.project_id + '">' +  o.project_name + '</option>';
+                }
+                });
+               project += '</select>';
+                
+                var desc = '<input  type="text" value="'+v.material_desc+'" class="desc" disabled="true" required="true" >\n\
+                        <input type="hidden" name="sales_line_id[]"  value="' + v.id + '">';
+                var qty = '<input name="qty[]" type="text" value="'+v.qty+'" maxlength="9" onkeypress="return IsNumeric(event)" class="qty " required="true">';
+                var uom = '<input name="uom[]" type="text" value="'+v.uom+'" class="uom" required="true" disabled="true">';
+                var currency ='<input type="text" name="currency[]" value="INR" class="currency" required="true" disabled="true">';
+                var unitprice ='<input  type="text" name="unitpricep[]" maxlength="9" value="'+v.unitprice+'" class="unitprice" required="true">';
+                var lineprice ='<input type="text" pattern="^(?=.*[1-9])\d*(?:\.\d{1,2})?$"  name="lineprice[]" value="'+v.lt+'" class="lineprice" required="true" disabled="true">';
+
+                $('#example2').dataTable().fnAddData(
+                    [i + 1, itemcode, desc,  qty, uom,project,currency,unitprice,lineprice,'<a style="cursor:pointer" id="'+v.id+'" class="deleterow">DEL</a>']);
+        });
+        if(view==1)
+        {
+        $('#example2 tbody tr td input, #example2 tbody tr td select').attr('disabled',true);
+          }
+           $('#mask').hide();
+            }
+            
+        });
+            
+        
+        }
+     }
+     
+      $(document).on("click", "#example2 tbody tr td .deleterow", function() {
+  
+        var row = $(this).closest('tr');
+        var nRow = row[0];
+        var id = $('#id').val();
+        var delid = $(this).attr('id');
+        if (delid) {
+             if(confirm("Are you sure you want to delete this?")){
+                
+            $.ajax({
+                type: 'POST',
+                url: url+'/deleteso',
+                data: '&delid=' + delid,
+                success: function(response) {
+                    refresh_sales_item(id);
+                    $('#example2').dataTable().fnDeleteRow(nRow);
+                    total();
+                  
+                }
+            });
+     }
+    else{
+        return false;
+      }
+            
+        } else {
+          
+            $('#example2').dataTable().fnDeleteRow(nRow);
+              total();
+        }
+
+    });
+    
+     $(document).on("click", "tbody tr td .imgswap", function() {
+        var id = $(this).attr("id");
+        var so_id = id.split("_");
+        if ($(this).attr("class") == "imgswap") {
+            $('#' + id).attr('src', '<?php echo $this->baseUrl();?>/public/images/tick_on.png')
+            this.src = this.src.replace("_off", "_on");
+            var status = '1';
+        } else {
+            $('#' + id).attr('src', '<?php echo $this->baseUrl();?>/public/images/tick_off.png')
+            this.src = this.src.replace("_on", "_off");
+            var status = '0';
+        }
+        $(this).toggleClass("on");
+
+        var dataString = '&type=changestatus&id=' + so_id[1] + '&status=' + status;
+
+        $.ajax({
+            type: "POST",
+            url: '<?=$this->url(array('controller'=>'sales','action'=>'changestatus'))?>',
+            data: dataString,
+            success: function(j) {
+            window.location.replace("<?=$this->url(array('controller'=>'sales','action'=>'index'))?>");
+                
+            }
+        });
+    });
+    $('#list').click(function(){
+    $('#additem').show();
+     $('#subtotal').html('');
+     $('#deptregister').show();
+     $("#soform input, #soform select").removeAttr('disabled');
+    
+     $('.addredit').html('Create Sales Order');
+       $('#so_no').attr('disabled','true');
+    $('#example2').dataTable().fnClearTable();
+      $('#customer_address').html('');
+    document.getElementById("soform").reset();
+ 
+    });
+   $('.delete').click(function () {
+     if(confirm("Are you sure you want to delete this?")){
+     }
+    else{
+        return false;
+    }
+});
+
+ $(document).on("submit","#soform", function()
+            {
+               
+              var i = $('#example2').dataTable().fnSettings().fnRecordsTotal();
+             
+                if(i == '0'){
+                   
+                    $('#orderitemdetails').addClass("default");
+                    return false;
+                }
+                else{
+                    return true;
+                }
+            });
+  });
+</script>
+<script type="text/javascript">
+  $(document).ready(function($) {
+    $('#accordion').find('.accordion-toggle').click(function(){
+
+     
+      $(this).next().slideToggle('fast');
+
+      //Hide the other panels
+//      $(".accordion-content").not($(this).next()).slideUp('fast');
+
+    });
+  });
+</script>
+    
+
+</div>
+
+
+
+

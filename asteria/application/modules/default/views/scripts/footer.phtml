@@ -1,0 +1,133 @@
+
+<footer>
+    
+    <div class="container">
+        <div class="row-fluid">
+        <div class="span6" id="content" style="width: 24%;display:none;margin-bottom: 20px;">
+      <div class="alert alert-success">	
+<!--                            <button type="button" class="close" data-dismiss="alert">&times;</button>-->
+                                <div id="kumaran"></div></div></div></div>
+	  <!-- Newsletter -->
+            <div data-animation="slideInLeft" class="animated slideInLeft visible">
+			
+	  <form action="<?=$this->url(array('controller'=>'subscriptionform','action'=>'index'))?>" method="post" class="content-newsletter" id="sub-form" name="sub-form">
+		<div class="form-group">
+				<input class="form-control input-lg" type="text" placeholder="Newsletter Subscription" id="email" name="email" required/>
+				<input type="submit" id="envoyer" name="envoyer" value="Subscribe" class="btn-plein"/>
+		</div>
+	  </form>	
+		</div>
+	  <!-- End Newsletter -->
+	  
+	  <!-- Social Links -->
+      <ul class="social-list">
+        <li>
+          <a href="https://www.facebook.com/" target="_blank">
+            <span class="social-icon">
+              <i class="fa fa-facebook"></i>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="https://twitter.com/" target="_blank">
+            <span class="social-icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="https://plus.google.com/" target="_blank">
+            <span class="social-icon">
+              <i class="fa fa-google-plus"></i>
+            </span>
+          </a>
+        </li>
+      </ul>
+      <!-- End Social Links -->
+	  
+	  <!-- Nav footer -->
+	  <ul class="links-footer">
+		<li>|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo $this->baseUrl();?>/aboutus" title="">About Us</a></li>
+		<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo $this->baseUrl();?>/contact" title="">Contact Us</a></li>
+		<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Copyright © 2014 CLEMATIX Digital</li>
+	  </ul>
+	  <!-- End Nav footer -->
+
+    </div>    
+  </footer>
+  <!-- End Footer -->
+  
+    <aside id="tchat">
+        <input type='hidden' value="<?php echo $this->baseUrl();?>/chat/chat/index" id='chat_post'/>
+	<a class='cchat' style="cursor:pointer;" title="">chat<i class="fa fa-question-circle"></i></a>
+  </aside>
+  
+  <aside id="creer">
+	<a href="<?php echo $this->baseUrl();?>/createbook" title="" class="btn-contour">Create Your Ebook</a><a href="<?php echo $this->baseUrl();?>/signupform" title="">Sign Up</a>
+  </aside>
+  
+  <div class="chat-inline" style="display:none">
+      <a class="inline" href="#inline_content">Inline HTML</a>
+			<div id="inline_content" style='padding:10px; background:#ccc;border: 2px solid #641e73;border-radius: 5px;'>
+			<form name="chat-form" id="chat-form" method="POST" action="">        
+                            <div class="form-group">                    
+                            <label class="col-md-4 col-sm-4 col-xs-12">Name :</label>
+                            <input class="col-md-6 col-sm-6 col-xs-12 form-login input-sm" id="name" name="name" placeholder="Your Name" required="true" type="text" />
+                             <p class="clearfix"></p>
+                            </div>        
+                            <p class="clearfix"></p>
+                            
+                            <div class="form-group">
+                            <label class="col-md-4 col-sm-4 col-xs-12">Votre email :</label>
+                            <input class="col-md-6 col-sm-6 col-xs-12 form-login input-sm" type="text" placeholder="Il ne sera pas publié" id="email" name="email" required="true"/>
+                                    <p class="clearfix"></p>
+                            </div>        
+                            <input type="submit" id="create" name="create" value="Signin" class="btn-plein col-md-offset-5"/>
+                         </form> 
+			</div>
+  </div>
+  
+  
+<div id="chat_link" style="display:none;">
+<a href="javascript:void(0)" onclick="javascript:chatWith($('#name').val(),$('#email').val(),'admin')">Chat With Admin</a>
+</div>
+<!-- YOUR BODY HERE -->  
+  
+<script>
+
+       $('.nav > li').click(function()
+       {
+          $('.nav > li').removeClass('active') ;
+          $(this).addClass('active');
+          
+       });
+       
+       $('.cchat').click(function()
+       {
+       
+       $('#name').val('<?=$this->uname;?>');
+       url = $('#chat_post').val();
+       $.ajax({
+        type: "POST",
+        url: url,
+        success: function(data)
+        {
+                  if(data==0)
+                    {
+
+$(".inline").colorbox({inline:true, width:"50%"});
+                        $(".chat-inline > a").trigger('click');
+                    }
+                else
+                    {
+                        chatWith('<?=$this->uname;?>','<?=$this->email;?>','admin');
+                    }
+        }
+      });
+      });
+      
+  $(".inline").colorbox({inline:true, width:"50%", height:"70%"});
+      
+//       $(".cchat").colorbox({iframe:true, innerWidth:500, innerHeight:409});
+
+</script>

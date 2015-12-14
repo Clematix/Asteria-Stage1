@@ -1,0 +1,84 @@
+
+
+<section>
+    <form action="/images/thumbs" method="post" enctype="multipart/form-data">
+    <input name="file[]" id="file" type="file" multiple="" />
+    <input type="submit" name="upload_images" value="Upload Images">
+</form>   
+</section>
+  <!-- End Footer -->
+  
+    <aside id="tchat">
+        <input type='hidden' value="<?php echo $this->baseUrl();?>/chat/chat/index" id='chat_post'/>
+	<a class='cchat' style="cursor:pointer;" title="">Tchat <i class="fa fa-question-circle"></i></a>
+  </aside>
+  
+  <aside id="creer">
+	<a href="<?php echo $this->baseUrl();?>/createbook" title="" class="btn-contour">Créez votre ebook</a><a href="<?php echo $this->baseUrl();?>/signupform" title="">Enregistrez-vous</a>
+  </aside>
+  
+  <div class="chat-inline" style="display:none">
+      <a class="inline" href="#inline_content">Inline HTML</a>
+			<div id="inline_content" style='padding:10px; background:#E5F0ED;border: 2px solid #641e73;border-radius: 5px;'>
+			<form name="chat-form" id="chat-form" method="POST" action="">        
+                            <div class="form-group">                    
+                            <label class="col-md-4 col-sm-4 col-xs-12">Name :</label>
+                            <input class="col-md-6 col-sm-6 col-xs-12 form-login input-lg" id="name" name="name" placeholder="Your Name" required="true" type="text" />
+                             <p class="clearfix"></p>
+                            </div>        
+                            <p class="clearfix"></p>
+                            
+                            <div class="form-group">
+                            <label class="col-md-4 col-sm-4 col-xs-12">Votre email :</label>
+                            <input class="col-md-6 col-sm-6 col-xs-12 form-login input-lg" type="text" placeholder="Il ne sera pas publié" id="email" name="email" required="true"/>
+                                    <p class="clearfix"></p>
+                            </div>        
+                            <div style="margin-left: 20%;"><input type="submit" id="create" name="create" value="Signin" class="btn-plein"/></div>
+                         </form> 
+			</div>
+  </div>
+  
+  
+<div id="chat_link" style="display:none;">
+<a href="javascript:void(0)" onclick="javascript:chatWith($('#name').val(),$('#email').val(),'admin')">Chat With Admin</a>
+</div>
+<!-- YOUR BODY HERE -->  
+  
+<script>
+
+       $('.nav > li').click(function()
+       {
+          $('.nav > li').removeClass('active') ;
+          $(this).addClass('active');
+          
+       });
+       
+       $('.cchat').click(function()
+       {
+       
+       $('#name').val('<?=$this->uname;?>');
+       url = $('#chat_post').val();
+       $.ajax({
+        type: "POST",
+        url: url,
+        success: function(data)
+        {
+                  if(data==0)
+                    {
+
+$(".inline").colorbox({inline:true, width:"50%"});
+                        $(".chat-inline > a").trigger('click');
+                    }
+                else
+                    {
+                        chatWith('<?=$this->uname;?>','<?=$this->email;?>','admin');
+                    }
+        }
+      });
+      });
+      
+  $(".inline").colorbox({inline:true, width:"50%", height:"70%"});
+      
+//       $(".cchat").colorbox({iframe:true, innerWidth:500, innerHeight:409});
+
+</script>

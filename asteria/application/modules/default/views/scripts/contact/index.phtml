@@ -1,0 +1,173 @@
+<section id="contact" class="section">
+    <div class="container">
+      <div class="title col-md-8 col-sm-10 col-xs-12">
+        <h1>Contactez <strong>nous</strong></h1>
+        <hr>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+      </div>
+    </div>
+
+    <!-- Map -->
+<!--    <div id="map1" class="googlemap"></div>-->
+    <!-- End Map -->
+
+    <!-- Contact Details -->
+<!--    <div class="contact-details">
+      <div class="container">
+        <div class="col-md-3 col-sm-3 col-xs-12">
+          <div class="detail">
+            <i class="fa fa-map-marker"></i>
+            <span>France</span>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-3 col-xs-12">
+          <div class="detail">
+            <i class="fa fa-phone"></i>
+            <span>+33 6 71 13 76 33</span>
+          </div>
+        </div>
+		<div class="col-md-3 col-sm-3 col-xs-12">
+          <div class="detail">
+            <i class="fa fa-map-marker"></i>
+            <span>India</span>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-3 col-xs-12">
+          <div class="detail">
+            <i class="fa fa-phone"></i>
+            <span>+91 4344 226232</span>
+          </div>
+        </div>
+      </div>
+    </div>-->
+    <!-- End Contact Details -->
+    <div class="container formulaire">
+      <div class="title col-md-8 col-sm-10 col-xs-12">
+        <h3>Formulaire de <strong>contact</strong></h3>
+        <hr>
+		<p><i>Merci de remplir les champs ci-dessous et nous vous répondrons rapidement.</i></p>
+      </div>
+	  <div class="col-md-8 col-md-offset-2">
+        <!-- Contact Form -->
+        <div id="contact-form">
+<!--        $('.for-sent').html(data.message);
+
+-->
+          <div class="form-sent">
+            <div class="alert alert-success">
+              
+            </div>
+          </div>
+            
+      <form  action="<?=$this->url(array('controller'=>'subscriptionform','action'=>'contact'))?>" method="post" id="contact-us">
+            <div class="col-md-5 col-sm-5 col-xs-12 animated hiding" data-animation="slideInLeft">
+              <div class="form-group">
+                <input type="text" name="fullname" class="form-control input-lg" placeholder="Nom">
+              </div>
+              <div class="form-group">
+                <input type="email" name="email" class="form-control input-lg" placeholder="E-mail">
+              </div>
+              <div class="form-group">
+                <input type="text" name="subject" class="form-control input-lg" placeholder="Sujet du message">
+              </div>
+            </div>
+            <div class="col-md-7 col-sm-7 col-xs-12 animated hiding" data-animation="slideInRight">
+              <div class="form-group">
+                <textarea name="message" class="form-control input-lg" placeholder="Message"></textarea>
+              </div>
+            </div>
+            <input type="submit" class="btn btn-custom up animated hiding" value="Envoyer" data-animation="fadeInUpBig">
+          </form>
+        </div>
+        <!-- End Contact Form -->
+      </div>
+    </div>        
+  </section>
+  <!-- End Contact Section-->
+  
+  <!-- Bureaux Section -->
+  <section id="bureaux" class="section">
+	<div class="container">    
+      <div class="title col-md-8 col-sm-10 col-xs-12">
+        <h3>Nos <strong>Bureaux</strong></h3>
+        <hr>       
+      </div>
+	  <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="team animated hiding" data-animation="fadeInUp" data-delay="0">
+          <div class="team-photo" id="googleMapfrance">
+            <img src="<?php echo $this->baseUrl();?>/public/clematix/images/contact/carte_france.jpg" alt="">
+          </div>
+          <div class="team-inner">
+			<h5>France</h5>
+            <p><br />10, Rue Lamartine<br />
+			78100 Saint-Germain-en-Laye<br />
+			<br />+ 33 6 71 13 76 33<br /><br /></p>
+          </div>          
+        </div>
+      </div>
+	  <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="team animated hiding" data-animation="fadeInUp" data-delay="0">
+          <div class="team-photo" id="googleMapindia">
+            <img src="<?php echo $this->baseUrl();?>/public/clematix/images/contact/carte_india.jpg" alt="">
+          </div>
+          <div class="team-inner">
+			<h5>India</h5>
+            <p>42/1, 3rd floor, Ramprabha Towers,<br />
+			Shanti Nagar,<br />
+			Denkanikottai Main Road,<br />
+			Hosur, Tamil Nadu, Pin 635109<br />
+			<br />+ 91 4344 226232</p>
+          </div>          
+        </div>
+      </div>
+	 </div>
+  </section>
+  <!-- End Bureaux Section -->
+  
+  
+  
+  <!-- Google Maps JS File -->
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false"></script>
+  
+  <script>
+var myCenteri=new google.maps.LatLng(12.7263582,77.8244447);
+function initialize()
+{
+  var mapProp = {
+  center:myCenteri,
+  zoom:12,
+  mapTypeId:google.maps.MapTypeId.ROADMAP
+  };
+var map=new google.maps.Map(document.getElementById("googleMapindia"),mapProp);
+var marker=new google.maps.Marker({
+  position:myCenteri,
+  });
+marker.setMap(map);
+}
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+
+<script>
+var myCenterf=new google.maps.LatLng(48.8965446,2.0907463,15);
+function initialize()
+{
+  var mapProp1 = {
+  center:myCenterf,
+  zoom:12,
+  mapTypeId:google.maps.MapTypeId.ROADMAP
+  };
+var mapf=new google.maps.Map(document.getElementById("googleMapfrance"),mapProp1);
+var markerf=new google.maps.Marker({
+  position:myCenterf,
+  });
+markerf.setMap(mapf);
+}
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+
+<style>
+    .googlemap{
+        width:100%;
+        height:500px;
+    }
+</style>

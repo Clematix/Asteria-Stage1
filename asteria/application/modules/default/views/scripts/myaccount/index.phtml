@@ -1,0 +1,54 @@
+
+<!-- Mon compte Section -->
+  <section id="account" class="section">
+	<div class="container">    
+      <div class="title col-md-8 col-sm-10 col-xs-12">
+        <h3>Mon <strong>compte</strong></h3>
+		<p>Retrouvez toutes vos informations et vos commandes</p>
+        <hr>       
+      </div>
+	  <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="service animated hiding" data-animation="fadeInUp" data-delay="0">
+           <span class="fa-stack fa-4x">
+            <i class="fa fa-circle fa-2x fa-stack-2x"></i>
+            <i class="fa fa-user fa-stack-1x service-icon"></i>
+          </span>
+		  <h3>Vos coordonnées</h3>
+		  <p><?php echo $this->username;?><br />
+			<br /><?php echo $this->email; ?><br />
+			<br /><?php echo $this->contactno; ?></p>
+        </div>
+		<a href="<?=$this->url(array('module'=>'default','controller'=>'myaccount','action'=>'accountedit',md5("clematix")=>strtr(base64_encode($this->id*9952045381), '+/=', '-_,') ))?>" title="" class="btn-contour">Modifier mes coordonnées</a>
+      </div>
+	  <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="service animated hiding" data-animation="fadeInUp" data-delay="0">
+           <span class="fa-stack fa-4x">
+            <i class="fa fa-circle fa-2x fa-stack-2x"></i>
+            <i class="fa fa-star fa-stack-1x service-icon"></i>
+          </span>
+		  <h3>Vos derniéres commandes</h3>
+		  <table cellpadding="0" cellspacing="0">
+			<tr>
+				<th>ID</th>
+				<th>DATE</th>
+				<th align="left">STATUS</th>
+			</tr>
+                        <?php foreach($this->myaccount as $myacc):?>
+                        <tr>
+				<td><a href="<?php echo $this->baseUrl();?>/myaccount/orderdetails/<?php echo md5("orderid");?>/<?php echo strtr(base64_encode($myacc['id']*9952045381), '+/=', '-_,');?>" class="orderdetails" >CLE0<?=$myacc['id']?></a></td>
+				<td><?=$myacc['date']?></td>
+				<td align="left">Book ordered</td>
+			</tr>
+                        <?php endforeach; ?>
+
+		  </table>
+        </div>
+		<a href="#" title="" class="btn-contour">Toutes mes commandes</a>
+      </div>
+	 </div>
+      
+      
+  </section>
+
+         
+  <!-- End Bureaux Section -->

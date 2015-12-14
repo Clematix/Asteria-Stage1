@@ -1,0 +1,380 @@
+
+<script type="text/javascript" charset="utf-8">
+   
+   
+    function checkpassword() {
+        var pass1 = document.getElementById("password").value;
+        var pass2 = document.getElementById("confirmPassword").value;
+        validate();
+        if (pass1 != pass2) {
+           alert('Password and confirm Password Mismatch');
+            document.getElementById("password").style.borderColor = "#E34234";
+            document.getElementById("confirmPassword").style.borderColor = "#E34234";
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    function validateEmail(email) {   
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+   }
+    function validate(){
+  
+  var email = $("#email").val();
+  if (validateEmail(email)) {
+    return true;
+  } else {
+      alert('Please enter valid email.');
+   return false;
+  }
+  return false;
+}
+
+    jQuery(document).ready(function () {
+$(document).on('click', '.addemployee', function(event) {
+     jQuery("#register").attr("value", "add");
+     jQuery('#reset').trigger('click');
+});
+$(document).on('click', '.emplisttab', function(event) {
+    jQuery("#register").show();
+    jQuery("#reset").show();
+    jQuery('.addemployee').html('Add new Employee');
+     jQuery('#password').removeAttr('disabled').attr('required','true');
+     jQuery('#confirmPassword').removeAttr('disabled').attr('required','true');
+    jQuery('#firstname').removeAttr('disabled');
+    jQuery('#lastname').removeAttr('disabled');
+    jQuery('#email').removeAttr('disabled');
+    jQuery('#department').removeAttr('disabled');
+    jQuery('#group').removeAttr('disabled');
+    jQuery('#role').removeAttr('disabled');
+    jQuery('#role option').removeAttr('selected');
+   
+    
+});
+$(document).on('click', '.delete', function(event) {
+     if(confirm("Are you sure you want to delete this?")){
+     }
+    else{
+        return false;
+    }
+});
+
+$(document).on('click', '.view_employee', function(event) {
+    jQuery('#mask').show();
+    jQuery('.addemployee').html('View Employee');
+           
+            jQuery('#password').removeAttr('required').attr('disabled','true');
+            jQuery('#confirmPassword').removeAttr('required').attr('disabled','true');
+            var id = jQuery(this).attr("id");
+            jQuery("#register").hide();
+            jQuery("#reset").hide();
+            var dataString = '&edit_id=' + id;
+            jQuery.ajax({
+                type: "POST",
+                url: '<?= $this->url(array('controller' => 'auth', 'action' => 'manageemployee')) ?>',
+                data: dataString,
+                success: function (j) {
+
+                    var json = jQuery.parseJSON(j);
+                    var json1 = jQuery.parseJSON(json.role);
+
+                    jQuery(json).each(function (i, val) {
+                        jQuery.each(val, function (k, v) {
+
+                            jQuery('#' + k).val(v);
+                                jQuery('#confirmPassword').val(json.password);
+                             jQuery('#' + k).attr('disabled','true');
+                        });
+                    });
+                    
+                    jQuery(json1).each(function (i, val) {
+                        jQuery.each(val, function (k, v) {
+                            jQuery('.role' + val).attr('selected', true);
+                            jQuery('.role' + val).attr('disabled','true');
+                        });
+                    });
+ jQuery('#myTab a[href="#addemployee"]').tab('show');
+  jQuery('#mask').hide();
+                }
+                
+            });
+    
+});
+
+ $(document).on("click", "tbody tr td .imgswap", function() {
+        var id = $(this).attr("id");
+        var so_id = id.split("_");
+       
+        if ($(this).attr("class") == "imgswap") {
+            $('#' + id).attr('src', '<?php echo $this->baseUrl();?>/public/images/tick_on.png')
+            this.src = this.src.replace("_off", "_on");
+            var status = '1';
+        } else {
+            $('#' + id).attr('src', '<?php echo $this->baseUrl();?>/public/images/tick_off.png')
+            this.src = this.src.replace("_on", "_off");
+            var status = '0';
+        }
+        $(this).toggleClass("on");
+
+        var dataString = '&type=changestatus&id=' + so_id[1] + '&status=' + status;
+
+        $.ajax({
+            type: "POST",
+            url: '<?=$this->url(array('controller'=>'auth','action'=>'changeempstatus'))?>',
+            data: dataString,
+            success: function(j) {
+        
+                
+            }
+        });
+    });
+
+$(document).on('click', '.edit_employee', function(event) {
+ jQuery('#mask').show();
+            jQuery("#register").show();
+            jQuery("#reset").show();
+            jQuery('.addemployee').html('Edit Employee');
+          
+            
+            var id = jQuery(this).attr("id");
+            jQuery("#register").attr("value", "update");
+            var dataString = '&edit_id=' + id;
+            jQuery.ajax({
+                type: "POST",
+                url: '<?= $this->url(array('controller' => 'auth', 'action' => 'manageemployee')) ?>',
+                data: dataString,
+                success: function (j) {
+
+                    var json = jQuery.parseJSON(j);
+                    var json1 = jQuery.parseJSON(json.role);
+
+                    jQuery(json).each(function (i, val) {
+                        jQuery.each(val, function (k, v) {
+
+                            jQuery('#' + k).val(v);
+                               jQuery('#confirmPassword').val(json.password);
+                             jQuery('#' + k).removeAttr('disabled');
+                        });
+                    });
+                    
+                    jQuery(json1).each(function (i, val) {
+                        jQuery.each(val, function (k, v) {
+                            jQuery('.role' + val).attr('selected', true);
+                            jQuery('.role' + val).removeAttr('disabled');
+                        });
+                    });
+                     jQuery('#email').attr('disabled','true');
+//                    jQuery('#password').removeAttr('required').attr('disabled','true');
+//            jQuery('#confirmPassword').removeAttr('required').attr('disabled','true');
+ jQuery('#myTab a[href="#addemployee"]').tab('show');
+  jQuery('#mask').hide();
+                }
+            });
+        });
+
+    });
+
+</script>
+<?php echo $this->render('navebar/leftnavbar.phtml'); ?> 
+
+
+<div class="span9" id="content">
+    <?php echo $this->render('globalmessage/globalmessage.phtml'); ?>
+
+    <!--DELETE BOOK-->
+    <div id="accordion">
+
+        <div class="row-fluid">
+            <div class="span12">
+                <!-- block -->
+                <div class="block">
+                    <div class="navbar navbar-inner block-header">
+                        <div class="muted pull-left">Employee Management</div>
+
+                    </div>
+                    <div class="block-content collapse in">
+ <?php if($this->permission['view']==1){ ?>
+                        <ul class="nav nav-tabs" id="myTab">
+                            <li class="active"><a class="emplisttab" href="#emplist">Employee List</a></li>
+                             <?php if($this->permission['create']==1){ ?>
+                            <li><a href="#addemployee" class="addemployee">Add New Employee</a></li>
+                             <?php } ?>
+
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="emplist">
+                                <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example">
+                                    <thead>
+                                        <tr>
+                                            <th>SI No</th>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Email</th>
+                                            <th>Department</th>
+                                            <th>Designation</th>
+                                            <th>Role</th>
+                                            <th>Action</th>
+                                             <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $i = 1;
+                                        foreach ($this->emplist as $emplist) {
+                                            ?>
+                                            <tr><td><?= $i++; ?></td>
+                                                <td><?= $emplist['firstname'] ?></td>
+                                                <td><?= $emplist['lastname'] ?></td>
+                                                <td><?= $emplist['email'] ?></td>
+                                                <td><?= $this->department[$emplist['id']] ?></td>
+                                                <td><?= $this->designation[$emplist['id']] ?></td>
+                                                <td><?php  foreach ($this->roleView[$emplist['id']] as $a){echo $a.'<br/>';} ?></td>
+
+                                                <td>
+<!--                                                    <a href="<?php echo $this->baseUrl(); ?>/admin/auth/manageemployee/delete_id/<?= $emplist['id'] ?>" class="delete" >
+                                                        <?php echo 'DEL '; ?></a>-->
+                                                    <?php if($this->permission['edit']==1){ ?>
+                                                    <a href="#" class="edit_employee" id="<?= $emplist['id'] ?>">
+                                                <?php echo 'EDIT'; ?></a>
+                                                    
+                                                    <a href="#" class="view_employee" id="<?= $emplist['id'] ?>">
+                                                <?php echo '/ VIEW'; ?></a>
+                                                    <?php }?>
+                                                </td>
+                                                <td>
+                                                    <?php if($emplist['status'] == '0'){ ?>
+                                                    <a   style="cursor:pointer;">
+                                                    <img class="imgswap" id="approval_<?php echo $emplist['id']; ?>" src="<?php echo $this->baseUrl();?>/public/images/tick_off.png"/>
+                                                    </a>
+                                                    <?php }  if($emplist['status'] == '1'){ ?>
+                                        <a   style="cursor:pointer;">
+                                                    <img class="imgswap on" id="approval_<?php echo $emplist['id']; ?>" src="<?php echo $this->baseUrl();?>/public/images/tick_on.png"/>
+                                        </a></td>
+                                                
+                                                
+<?php } ?><?php } ?>
+                                                
+                                        
+                                            </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>      
+
+                            <div class="tab-pane" id="addemployee">
+                                <form enctype="application/x-www-form-urlencoded" onsubmit="return checkpassword()" action="<?= $this->url(array('controller' => 'auth', 'action' => 'manageemployee')) ?>" method="post" name="add-employee" id="add-employee">
+                                    <input type="hidden" name="id" id="id" value="" >
+                                    <div class="formvalue">
+                                        <div class="form-left pull-left">
+                                            <label for="firstname" class="required">First Name:</label></div>
+                                        <div class="form-right pull-left">
+                                            <input type="text" name="firstname" onkeypress="return isAlpha(event)" id="firstname" pattern='[A-Za-z\\s]*' maxlength="30" value="" class="form-control input-text validate-alpha required-entry" required="true">
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <div class="formvalue">                                        
+                                        <div class="form-left pull-left"><label for="lastname" class="required">Last Name:</label></div>
+                                        <div class="form-right pull-left">
+                                            <input type="text" name="lastname" onkeypress="return isAlpha(event)" id="lastname" pattern='[A-Za-z\\s]*' maxlength="30" value="" class="form-control" required="true">
+                                        </div>
+                                    </div>
+
+                                    <div class="formvalue">                                        
+                                        <div class="form-left pull-left">
+                                            <label for="email" class="required">Email:</label></div>
+                                        <div class="form-right pull-left">
+                                            <input type="email" name="email" onblur="return validate(event)"  id="email" value="" class="form-control input-text required-entry validate-email" required="true">
+                                        </div>
+                                    </div>
+
+                                    <div class="formvalue password_edit">                                        
+                                        <div class="form-left pull-left"><label for="password" class="required">Password:</label></div>
+                                        <div class="form-right pull-left">
+                                            <input type="password" name="password" id="password" minlength="6" maxlength="10" value="" class="form-control input-text required-entry validate-password" required="true"></div>
+                                    </div>
+
+                                    <div class="formvalue password_edit">                                        
+                                        <div class="form-left pull-left">
+                                            <label for="confirmPassword" class="required">Confirm Password: *</label>
+                                        </div>
+                                        <div class="form-right pull-left">
+                                            <input type="password" name="confirmPassword" id="confirmPassword" minlength="6" maxlength="10" value="" class="form-control input-text required-entry validate-cpassword" required="true">
+                                        </div>
+                                    </div>
+
+                                    <div class="formvalue">                                        
+                                        <div class="form-left pull-left">
+                                            <label for="department" class="required">Department</label></div>
+                                        <div class="form-right pull-left">
+                                            <select name="department" id="department" class="form-control" required="true" >
+                                                <option value="">Select Department</option>
+                                                <?php foreach ($this->deptList as $deptlist) { ?>
+                                                    <option value="<?php echo $deptlist['id'] ?>"><?php echo $deptlist['name'] ?></option>
+<?php } ?>
+                                            </select></div>
+                                    </div>
+
+                                    <div class="formvalue">                                        
+                                        <div class="form-left pull-left">
+                                            <label for="Designation" class="required">Designation</label>
+                                        </div>
+                                        <div class="form-right pull-left">
+                                            <select name="group" id="group" class="form-control" required="true" >
+                                                <option value="">Select Designation</option>
+                                                <?php foreach ($this->groupList as $grouplist) { ?>
+                                                    <option value="<?php echo $grouplist['id'] ?>"><?php echo $grouplist['name'] ?></option>
+<?php } ?>
+                                            </select></div>
+                                    </div>
+
+                                    <div class="formvalue">                                        
+                                        <div class="form-left pull-left">
+                                            <label for="role" class="required">Role</label></div>
+                                        <div class="form-right pull-left">
+                                            <select name="role[]" id="role" class="form-control" required="true" multiple="multiple">
+                                                <option value="">Select Role</option>
+                                                <?php foreach ($this->roleList as $rolelist) { ?>
+                                                    <option class="role<?php echo $rolelist['acl_role_id'] ?>" value="<?php echo $rolelist['acl_role_id'] ?>">
+                                                        <?php echo $rolelist['acl_role_name'] ?>
+                                                    </option>
+<?php } ?>
+                                            </select></div>
+                                    </div>
+                                    <div class="formvalue">                                        
+                                        <div class="form-left pull-left">
+                                            <input type="submit" name="register" id="register" value="add" class="btn btn-primary">
+                                        </div>
+                                        <div class="form-right pull-left">
+                                            <input type="reset" name="reset" id="reset" value="Reset" class="btn btn-primary">
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>      
+                        </div>
+                       <?php } else  { echo 'You are not authorized person to access this module'; } ?>    
+                    </div>
+                </div>
+                <!-- /block -->
+            </div>
+
+        </div>
+        <!--END-->
+
+
+
+
+
+
+    </div>
+
+
+</div>
+
+
+
+

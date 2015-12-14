@@ -1,0 +1,273 @@
+<style type="text/css">
+    .accordion h4,.accordion-content{padding:10px;border-bottom:1px solid #ccc}.bs-example{margin:20px}.accordion-toggle{cursor:pointer}.accordion-content{display:none}.accordion-content.default{display:block}.Centered,.Centerer{display:inline-block;vertical-align:middle}.accordion h4{background-color:#f9f9f9;font-size:16px;margin:0}a,a:focus,a:hover{outline:0}#accordion{border:1px solid #ccc;margin:0;border-bottom:0}.bom_detail{width:98%;height:auto;background-color:#f5f5f5;margin-bottom:10px;border-radius:5px;padding:5px;box-shadow:1px 1px 3px -1px}.bom_detail p{margin:0 auto}td input,td select{margin:0!important}.form-addbom{padding:19px 29px 29px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;-webkit-box-shadow:0 1px 2px rgba(0,0,0,.05);-moz-box-shadow:0 1px 2px rgba(0,0,0,.05);box-shadow:0 1px 2px rgba(0,0,0,.05)}.form-left{width:45%!important}.form-right{width:50%!important}td select{width:100px!important;background-color:transparent;box-shadow:none}td input{width:80px!important;box-shadow:none!important}#example1 .table td{padding:8px 4px 0 5px!important}*{padding:0;margin:0}#mask{position:absolute;width:100%;height:100%;text-align:center}.Centerer{height:100%}.DTTT_container{display:none}
+</style>
+
+
+<div class="span3" id="sidebar">
+    <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
+        <li class="active">
+            <a href="<?= $this->url(array('module' => 'admin', 'controller' => 'bom', 'action' => 'index')) ?>">
+                <i class="icon-chevron-right"></i>Bill of material</a>
+        </li>
+
+        <li>
+            <a href="<?= $this->url(array('module' => 'admin', 'controller' => 'bom', 'action' => 'index')) ?>">
+                Bill of material</a>
+        </li>
+
+
+
+    </ul>
+</div>
+
+<div class="span9" id="content">
+    <?php echo $this->render('globalmessage/globalmessage.phtml'); ?>
+
+
+
+    <div class="row">
+        <div class="span12">
+            <!-- block -->
+            <div class="block">
+                <div class="navbar navbar-inner block-header">
+                    <div class="muted pull-left">Bill of Material</div>
+
+                </div>
+                <div class="accordion block-content collapse in" id="accordion2">
+
+                    <ul class="nav nav-tabs" id="myTab">
+                        <li class="active materiallist"><a href="#materiallist">Bill of Material List</a></li>
+                        <li class="addbom"><a href="#addbom">Create New Bill of Material</a></li>
+                        <li class="addredit hidden"><a href="#add-edit" class='addoredit'></a></li>
+
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="materiallist">
+                            <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example">
+                                <thead>
+                                    <tr> 
+                                        <th>#</th>
+                                        <th>BOM#</th>
+                                        <th>BOM Rev#</th>
+                                        <th>Description</th>
+                                        <th>Edit</th>
+                                        <th>Status</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <?php $i = 1;
+                                    foreach ($this->bom as $bom) { ?>
+                                        <tr><td><?= $i++; ?></td>
+                                            <td><a href="#" class="add-bom" id="<?= $bom['id'] ?>">
+    <?= $bom['bom_project_id'] ?>
+                                                </a></td>
+                                            <td><?php if ($bom['bom_rev_id']) {
+        echo $bom['bom_rev_id'];
+    } else {
+        echo 'NONE';
+    } ?></td>
+                           <td><?= $bom['bom_description'] ?></td>                                      
+                                            <td>
+                                                <a href="#" class="edit-bom" id="<?= $bom['id'] ?>">
+                                                <?php echo 'EDIT'; ?></a>
+
+                                            </td> 
+
+                                            <td>
+    <?php if ($bom['status'] == '0') { ?>
+                                                    <img class="imgswap" id="approval_<?php echo $bom['id']; ?>" src="<?php echo $this->baseUrl(); ?>/public/images/tick_off.png"/>
+                                        <?php } if ($bom['status'] == '1') { ?>
+                                                    <img class="imgswap on" id="approval_<?php echo $bom['id']; ?>" src="<?php echo $this->baseUrl(); ?>/public/images/tick_on.png"/>
+    <?php } ?>
+                                            </td>
+
+                                        </tr>
+<?php } ?>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+
+
+
+                        <div class="tab-pane" id="addbom">
+
+                            <form  enctype="application/x-www-form-urlencoded" action="#" method="post" id="form_addbom" name="form_addbom" class='form_addbom'>
+
+
+                                <div class='bom_detail'>
+
+
+
+                                    <div class="formvalue form-group clearfix">
+                                        <div class="form-left pull-left"><label for="partno" class="required">Part no:</label></div>
+                                        <div class="input-group form-right pull-left">
+                                            <input type="hidden" name="bom-edit-id" id="bom-edit-id" class="bom-edit-id" value="" />
+                                            <select name="partno" id="partno" class="form-control" required>
+                                                <option value="">Select Part No</option>
+<?php foreach ($this->material as $_material): ?>
+                                                    <option value="<?= $_material['id'] ?>"><?= $_material['part_no'] ?></option>
+<?php endforeach; ?>
+
+                                            </select>              
+                                        </div>
+                                        <div class="form-left pull-left"></div>
+                                    </div>
+
+                                    <div class="formvalue form-group clearfix">
+                                        <div class="form-left pull-left"><label for="firstname" class="required">Project:</label></div>
+                                        <div class="input-group form-right pull-left">
+
+                                            <select name="project" id="project" class="form-control" required>
+                                                <option value="">Select Project</option>
+<?php foreach ($this->project as $_project): ?>
+                                                    <option value="<?= $_project['project_id'] ?>"><?= $_project['project_name'] ?></option>
+<?php endforeach; ?>
+
+
+                                            </select>              
+                                        </div>
+                                        <div class="form-left pull-left"></div>
+                                    </div>
+                                    <div class="formvalue form-group clearfix">
+                                        <div class="form-left pull-left"><label for="bom_description" class="required">BOM Description:</label></div>
+                                        <div class="input-group form-right pull-left">
+
+                                            <textarea rows="5" cols="200" name="bom_description" id="bom_description" value="" class="form-control" required></textarea>
+
+                                        </div>
+                                        <div class="form-left pull-left"></div>
+                                    </div>
+
+                                </div>
+
+                                <div id="button_div" class="clearfix span7" style="float: right;" >
+                                    <div class="span2" id="save_button">
+                                        <a class='btn btn-primary'  name="save_bom" id="save_bom" value="Save" class="btn btn-default save_bom" />Save</a>
+                                    </div>
+
+                                    <div class="span1" id="back_button">
+                                        <a href=""><input class='btn btn-primary' type="button" name="back" id="back" value="Back" class="btn btn-default" /></a>
+                                    </div>
+                                    <a href="" style="display:none;">
+                                        <input type="reset" name="reset" id="reset-bom" value="Reset" class="btn btn-primary">
+                                    </a>
+
+                                </div>
+
+                            </form>
+                        </div>
+
+                        <div class="tab-pane" id="add-edit">
+
+                            <form data-toggle="validator"  enctype="application/x-www-form-urlencoded" action="#" method="post" id="addtobom" name="addtobom" class='addtobom'>
+
+                                <input type="hidden" value="" name="bom-id" id="bom-id">
+                                <input type="hidden" value="" name="op-type" id="op-type">
+                                <div class="bom_detail" id='bom-detail'>
+
+
+                                </div>
+
+                                <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example1">
+
+                                    <thead>
+                                        <tr> 
+                                            <th>#</th>
+                                            <th>Part no#</th>
+                                            <th>Description</th>
+                                            <th>Type</th>
+                                            <th>Qty</th>
+                                            <th>UOM</th>
+                                            <th>Dwg #</th>
+                                            <th>Dwg Rev #</th>
+                                            <th>Comments</th>
+                                            <th>Action</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                    </tbody>
+                                </table>
+
+                                <div style='float:right;'>
+                                    <a id='addnew' value='' name='addnew' class='btn btn-primary' >Add New</a>
+                                    <a id='addall' value='' name='addall' class='btn btn-primary' >Save All</a>
+                                    <a id='import' value='' name='import' class='btn btn-primary' >Import</a>
+                                </div>
+                            </form>           
+                        </div>
+
+                        <script type="text/javascript">
+$(document).ready(function(){function e(e){$.ajax({url:a+"/view",type:"post",data:"&bom_id="+e,success:function(e){var t=$.parseJSON(e);$("#bom-id").val(t.id),$("#op-type").val("add");var a='<p><span style="color:red;">ASSEMBLY PART NO:</span> '+t.partid+'</p><p><span style="color:red;">MATERIAL DESCRIPTION:</span>'+t.description+'</p><p><span style="color:red;">BOM #:</span>'+t.bom+'</p><p><span style="color:red;">BOM REV#:</span>'+t.bom_rev+'</p><p><span style="color:red;">DATE:</span>'+t.date+"</p>";$("#bom-detail").html(a),$("#bom_id").val(t.id.id),$("#example1").dataTable().fnClearTable(),$(t.table).each(function(e,a){var o='<select update="'+a.id+'" id="part_'+a.id+'" class="partno" name="partno[]" ><option>Slect Part no</option>';$(t.partno).each(function(e,t){o+=a.material_id==t.id?'<option value="'+t.id+'" selected="true">'+t.part_no+"</option>":'<option value="'+t.id+'">'+t.part_no+"</option>"}),o+="</select>";var d='<input id="desc_'+a.id+'" type="text" value="'+a.material_desc+'" class="desc" readonly="true">\n                                    <input type="hidden" name="bom_ref_id[]"  value="'+a.id+'">',r='<input id="type_'+a.id+'" type="text" value="'+a.type+'" class="type" readonly="true">',l='<input name="qty[]" update="'+a.id+'" id="qty_'+a.id+'" type="number" value="'+a.quanty+'" class="qty" >',n='<input id="uom_'+a.id+'" type="text" value="'+a.uom+'" class="uom" readonly="true">',s='<input id="deg_'+a.id+'" type="text" value="'+a.drawing_no+'" class="dwg" readonly="true">',i='<input id="dwgr'+a.id+'" type="text" value="'+a.revision_no+'" class="dwgr" readonly="true">',c='<input name="comments[]" update="'+a.id+'" id="comments_'+a.id+'" type="text" value="'+a.comments+'" class="comments">',m=$("#example1").dataTable().fnSettings().fnRecordsTotal();$("#example1").dataTable().fnAddData([m+1,o,d,r,l,n,s,i,c,'<a style="cursor:pointer" del="'+a.id+'" id="del'+a.id+'" class="deleterow">DEL</a><br/><a style="cursor:pointer" edit="'+a.id+'" id="edit'+a.id+'" class="updaterow"></a>'])}),$(".bom").removeClass("hidden"),$('#myTab a[href="#add-edit"]').tab("show")}})}function t(e,t){$("#bommodal-header").html(e),$(".bommodal-create").html("<p>"+t+"</p>"),$("#bommodal").modal()}var a="/asteria/admin/bom";$("#example1").dataTableExt.sErrMode="throw",localStorage.removeItem("addall"),$(".add-bom").click(function(){$(this).attr("id");$(".addoredit").html("Add to BOM"),$(".addredit").removeClass("hidden"),$("#example1").dataTable().fnClearTable();var t=$(this).attr("id");e(t),localStorage.removeItem("addall")}),jQuery(".materiallist,.addredit").click(function(){jQuery("#partno").removeAttr("disabled").attr("required","true"),jQuery("#project").removeAttr("disabled").attr("required","true"),jQuery("#reset-bom").trigger("click")}),$(".edit-bom").click(function(){var e=$(this).attr("id");$.ajax({url:a+"/editbom",type:"post",data:"&edit_bom_id="+e,success:function(e){var t=$.parseJSON(e);$("#bom-edit-id").val(t.id),$("#partno").val(t.material_id),$("#partno").attr("disabled","true"),$("#project").attr("disabled","true"),$("#project").val(t.project_id),$("#bom_description").val(t.bom_description),$('#myTab a[href="#addbom"]').tab("show")}})}),$("#addnew").click(function(){var e=$("#example1").DataTable(),t=$("#example1").dataTable().fnSettings().fnRecordsTotal();if(t)var o=e.page.info();$("#example1 tbody tr").removeClass("current-bom");var d=$("#bom-id").val();$.ajax({url:a+"/addnew",type:"post",data:"&addnew_id="+d,success:function(e){var t=$.parseJSON(e),a=$("#example1").dataTable().fnSettings().fnRecordsTotal(),o='<select class="partno partno'+a+'" name="partnonew[]" ><option value="0">Slect Part no</option>';$(t).each(function(e,t){o+='<option value="'+t.id+'">'+t.part_no+"</option>"}),o+="</select>";var d='<input  type="text" value="" class="desc" readonly="true">',r='<input type="text" value="" class="type" readonly="true">',l='<input name="qtynew[]" type="number" value="" class="qty qty'+a+'" required="true">',n='<input type="text" value="" class="uom" readonly="true">',s='<input type="text" value="" class="dwg" readonly="true">',i='<input type="text" value="" class="dwgr" readonly="true">',c='<input name="commentsnew[]" type="text" value="" class="comments comments'+a+'" required="true">';$("#example1").dataTable().fnAddData([a+1,o,d,r,l,n,s,i,c,'<a style="cursor:pointer" class="deleterow">DEL</a><br/><a style="cursor:pointer" class="saverow">SAVE</a>'])},complete:function(){t&&$("#example1").dataTable().fnPageChange(o.pages-1,!0)}})}),$(document).on("change","#example1 tbody tr td input[type=text],select,input[type=number]",function(){localStorage.setItem("addall","1")}),$("#addall").click(function(){var t=localStorage.getItem("addall");if("1"==t){$("#mask").show();var o=$("#addtobom").serializeJSON();$.post(a+"/addall",{data:o}).done(function(t){console.log(t);var a=$("#bom-id").val();e(a),$("#mask").hide(),localStorage.removeItem("addall")})}}),$(document).on("click","#example1 tbody tr td .deleterow",function(){var t=$(this).closest("tr"),o=t[0],d=$("#bom-id").val(),r=$(this).attr("del");r?($("#mask").show(),$.ajax({type:"POST",url:a+"/delete",data:"&delid="+r,success:function(){e(d),$("#example1").dataTable().fnDeleteRow(o),$("#mask").hide()}})):$("#example1").dataTable().fnDeleteRow(o)}),$(document).on("change","#example1 tbody tr td .partno",function(){var e=$(this).attr("update");$("#edit"+e).html("UPDATE")}),$(document).on("change keydown","#example1 tbody tr td .qty",function(){var e=$(this).attr("update");$("#edit"+e).html("UPDATE")}),$(document).on("change","#example1 tbody tr td .comments",function(){var e=$(this).attr("update");$("#edit"+e).html("UPDATE")}),$(document).on("click","#example1 tbody tr td .updaterow",function(){var t=localStorage.getItem("addall");if(1==t){var o=$(this).attr("edit");$("#mask").show(),$(this).parent("td").parent("tr").addClass("save-bom");var d=$("#bom-id").val(),r=$("#part_"+o).val(),l=$("#qty_"+o).val(),n=$("#comments_"+o).val(),s="&editid=1&id="+d+"&partno="+r+"&qty="+l+"&comments="+n+"&edit="+o;$.ajax({type:"POST",url:a+"/addoredit",data:s,success:function(t){$.parseJSON(t);e(d),$("#example1 tbody tr").removeClass("save-bom"),$("#mask").hide(),localStorage.removeItem("addall")}})}else alert("Please select part no")}),$(document).on("change keydown","#example1 tbody tr td .comments",function(){var e=$(this).attr("update");$("#edit"+e).html("UPDATE")}),$(".imgswap").click(function(){var e=$(this).attr("id"),t=e.split("_");if("imgswap"==$(this).attr("class")){$("#"+e).attr("src","<?php echo $this->baseUrl();?>/public/images/tick_on.png"),this.src=this.src.replace("_off","_on");var o="1"}else{$("#"+e).attr("src","<?php echo $this->baseUrl();?>/public/images/tick_off.png"),this.src=this.src.replace("_on","_off");var o="0"}$(this).toggleClass("on");var d="&type=changestatus&id="+t[1]+"&status="+o;$.ajax({type:"POST",url:a+"/changestatus",data:d,success:function(e){console.log(e)}})}),$(document).on("change","#example1 tbody tr td .partno",function(){{var e=$(this).val();$(this).parent("td").parent("tr").addClass("current-bom")}0==e&&($(".current-bom td .desc").val(""),$(".current-bom td .type").val(""),$(".current-bom td .uom").val(""),$(".current-bom td .dwg").val(""),$(".current-bom td .dwgr").val(""),$("#example1 tbody tr").removeClass("current-bom")),0!=e&&$.ajax({type:"POST",url:a+"/addbom",data:"&bom_add="+e,async:!1,success:function(e){var t=$.parseJSON(e);$(".current-bom td .desc").val(t.material_desc),$(".current-bom td .type").val(t.type),$(".current-bom td .uom").val(t.uom),$(".current-bom td .dwg").val(t.drawing_no),$(".current-bom td .dwgr").val(t.revision_no),$("#example1 tbody tr").removeClass("current-bom")}})}),$(document).on("click",".saverow",function(){var t=localStorage.getItem("addall");if(1==t){$("#mask").show(),$(this).parent("td").parent("tr").addClass("save-bom");var o=$("#bom-id").val(),d=$(".save-bom td .partno").val(),r=$(".save-bom td .qty").val(),l=$(".save-bom td .comments").val(),n="&addid=1&id="+o+"&partno="+d+"&qty="+r+"&comments="+l;console.log(n),$.ajax({type:"POST",url:a+"/addoredit",data:n,success:function(t){$.parseJSON(t);e(o),$("#example1 tbody tr").removeClass("save-bom"),$("#mask").hide(),localStorage.removeItem("addall")}})}else alert("Please select part no")}),$("#save_bom").click(function(){$("#mask").show();var e=$("#bom-edit-id").val(),o=$("#form_addbom").serialize();console.log(o),$.post(a+"/create",{data:o}).done(function(o){$("#mask").hide(),e?1==o&&t("BOM Creation","Updated Successfully"):(1==o&&(t("BOM Creation","Created Successfully"),setTimeout(function(){window.location.replace(a)},2e3)),0==o&&t("BOM Creation","Created Already"))})}),$("#import").click(function(){$("#bomimport").modal(),$("#bom-importid").val($("#bom-id").val())})});                        </script>
+
+
+
+
+
+
+
+                    </div>
+                    <div id="mask" style="display:none;width:100%;height:100%;background-color: #FDFDFD;opacity: .7;position: absolute;left:0;top:0;">
+
+                        <span class="Centerer"></span>
+                        <img class="Centered" src="<?php echo $this->baseUrl(); ?>/public/images/loading_spinner.gif" />
+
+                    </div>
+                </div>
+                <!-- /block -->
+
+            </div>
+
+        </div>
+
+
+
+
+    </div></div>
+
+<div id="bommodal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="bommodal-header">Import BOM</h3>
+    </div>
+    <div class="bommodal-body bommodal-create" style="padding: 20px;">
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+</div>
+
+<div id="bomimport" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="bomimport-header">Import BOM Material List</h3>
+    </div>
+    <form enctype="multipart/form-data" method="post" role="form" action="#" data-toggle="validator" >
+        <div class="bommodal-body" style="padding: 20px;">
+
+            <input class="form-control" type="hidden" value="" name="bom-importid" id="bom-importid">
+            <div class="form-group">
+
+                <input type="file" name="file" id="file" size="150" required="true">
+                <p class="help-block">Only .xls/.xlsx File Import.</p>
+            </div>
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-default" name="Import" value="Import">Import</button>
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        </div>
+    </form>
+</div>
+
+
+

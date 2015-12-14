@@ -1,0 +1,190 @@
+<?php
+use Zend\Mvc\Controller\Plugin\FlashMessenger;
+//require_once("Zend\Mvc\Controller\Plugin\FlashMessenger.php");
+class Chat_ChatController extends Zend_Controller_Action
+{
+    public $_chatMapper;
+    public $_dbTable;
+    public $_usertable;
+   
+
+    public function init()
+    {
+// somewhere in your application
+//$translate = new Zend_Translate("gettext", "\my_de.mo");
+//$translate = new Zend_Translate('tmx', '/fr');
+
+        
+//         $lang = 'fr_FR';
+//        $front = Zend_Controller_Front::getInstance();
+//        $router = $front->getRouter();
+//        $router->setGlobalParam('lang', $lang);
+//        $lang = 'fr';
+//        Zend_Registry::set('Zend_Locale', $lang);
+//        $translate = new Zend_Translate('csv', APPLICATION_PATH . '/configs/lang/'. $lang . '.csv' , $lang);
+//        $translate = new Zend_Translate('csv', APPLICATION_PATH . '/configs/lang/'. $lang . '.csv' , $lang);
+//        Zend_Registry::set('Zend_Translate', $translate);
+
+//        echo $this->translate("Hello world!"); 
+        
+        $this->_dbTable = new Chat();
+        $this->_userTable = new Users();
+//        $view->setEncoding('iso-8859-1'); 
+//        $this->_helper->layout()->disableLayout();
+//        $this->_helper->viewRenderer->setNoRender(true);
+    }
+
+    public function indexAction()
+    {
+
+//        $locale =  new Zend_Locale('it_IT');
+//        Zend_Registry::set('Zend_Locale', $locale);
+//        echo APPLICATION_PATH;
+//        ...
+//        $translate  = new Zend_Translate('tmx', APPLICATION_PATH . '/example.tmx', $locale);
+//        
+//        $translate->getAdapter()->addTranslation(APPLICATION_PATH . '/locale', 'fr_CH');
+
+//        $test = new Zend_Session_Namespace('session');
+//        $langLocale = isset($test->lang) ? $test->lang : $locale;
+//        $translate->setLocale($langLocale);
+
+        
+//        echo "<pre>";
+//        print_r($translate);
+
+//        Zend_Registry::set('Zend_Translate', $translate);
+        //        $translate->getLocale();
+//        $a = $translate->translate('new-order');
+//        echo $a;
+//        $this->view->m2 = 'last-order';
+        
+//        $source = $translate->getMessages();
+//        print_r($source);
+        
+//        $this->view->m2 = $source['last-order'];
+
+
+        $storage = new Zend_Auth_Storage_Session();
+        $admin = $storage->read();
+//        print_r($admin);
+        if(!$admin)
+        {
+                $this->view->message = 'Admin is currently Offline. Please send Your Query in the chat. We will respond you ASAP';
+        }
+
+        $this->view->m1 = 'new';
+    }
+    
+    public function startAction()
+    {
+        $this->_helper->layout()->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+        
+//        $now = time()-strtotime($time);
+//	echo $time = date('g:iA M dS', strtotime($time));
+        
+        $time = Zend_Date::now();
+        
+                        
+        if($this->getRequest()->isPost())
+        {
+
+            $post_data = $this->getRequest()->getPost();
+            
+            $data = array('from_user'=>$post_data['from'],'email'=>$post_data['email'],'to_user'=>$post_data['to'],'message'=>$post_data['message'],'sent'=>$time,'recd'=>0);
+ 
+            if($data)
+            {
+                $this->_dbTable->insert($data);
+            }
+            
+            $user_data = array('uname'=>$post_data['from'],'email'=>$post_data['email'],'password'=>'02121','odcn'=>'N');
+            
+            if($user_data && !$this->_userTable->checkUnique($post_data['from'])) { $this->_userTable->insert($user_data); }
+            
+            $admin_model = new Admintable();
+            $admin_session = $admin_model->fetchAll()->toArray();
+
+            if(empty($admin_session))
+            {
+            #send mail if admin is offline
+              $mail = new Zend_Mail();
+              $mail->setBodyText($post_data['message']);
+              $mail->setFrom($post_data['email'], $post_data['from']);
+              $mail->addTo($admin_session[0]['email'],$admin_session[0]['name']);
+              $mail->setSubject('You Got a Query');
+              $mail->send();
+            }
+            #ends
+    
+
+            $get_chats = $this->_dbTable->getChats($post_data['from']);
+            
+            foreach ($get_chats as $result) {
+                $entries[] = array('message' => $result['message'], 'sent'=>$result['sent'],'from_user'=>$result['from_user'],
+                                    'to_user'=>$result['to_user']);
+            }
+            
+//            print_r($entries);
+            
+            echo Zend_Json::encode($entries);
+            exit;
+            
+        }
+       
+    }
+    
+    public function sessionchatsAction()
+    {
+        $this->_helper->layout()->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+                        
+        if($this->getRequest()->isPost())
+        {
+           $get_chats = $this->_dbTable->getChats($this->getRequest()->getPost('from'));
+           
+            foreach ($get_chats as $result) {
+                $entries[] = array('message' => $result['message'], 'sent'=>$result['sent'],'from_user'=>$result['from_user'],
+                                    'to_user'=>$result['to_user']);
+            }
+           
+            echo Zend_Json::encode($entries);
+            exit;
+            
+        }
+    }
+    
+    public function getDbTable()
+    {
+        if (null === $this->_dbTable) {
+            $this->setDbTable('Application_Model_DbTable_Chat');
+        }
+
+        return $this->_dbTable;
+    }
+    
+    public function viewcustomerchatAction()
+    {
+        if ($this->_request->isXmlHttpRequest()) {
+            $request = $this->getRequest();
+            $chat = new Application_Model_Chat($request->getParams());
+            $this->_chatMapper->save($chat);
+        }
+    }
+    
+    public function getmessagesAction()
+    {
+        $request = $this->getRequest()->getParam('sessId');
+        $entries = array();
+
+        if ($this->_request->isXmlHttpRequest()) {
+            $messages = $this->_chatMapper->findBySess($request);
+            foreach ($messages as $result) {
+                $entries[] = array('role' => $result->role, 'message' => $result->message);
+            }
+        }
+        echo Zend_Json::encode($entries);
+    }
+}
+

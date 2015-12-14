@@ -1,0 +1,48 @@
+
+<div class="span3" id="sidebar">
+                    <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
+                        <li class="active">
+                            <a href="#"><i class="icon-chevron-right"></i>User Management</a>
+                        </li>
+                        
+                        <li>
+                            <a href="<?=$this->url(array('module'=>'admin','controller'=>'auth','action'=>'emplist'))?>">
+                                <i class="icon-chevron-right"></i>Employee List
+                            </a>
+                        </li>
+                        
+                        
+                        <li>
+                            <a href="<?=$this->url(array('controller'=>'auth','action'=>'addemployee'));?>">
+                                <span class="badge badge-info pull-right"></span>
+                                Add New Employee</a>
+                            
+                        </li>
+                        
+                        <li>
+                            <a href="<?=$this->url(array('controller'=>'auth','action'=>'addgroupdept'));?>">
+                                <span class="badge badge-info pull-right"></span>
+                                Add Group or Department</a>
+                            
+                        </li>
+                        
+<!--                        <li>
+                            <a href="<?=$this->url(array('controller'=>'auth','action'=>'addadmin'));?>">
+                                <span class="badge badge-info pull-right"></span>
+                                Add New Admin</a>
+                        </li>-->
+                        <li>
+                            <a href="<?=$this->url(array('controller'=>'auth','action'=>'roles'));?>">
+                            <!--<a href="#">-->
+                                <span class="badge badge-info pull-right"></span>
+                                Role Management</a>
+                        </li>
+                        
+                        
+                    </ul>
+                </div>
+
+
+
+
+

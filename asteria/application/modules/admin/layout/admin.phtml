@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+       <?php echo $this->headTitle();?>
+       <?php echo $this->headLink();?>
+       <?php echo $this->headScript();?>
+        <style type="text/css" title="currentStyle">
+			@import "<?php echo $this->baseUrl();?>/public/media/css/demo_page.css";
+/*			@import "<?php echo $this->baseUrl();?>/public/media/css/demo_table.css";*/
+			@import "<?php echo $this->baseUrl();?>/public/media/css/TableTools.css";
+                        @import "<?php echo $this->baseUrl();?>/public/media/css/bootstrap-combined.min.css";
+			@import "<?php echo $this->baseUrl();?>/public/media/css/dataTables.bootstrap.css";
+	</style>
+        <link rel="shortcut icon" type="image/x-icon" href="<?php echo $this->baseUrl();?>/favicon.ico">
+       
+        <link href="<?php echo $this->baseUrl();?>/public/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+        <link href="<?php echo $this->baseUrl();?>/public/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+        <link href="<?php echo $this->baseUrl();?>/public/assets/styles.css" rel="stylesheet" media="screen">
+        <link href="<?php echo $this->baseUrl();?>/public/assets/DT_bootstrap.css" rel="stylesheet" media="screen">
+        <link href="<?php echo $this->baseUrl();?>/public/css/style_ram.css" rel="stylesheet" media="screen">
+        
+        
+<!--        <link href="<?php echo $this->baseUrl();?>/public/vendors/datepicker.css" rel="stylesheet" media="screen">-->
+        <link href="<?php echo $this->baseUrl();?>/public/vendors/uniform.default.css" rel="stylesheet" media="screen">
+        <link href="<?php echo $this->baseUrl();?>/public/vendors/chosen.min.css" rel="stylesheet" media="screen">
+<!--        <link href="<?php echo $this->baseUrl();?>/public/vendors/wysiwyg/bootstrap-wysihtml5.css" rel="stylesheet" media="screen">-->
+        
+        
+        <!-- CSS FOR DATE TIME PICKER -->
+        
+        <link rel="stylesheet" media="all" type="text/css" href="<?php echo $this->baseUrl();?>/public/css/jquery-ui.css" />
+	<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this->baseUrl();?>/public/css/jquery-ui-timepicker-addon.css" />
+        <link rel="stylesheet" media="all" type="text/css" href="<?php echo $this->baseUrl();?>/public/css/jquery.datepick.css" />
+
+      
+                <script src="<?php echo $this->baseUrl();?>/public/js/jquery-1.10.2.js"></script>
+                <script src="<?php echo $this->baseUrl();?>/public/vendors/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+               <script type="text/javascript" charset="utf-8" src="<?php echo $this->baseUrl();?>/public/media/js/jquery.js"></script>
+                  <script src="<?php echo $this->baseUrl(); ?>/public/jquery.serializejson.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="<?php echo $this->baseUrl();?>/public/media/js/jquery.dataTables.js"></script>
+		<script type="text/javascript" charset="utf-8" src="<?php echo $this->baseUrl();?>/public/media/js/ZeroClipboard.js"></script>
+		<script type="text/javascript" charset="utf-8" src="<?php echo $this->baseUrl();?>/public/media/js/TableTools.js"></script>
+                <script type="text/javascript" charset="utf-8" src="<?php echo $this->baseUrl();?>/public/media/js/dataTables.bootstrap.js"></script>
+                <script type="text/javascript" charset="utf-8" src="<?php echo $this->baseUrl();?>/public/js/jquery.datepick.js"></script>
+                
+                <script src="<?php echo $this->baseUrl();?>/public/js/validator.min.js"></script>
+              
+                
+               
+                
+                
+    <script type="text/javascript" charset="utf-8">
+        
+    
+     function isAlphaSpace(evt) {
+         var charCode = (evt.which) ? evt.which : event.keyCode;
+         if(charCode!=32){
+         if (charCode > 31 && (charCode < 65 || charCode > 90) && (charCode < 97 || charCode > 122))
+            return false;
+    }
+  
+         return true;
+      }
+   function isNumber(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode > 31 && (charCode < 46 || charCode > 57))
+            return false;
+            return true;
+    }
+
+    function isAlpha(evt) {
+        // onkeypress="return isAlpha(event)" 
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode > 31 && (charCode < 65 || charCode > 90) && (charCode < 97 || charCode > 122))
+            return false;
+
+        return true;
+    }
+    
+    function isAlphaNumeric(evt) {
+      var charCode = (evt.which) ? evt.which : event.keyCode;
+    if (!(charCode > 47 && charCode < 58) && // numeric (0-9)
+        !(charCode > 64 && charCode < 91) && // upper alpha (A-Z)
+        !(charCode > 96 && charCode < 123)) { // lower alpha (a-z)
+      return false;
+    }
+    return true;   
+    }
+    var specialKeys = new Array();
+        specialKeys.push(8); 
+        function IsNumeric(e) {
+            var keyCode = e.which ? e.which : e.keyCode
+            var ret = ((keyCode >= 48 && keyCode <= 57) || specialKeys.indexOf(keyCode) != -1);
+          
+            return ret;
+        }
+      function isNumber0(evt) {
+                         var charCode = (evt.which) ? evt.which : event.keyCode;
+                         if (charCode > 31 && (charCode < 46 || charCode > 57) && charCode != 0 )
+                            return false;
+
+                         return true;
+                    }
+    
+    
+			$(document).ready( function () {
+				$('#example').dataTable( {
+					"sDom": 'T<"clear">lfrtip',
+					"oTableTools": {
+						"sSwfPath": "<?php echo $this->baseUrl();?>/public/media/swf/copy_csv_xls_pdf.swf"
+					}, "pageLength": 25
+				} );
+                                $('#example1').dataTable( {
+					"sDom": 'T<"clear">lfrtip',
+					"oTableTools": {
+						"sSwfPath": "<?php echo $this->baseUrl();?>/public/media/swf/copy_csv_xls_pdf.swf"
+					}, "pageLength": 25
+				} );
+                                
+                                 
+                                $("#grn_date").live('focus',function() {
+                                $("#grn_date").datepick({dateFormat: 'dd/mm/yyyy'});
+                                 });
+                                 
+                                 $(".mfgdate").live('focus',function() {
+                                    $(".mfgdate").datepick({dateFormat: 'dd/mm/yyyy'});
+                                 });
+                                 
+                                   $(".expirydate").live('focus',function() {
+                                    $(".expirydate").datepick({dateFormat: 'dd/mm/yyyy'});
+                                 });
+                                 
+                                    $("#delivery_date").live('focus',function() {
+                                    $("#delivery_date").datepick({dateFormat: 'dd/mm/yyyy', minDate: "0",});
+                                    });
+        
+                                $("#grn_date").live('focus',function() {
+                                $("#grn_date").datepick({dateFormat: 'dd/mm/yyyy', minDate: "0",});
+                                 });
+    
+    $('.form-control').live('keyup', function()
+            {
+              var val = $(this).val();
+              var first = val.substring(0,1);
+               if(first == ' '){
+                   var set = $(this).val().trim();
+                   $(this).val(set);
+                }
+            });
+            
+            $('body').on("keyup",'.unitprice',function(){
+       if($(this).val()=='0'){
+           alert('Unit Price should no be in Zero');
+       }
+        if($(this).val().indexOf('.')!=-1){         
+            if($(this).val().split(".")[1].length > 2){                
+                if( isNaN( parseFloat( this.value ) ) ) return;
+                this.value = parseFloat(this.value).toFixedDown(2);
+            }  
+         }            
+         return this; 
+        
+    });
+    
+    $('body').on("keyup",'.qty',function(){
+       if($(this).val()=='0'){
+           alert('Quantity should no be in Zero');
+       }
+        
+    });
+			});
+    </script>
+    
+    </head>
+    
+    <body>
+  <header>
+       <?php if($this->username !='') { ?>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                   
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> 
+                        <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                    </a>
+                 
+                    <a class="brand" href="<?=$this->url(array('module'=>'admin','controller'=>'auth','action'=>'home'))?>">
+                        <img src="<?php echo $this->baseUrl();?>/public/asteria/logo.png" alt="Clematix" width="175" height="71"/>
+                    </a>
+                   
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right">
+                            <li class="dropdown">
+                                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-user"></i> <?=$this->username?> <i class="caret"></i>
+
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a tabindex="-1" href="<?=$this->url(array('module'=>'admin','controller'=>'auth','action'=>'profile'))?>">Profile</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a tabindex="-1" href="<?=$this->url(array('module'=>'admin','controller'=>'auth','action'=>'logout'))?>">Logout</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="nav">
+
+                                <li class="active">
+                                    <a href="#">Dashboard</a>
+                                </li>
+                                <?php //if($this->role=='1') { ?>
+                                <li class="dropdown">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                                        User Management
+                                        <i class="caret"></i>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                             <li class="">
+                                                <a href="/asteria/admin/auth/manageemployee ">Employee Management</a>
+                                            </li>
+                                              <li class="">
+                                                <a href="/asteria/admin/auth/addgroupdept ">Department and Designation</a>
+                                            </li>
+                                             <li class="">
+                                                <a href="/asteria/admin/auth/roles ">Role Management</a>
+                                            </li>
+                                                </ul>
+                                </li>
+                                <?php // } ?>
+                                <li class="dropdown">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                                        Master data 
+                                        <b class="caret"></b>
+                                    </a>
+                                    <ul class="dropdown-menu" id="menu1">
+                                        <li>
+                                            <a href="<?=$this->url(array('module'=>'admin','controller'=>'material','action'=>'index'))?>" >Material master</a>
+                                            
+                                        </li>
+                                                <li>
+                                                   <a href="<?=$this->url(array('module'=>'admin','controller'=>'vendor','action'=>'index'))?>" >Vendor list</a>
+                                                </li>
+                                                <li>
+                                                    <a href="<?=$this->url(array('module'=>'admin','controller'=>'customer','action'=>'index'))?>">Customer list</a>
+                                                </li>
+                                                 <li><a href="<?=$this->url(array('module'=>'admin','controller'=>'material','action'=>'projectmaster'))?>">Project</a>
+                                                 </li>
+                                                 <li>
+                                            <a tabindex="-1" href="<?=$this->url(array('module'=>'admin','controller'=>'bom','action'=>'index'))?>">BOM</a>
+                                        </li>
+                                                <li>
+                                            <a tabindex="-1" href="<?=$this->url(array('module'=>'admin','controller'=>'material','action'=>'shipping'))?>">Shipping Method</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
+                                        Purchasing
+                                        <i class="caret"></i>
+
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        
+                                        <li>
+                                                <a href="<?=$this->url(array('module'=>'admin','controller'=>'vendor','action'=>'vendorpo'))?>">Vendor PO Master</a>
+                                        </li>
+                                        
+                                        <li>
+                                                   <a href="<?=$this->url(array('module'=>'admin','controller'=>'grn','action'=>'index'))?>" >GRN</a>
+                                        </li>
+                                         
+
+
+                                    </ul>
+                                </li>
+
+                                <li class="dropdown">
+                                    <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
+                                        Sales<i class="caret"></i></a>
+                                <ul class="dropdown-menu">
+                                        <li>
+                                            <a tabindex="-1" href="<?=$this->url(array('module'=>'admin','controller'=>'sales','action'=>'index'))?>">Sales Order</a>
+                                        </li>
+                                        
+<!--                                        <li>
+                                            <a tabindex="-1" href="<?=$this->url(array('module'=>'admin','controller'=>'sales','action'=>'workorder'))?>">Work Order</a>
+                                        </li>-->
+                                        
+                                    </ul></li>
+
+                            </ul>
+                        
+                    </div>
+                    
+                    <!--/.nav-collapse -->
+                </div>
+            </div>
+        </div>
+       <?php } ?>
+      </header> 
+        <div class="container-fluid">
+            <div class="row-fluid">
+           
+                <div  class='content'>
+                <?php echo $this->layout()->content; ?>
+                    
+                </div>
+                
+
+            </div>
+            
+            
+        </div>
+        <footer style="  padding: 20px 0; background-color: #c3282e; color: #fff;position: fixed;bottom: 0px;width: 100%;">
+                <p style='padding-left: 20px; text-align: center;'>Copyright © 2015 Asteria Aerospace | All Rights Reserved.</p>
+            </footer>
+        <!--/.fluid-container-->
+        
+        
+        
+        <script src="<?php echo $this->baseUrl();?>/public/js/jquery.validate.min.js"></script>
+        
+        <script src="<?php echo $this->baseUrl();?>/public/assets/scripts.js"></script>
+        <script src="<?php echo $this->baseUrl();?>/public/assets/DT_bootstrap.js"></script>
+        
+        <script src="<?php echo $this->baseUrl();?>/public/assets/TableTools.js"></script>
+        <script src="<?php echo $this->baseUrl();?>/public/bootstrap/js/bootstrap.min.js"></script>
+         
+
+        
+        
+    </body>
+
+</html>
+<div id="mask" style="display:none;width:100%;height:100%;background-color: #FDFDFD;opacity: .7;position: fixed;left:0;top:0;z-index: 1000000000;">
+                                        
+                                         <span class="Centerer"></span>
+                                             <img class="Centered" src="<?php echo $this->baseUrl();?>/public/images/loading_spinner.gif" />
+                                       
+                                     </div>
+<style>
+            #content{margin-top:30px;}
+            .content{margin-top:40px;}
+            .list-unstyled{list-style: none;}
+            .active .dropdown-toggle{color: #c3282e !important;box-shadow: 1px 1px 2px -1px #555 !important;}
+            .open .dropdown-toggle{color: #c3282e !important;box-shadow: 1px 1px 2px -1px #555 !important;}
+        </style>
+<script>
+  $(function () {
+      $('#myTab a[href="#<?php echo $this->showid;?>"]').tab('show');
+    $('#myTab a').click(function (e) {
+  e.preventDefault();
+  $(this).tab('show');
+    })
+  })
+</script>  
+

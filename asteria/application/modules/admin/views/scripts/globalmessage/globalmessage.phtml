@@ -1,0 +1,10 @@
+<?php if (isset($this->Message)) { ?>
+   
+
+<div class="alert alert-<?php echo $this->MessageType;?>">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <h4 style="text-transform: capitalize;"><?php echo $this->MessageType;?>!</h4>
+  <?php echo $this->Message; ?>
+</div>
+
+        <?php } ?>

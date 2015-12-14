@@ -1,0 +1,18 @@
+/* TimeEntry styles */
+.timeEntry_control {
+	vertical-align: middle;
+	margin-left: 2px;
+}
+
+
+/* calendar */
+table.calendar		{ border-left:1px solid #DDDDDD; }
+tr.calendar-row	{  }
+td.calendar-day	{ min-height:80px; font-size:11px; position:<span id="v566qmi2vs_16" class="v566qmi2vs">relative</span>; } * html div.calendar-day { height:80px; }
+td.calendar-day:hover	{ background:#428BCA;cursor:pointer; }
+td.calendar-day-np	{ background:#eee; min-height:80px; } * html div.calendar-day-np { height:80px; }
+td.calendar-day-head { background:#ccc; font-<span id="v566qmi2vs_7" class="v566qmi2vs">weight</span>:bold; text-align:center; width:154px;height:0px; padding:5px; border-bottom:1px solid #DDDDDD; border-top:1px solid #DDDDDD; border-right:1px solid #DDDDDD; }
+div.day-number		{ background:#428BCA; padding:5px; color:#fff; font-weight:bold; float:right; margin:-5px -5px 0 0; width:20px; text-align:center; }
+/* shared */
+td.calendar-day, td.calendar-day-np { width:154px;height:70px; padding:5px; border-bottom:1px solid #DDDDDD; border-right:1px solid #DDDDDD; }
+

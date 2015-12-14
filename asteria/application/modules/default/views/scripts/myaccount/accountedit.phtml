@@ -1,0 +1,116 @@
+<!-- Mon compte Section -->
+
+  <section id="account" class="section">
+	<div class="container">    
+      <div class="title col-md-8 col-sm-10 col-xs-12">
+        <h3>Mon <strong>compte </strong></h3>
+		<p>Retrouvez toutes vos informations et vos commandes</p>
+        <hr>       
+      </div>
+	  <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="service animated hiding" data-animation="fadeInUp" data-delay="0">
+           <span class="fa-stack fa-4x">
+            <i class="fa fa-circle fa-2x fa-stack-2x"></i>
+            <i class="fa fa-user fa-stack-1x service-icon"></i>
+          </span>
+		 
+                  <form name="accchange-form" id="accchange-form" method="POST" action="<?=$this->url(array('controller'=>'myaccount','action'=>'accchange'));?>"> 
+                    <div class="form-group">  
+            <label class="col-md-4 col-sm-4 col-xs-12" >Name :</label>
+            <input class="col-md-6  col-xs-12 input-sm"  type="text" value="<?php echo $this->uname; ?>"  id="uname" name="uname" required="true"/><p class="clearfix"></p></div>
+           <div class="form-group"> <label class="col-md-4 col-sm-4 col-xs-12" >Email :</label>
+            <input class="col-md-6  col-xs-12 input-sm" type="text" value="<?php echo $this->email; ?>"  id="email" name="email" required="true"/>
+            <p class="clearfix"></p>
+           </div><div class="form-group"><label class="col-md-4 col-sm-4 col-xs-12" >Old Password:</label>
+            <input class="col-md-6  col-xs-12 input-sm" type="password" value="" id="oldpassword" name="oldpassword" required="true"/>
+             <p class="clearfix"></p>
+           </div><div class="form-group"> 
+            <label class="col-md-4 col-sm-4 col-xs-12" >New Password:</label>
+           </div><div class="form-group"> <input class="col-md-6  col-xs-12 input-sm" type="password" value="" id="newpassword" name="newpassword" required="true"/>
+               <p class="clearfix"></p>
+            <input type="submit" value="change" class="btn-plein" />
+           </div>      
+                  </form>
+        </div>
+<!--		<a href="<?=$this->url(array('module'=>'default','controller'=>'myaccount','action'=>'accountedit'))?>" title="" class="btn-contour">Modifier mes coordonnées</a>-->
+      </div>
+	  <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="service animated hiding" data-animation="fadeInUp" data-delay="0">
+           <span class="fa-stack fa-4x">
+            <i class="fa fa-circle fa-2x fa-stack-2x"></i>
+            <i class="fa fa-star fa-stack-1x service-icon"></i>
+          </span>
+		  <h3>Vos derniéres commandes</h3>
+		  <table cellpadding="0" cellspacing="0">
+			<tr>
+				<th>ID</th>
+				<th>DATE</th>
+				<th align="left">STATUS</th>
+			</tr>
+                        <?php foreach($this->myaccount as $myacc):?>
+                        <tr>
+				<td><a href="<?php echo $this->baseUrl();?>/myaccount/orderdetails/<?php echo md5("orderid");?>/<?php echo strtr(base64_encode($myacc['id']*9952045381), '+/=', '-_,');?>" class="orderdetails" >CLE0<?=$myacc['id']?></a></td>
+				<td><?=$myacc['date']?></td>
+				<td align="left">Book ordered</td>
+			</tr>
+                        <?php endforeach; ?>
+
+		  </table>
+        </div>
+		<a href="#" title="" class="btn-contour">Toutes mes commandes</a>
+      </div>
+	 </div>
+  </section>
+  <!-- End Bureaux Section -->
+  
+  <script>
+      $('#accchange-form').validate({
+    errorPlacement: function(error, element) {},
+    highlight: function(element, errorClass) {        
+        $(element).parent().removeClass('success').addClass('error');
+    },
+    unhighlight: function(element, errorClass) {
+        $(element).parent().removeClass('error').addClass('success');
+    },
+    rules: {
+      uname:{
+        required: true
+      },
+      email: {
+        required: true,
+        email: true
+      },
+      phone: {
+        required: true
+      },
+      oldpassword: {
+          required: true,
+          minlength:6,
+      },
+      newpassword:{
+          required: true,
+            minlength:6,
+      },
+      
+    },
+    submitHandler: function(form) {
+      var url = $(form).attr('action');
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: $(form).serialize(), // serializes the form's elements.
+        success: function(data)
+        {
+            alert(data);
+            switch(data){
+                
+                        }
+
+        }
+      });
+
+    }
+    
+  });
+  
+  </script>

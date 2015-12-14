@@ -1,0 +1,399 @@
+ 
+ <style type="text/css">
+    .bs-example{
+    	margin: 20px;
+    }
+  .accordion-toggle {cursor: pointer;}
+  .accordion-content {display: none;}
+  .accordion-content.default {display: block;}
+  .accordion-content{padding:10px; border-bottom:1px solid #ccc;}
+  .accordion h4{
+	background-color:#f9f9f9;
+	padding:10px; 
+	font-size:16px;
+	border-bottom:1px solid #ccc; 
+  }
+  a, a:hover, a:focus{
+outline:0;	
+}
+#accordion{
+border:1px solid #ccc;
+margin:0;
+border-bottom:0;	
+}
+.accordion h4{
+margin:0;	
+}
+</style>
+   
+   <script type="text/javascript">
+     
+   $(document).ready(function(){
+       
+  
+    $("#delivery_date").live('focus',function() {
+        $("#delivery_date").datepick({dateFormat: 'dd-mm-yyyy'});
+    });
+        
+       $('.addstatus').click(function(){
+            $('#vendorpoform').reset();
+       });
+       
+            $('.editvendor').click(function(){
+               $('#myTab a[href="#addstatus"]').tab('show');
+                var id = $(this).attr("id");
+             //   alert(id)
+           var dataString ='&type=getvendor&id='+id;
+            // alert(dataString);
+            $.ajax({
+                type: "POST",
+                url: '<?=$this->url(array('controller'=>'vendor','action'=>'getvendorvalue'))?>',
+                        data: dataString,
+                success: function(j) {
+                   // alert(result);
+                    var json = $.parseJSON(j);
+                    $(json).each(function(i,val){
+                        $.each(val,function(k,v){
+                              
+                              $('#'+k).val(v);     
+                    });
+                    });
+                    //$('div#addstatus').html(result);
+                }
+            });
+         });
+    
+        $('.viewgroup').click(function(){
+               $('#myTab a[href="#addstatus"]').tab('show');
+                var id = $(this).attr("id");
+              //  alert(id)
+           var dataString ='&type=getvendor&id='+id;
+            // alert(dataString);
+            $('#save_button').addClass("hidden");
+            $('#button_div').addClass("span9").removeClass("span7");
+            $.ajax({
+                type: "POST",
+                url: '<?=$this->url(array('controller'=>'vendor','action'=>'getvendorvalue'))?>',
+                        data: dataString,
+                success: function(j) {
+                   // alert(result);
+                    var json = $.parseJSON(j);
+                    $(json).each(function(i,val){
+                        $.each(val,function(k,v){
+                              
+                              $('#'+k).val(v);  
+                              $('#'+k).attr("readonly",true); 
+                           
+                               });
+                    });
+                    //$('div#addstatus').html(result);
+                }
+            });
+         });
+         
+         $(".imgswap").click(function() { 
+         var id = $(this).attr("id");
+         var vendor_id = id.split("_"); 
+         
+            if ($(this).attr("class") == "imgswap") {   $('#'+id).attr('src', '<?php echo $this->baseUrl();?>/public/images/tick_on.png');      this.src = this.src.replace("_off", "_on");         var status = '1';   } 
+                                               else {   $('#'+id).attr('src', '<?php echo $this->baseUrl();?>/public/images/tick_off.png');     this.src = this.src.replace("_on", "_off");         var status = '0';   }
+            $(this).toggleClass("on");
+            
+             var dataString ='&type=approvevendor&vendorid='+vendor_id[1]+'&status='+status;
+            $.ajax({
+                type: "POST",
+                url: '<?=$this->url(array('controller'=>'vendor','action'=>'approvevendor'))?>',
+                data: dataString,
+                success: function(j) {
+                    var json = $.parseJSON(j);
+                    $(json).each(function(i,val){
+                        $.each(val,function(k,v){
+                              $('#'+k).val(v);     
+                        });
+                });
+              }
+            });
+        });
+        
+        
+         $('.vendor_name').change(function(){
+              var id = $(this).attr("value");
+                alert(id)
+           var dataString ='&type=getvendor&id='+id;
+            // alert(dataString);
+            $.ajax({
+                type: "POST",
+                url: '<?=$this->url(array('controller'=>'vendor','action'=>'getvendormaterial'))?>',
+                        data: dataString,
+                success: function(j) {
+                     var json = $.parseJSON(j);
+                    $(json).each(function(i,val){
+                        $.each(val,function(k,v){
+                           // alert(k+"-"+v);
+                            if(k=='vendor_address'){
+                            $('#vendor_address').html(v);
+                            }
+                            if(k=='vendor_country'){
+                            $('select#vendor_country').val(v);
+                            $('select#vendor_country').attr("disabled",true); 
+                            }
+                            if(k=='contact_person'){
+                            $('#contact_person').val(v);
+                            }
+                            if(k=='contact_phone'){
+                            $('#contact_phone').val(v);
+                            }
+                            if(k=='contact_email'){
+                            $('#contact_email').val(v);
+                            }
+                           
+                             // $('#'+k).val(v);     
+                        });
+                });
+                }
+            });
+         });
+        
+    
+    $('#additem').click(function(){
+             var count = $('#itemrows').children().length;
+             var i = count+1;
+             $('#itemrows').append("<tr>\n\
+            <td style='width:20px;' id='slno_"+i+"'>"+i+"</td>\n\
+            <td><select  name='item[]' id='item_"+i+"' required='true'><option value='0'>Select</option><?php   foreach ($this->material as $value) { ?><option  value='<?php echo $value[id] ?>' name='<?= $value[part_no] ?>'><?php echo $value[part_no] ?></option><?php } ?></select></td>\n\
+            <td><span id='pdtid_"+i+"'></span></td>\n\
+            <td><span id='desc_"+i+"'></span></td>\n\
+            <td><input name='qty[]' id='qty_"+i+"' type='number' value='' required style='width:80px;'></td>\n\
+            <td><span id='uom_"+i+"'></span></td>\n\
+            <td><span id='currency_"+i+"'></span></td>\n\
+            <td><input style='width:70px;' type='text' name='price[]' id='price_"+i+"' value='' required='true'></td>\n\
+            <td><input style='width:100px;' type='text' name='linetotal[]' id='linetotal_"+i+"' readonly></td>\n\
+            <td><a class='deleterow' id='del_"+i+"' style='cursor:pointer;'><?php echo 'DEL'; ?></a></td></tr>");
+         });
+         
+         $(document).on("click", "#example2 tbody tr td .deleterow", function(){
+              
+//                 var row = $(this).closest('tr');
+//                 var nRow = row[0];
+//                 $('#example2').dataTable().fnDeleteRow(nRow);
+            var hm = $('#itemrows').children().length;
+            counter = parseInt(hm);
+            
+                var id = $(this).attr("id");
+             var id = id.split("_"); 
+             var id = id[1];
+            //alert(id)
+            $(this).parent().parent().remove();
+            start = parseInt(id)+ 1;
+            
+            for(i=start;i<=counter;i++)
+               {
+                   //alert(start)
+                   lesser_i = i-1; 
+                   //alert(lesser_i);
+                   $('#slno_'+i).html(lesser_i);
+                   $('#slno_'+i).attr({'id':'slno_'+lesser_i});
+                   $('select#item_'+i).attr({'id':'item_'+lesser_i,'name':'item[]'});
+                    $('#pdtid_'+i).attr({'id':'pdtid_'+lesser_i});
+                   $('#desc_'+i).attr({'id':'desc_'+lesser_i});
+                   
+                    $('input#qty_'+i).attr({'id':'qty_'+lesser_i,'name':'qty[]'});
+                    $('#uom_'+i).attr({'id':'uom_'+lesser_i});
+                    $('#currency_'+i).attr({'id':'currency_'+lesser_i});
+                     $('input#price_'+i).attr({'id':'price_'+lesser_i,'name':'price[]'});
+                     $('input#linetotal_'+i).attr({'id':'linetotal_'+lesser_i,'name':'linetotal[]'});
+                    $('a#del_'+i).attr('id','del_'+lesser_i);
+                   
+                   }
+           });
+           
+           
+     });
+ </script>
+     
+    
+     
+        
+   <?php echo $this->render('navebar/leftnavbar.phtml'); 
+?>
+
+<div class="span9" id="content">
+    
+    
+<!-- CLIENTS LIST-->
+      
+    <div class="row-fluid">
+                        <div class="span12">
+                            <!-- block -->
+                            <div class="block">
+                                <div class="navbar navbar-inner block-header">
+                                    <div class="muted pull-left">Customer PO Master</div>
+                                   
+
+                                  
+                                </div>
+                                 <div class="accordion block-content collapse in" id="accordion2">
+  
+                                  <ul class="nav nav-tabs" id="myTab">
+  <li class="active"><a href="#materiallist">Customer PO List</a></li>
+  <li class="addstatus"><a href="#addstatus">Add New PO</a></li>
+  </ul>
+ 
+<div class="tab-content">
+  <div class="tab-pane active" id="materiallist">
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example">
+                                        <thead>
+                                            <tr>
+                                                <th>SI No</th>
+                                                <th>Customer Name</th>
+                                                <th>Contact Person</th>
+                                                <th>Phone</th>
+                                                <th>Lead Time</th>
+                                                
+                                                <th>Action</th>
+                                                <th>Approval</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($this->vendor as $value) { ?>
+                                            <tr><td><?php echo $value[id] ?></td>
+                                                <td><?php echo $value[vendor_name] ?></td>
+                                                <td><?php echo $value[contact_person] ?></td>
+                                                <td><?php echo $value[contact_phone] ?></td>
+                                                <td><?php echo $value[lead_time] ?></td>
+                                                <td>
+                                                    <a  class="viewgroup" id="<?php echo $value[id]; ?>" style="cursor:pointer;"><?php echo ' VIEW'; ?></a>
+                                                    <a  class="editvendor" id="<?php echo $value[id]; ?>" style="cursor:pointer;"><?php echo '/ EDIT'; ?></a>
+                                                    <a href="<?php echo $this->baseUrl();?>/admin/vendor/deletevendor/delete/<?php echo $value[id]; ?>" class="book_delete" style="cursor:pointer;"><?php echo '/ DEL '; ?></a>
+                                                    </td>
+                                                <td>
+                                                    <?php if($value[status] == '0'){ ?>
+                                                    <img class="imgswap" id="approval_<?php echo $value[id]; ?>" src="<?php echo $this->baseUrl();?>/public/images/tick_off.png"/></td>
+                                                    <?php }  if($value[status] == '1'){ ?>
+                                                    <img class="imgswap on" id="approval_<?php echo $value[id]; ?>" src="<?php echo $this->baseUrl();?>/public/images/tick_on.png"/></td>
+                                                <?php } ?>
+                                            <?php  } ?>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+  </div>
+    
+    
+  <div class="tab-pane" id="addstatus">
+      <form enctype="application/x-www-form-urlencoded" action="<?=$this->url(array('controller'=>'vendor','action'=>'savevendorpo'))?>" method="post" name="" id="vendorpoform">
+        <input type="hidden" name="id" id="id" value="" >
+          
+  <div class="bs-example">
+  <div id="accordion">
+  <h4 class="accordion-toggle">Customer Detail</h4>
+  <div class="accordion-content default">
+
+                   <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="vendor_name" class="required">Vendor Name:</label></div>
+              <div class="form-right pull-left">
+                  <select class="vendor_name" name="vendor_name" id="vendor_name" required="true">
+                      <option value="0">Select</option>
+                      <?php   foreach ($this->vendorlist as $vendorlist) { ?>
+                                <option  value="<?php echo $vendorlist[id] ?>"><?php echo $vendorlist[vendor_name] ?></option>
+                       <?php } ?>
+                  </select>
+              </div>
+          </div>
+        
+      
+      <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="vendor_po" class="required">Vendor PO:</label></div>
+              <div class="form-right pull-left"><input type="text" name="vendor_po" id="vendor_po" value="" class="form-control" disabled></div>
+          </div>
+      
+        <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="vendor_po" class="required">Shipping Address:</label></div>
+              <div class="form-right pull-left">
+                  <textarea rows="4" columns="5" style="width: 283px;"><?php print_r($this->shippingaddress[0]['content']); ?></textarea>
+              </div>
+          </div>
+
+      <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="vendor_po" class="required">Shipping method:</label></div>
+              <div class="form-right pull-left">
+                  <select name="shipping" id="shipping">
+                      <option value="0">Select</option>
+                  </select>
+              </div>
+          </div>
+      
+        <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="delivery_date" class="required">Delivery Date:</label></div>
+              <div class="form-right pull-left"><input type="text" name="delivery_date" id="delivery_date" value="" class="form-control" ></div>
+          </div>
+
+<div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="quote" class="required">Quote No:</label></div>
+              <div class="form-right pull-left"><input type="text" name="quote" id="quote" value="" class="form-control" ></div>
+          </div>
+        
+       
+<div class="clearfix"></div>
+  </div>
+ 
+</div>
+</div>
+
+<div id="button_div" class="clearfix span7" style="float: right;" >
+<div class="span2" id="save_button">
+ <input class='btn btn-primary' type="submit" name="deptregister" id="deptregister" value="Save" class="btn btn-default" />
+</div>
+ 
+<div class="span1" id="back_button">
+    <a href=""><input class='btn btn-primary' type="button" name="back" id="back" value="Back" class="btn btn-default" /></a>
+</div>
+      </div>
+
+</form>
+      
+      </div>
+  
+  
+</div>
+ 
+<script>
+  $(function () {
+      $('#myTab a[href="#<?php echo $this->showid;?>"]').tab('show');
+    $('#myTab a').click(function (e) {
+  e.preventDefault();
+  $(this).tab('show');
+})
+  })
+</script>   
+                                     
+                                     
+                                     
+</div>
+        
+                            </div>
+                            <!-- /block -->
+                        </div>
+                        
+                    </div>
+   
+<script type="text/javascript">
+  $(document).ready(function($) {
+    $('#accordion').find('.accordion-toggle').click(function(){
+
+      //Expand or collapse this panel
+      $(this).next().slideToggle('fast');
+
+      //Hide the other panels
+    //  $(".accordion-content").not($(this).next()).slideUp('fast');
+
+    });
+  });
+</script>
+    
+
+</div>
+
+
+
+

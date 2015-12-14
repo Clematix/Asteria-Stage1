@@ -1,0 +1,18 @@
+  <?php if($this->totcount >0 ) { ?>
+    <label class="control-label" for="name">Project</label>
+        <div class="controls">
+        <select class="chzn-select" name="projects" id="projects">
+                    <option value="">Select</option>
+                    <?php
+                    for($i=0;$i<count($this->projects);$i++){
+                    ?>
+                            <option value="<?=$this->projects[$i]['id']?>">
+                            <?=$this->projects[$i]['name']?>
+                            </option>
+                    <?php
+                    }
+                    ?>
+         </select>
+        </div>
+  
+   <?php }?>

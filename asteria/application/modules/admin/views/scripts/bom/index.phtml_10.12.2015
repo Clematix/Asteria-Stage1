@@ -1,0 +1,282 @@
+<style type="text/css">.bom_detail{width:98%;height:auto;background-color:#f5f5f5;margin-bottom:10px;border-radius:5px;padding:5px;box-shadow:1px 1px 3px -1px}.bom_detail p{margin:0 auto}.form-addbom{padding:19px 29px 29px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;-webkit-box-shadow:0 1px 2px rgba(0,0,0,.05);-moz-box-shadow:0 1px 2px rgba(0,0,0,.05);box-shadow:0 1px 2px rgba(0,0,0,.05)}.form-left{width:45%!important}.form-right{width:50%!important}td select{width:100px!important;background-color:transparent;box-shadow:none;margin:0!important}td input{width:80px!important;box-shadow:none!important;margin:0!important}#example1 .table td{padding:8px 4px 0 5px !important}*{padding:0;margin:0}#mask{position:absolute;width:100%;height:100%;text-align:center}#mask_project{position:absolute;width:100%;height:100%;text-align:center}.Centerer{display:inline-block;height:100%;vertical-align:middle}.Centered{display:inline-block;vertical-align:middle}.DTTT_container{display:none}#example1_filter{display:none}</style><div class="span12" id="content">    <?php echo $this->render('globalmessage/globalmessage.phtml'); ?>    <div class="row block-content">        <div class="span12">            <div class="block">                <div class="navbar navbar-inner block-header">                    <div class="muted pull-left">Bill of Material</div>                </div>                <div class="accordion block-content collapse in" id="accordion2">                    <ul class="nav nav-tabs" id="myTab">                        <li class="active materiallist"><a href="#materiallist">Bill of Material List</a></li>                        <li class="addbom createoradd"><a href="#addbom">Create or Edit BOM</a></li>                    </ul>                    <div class="tab-content">                        <div class="tab-pane active" id="materiallist">                            <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example"> <thead> <tr> <th>#</th> <th>BOM#</th> <th>BOM Rev#</th> <th>Description</th> <th>Action</th> <th>Status</th> </tr> </thead> <tbody> <?php $i = 1;
+foreach ($this->bom as $bom) { ?> <tr><td><?= $i++; ?></td> <td><a target="_blank" href="<?= $this->url(array('module' => 'admin', 'controller' => 'material', 'action' => 'index')) ?>/index/global/<?= $bom['material_id'] ?>" class="add-bom" id="<?= $bom['material_id'] ?>"> <?= $bom['bom_project_id'] ?> </a></td> <td><?php if ($bom['bom_rev_id']) {
+        echo $bom['bom_rev_id'];
+    } else {
+        echo 'NONE';
+    } ?></td> <td><?= $bom['bom_description'] ?></td> <td> <a href="#" class="edit-bom edit<?= $bom['id'] ?> " id="<?= $bom['id'] ?>"> <?php echo 'EDIT / '; ?></a> <a href="#" class="view-bom" id="<?= $bom['id'] ?>"> <?php echo 'VIEW'; ?></a> </td> <td> <?php if ($bom['status'] == '0') { ?> <img class="imgswap" id="approval_<?php echo $bom['id']; ?>" src="<?php echo $this->baseUrl(); ?>/public/images/tick_off.png"/> <?php } if ($bom['status'] == '1') { ?> <img class="imgswap on" id="approval_<?php echo $bom['id']; ?>" src="<?php echo $this->baseUrl(); ?>/public/images/tick_on.png"/> <?php } ?> </td> </tr><?php } ?> </tbody> </table>                        </div>                        <div class="tab-pane" id="addbom"> <form enctype="application/x-www-form-urlencoded" action="#" method="post" id="form_addbom" name="form_addbom" class='form_addbom'> <div class='bom_detail'> <input type="hidden" name="bom-edit-id" id="bom-edit-id" class="bom-edit-id" value="" /> <input type="hidden" name="material-id" id="material-id" class="material-id" value="" /> <div class="formvalue form-group clearfix"> <div class="form-left pull-left"><label for="partno" class="required">Part no:</label></div> <div class="input-group form-right pull-left"> <select name="partno" id="partno" class="form-control" required> <option value="">Select Part No</option><?php foreach ($this->material as $_material): ?> <option value="<?= $_material['id'] ?>"><?= $_material['part_no'] ?></option><?php endforeach; ?> </select> </div> <div class="form-left pull-left"></div> </div> <div class="formvalue form-group clearfix"> <div class="form-left pull-left"><label for="project" class="required">Project:</label></div> <div class="input-group form-right pull-left" style="position:relative;"> <select name="project" id="project" class="form-control" required> <option value="">Select Project</option><?php foreach ($this->project as $_project): ?> <option value="<?= $_project['project_id'] ?>"><?= $_project['project_name'] ?></option><?php endforeach; ?> </select> <div id="mask_project" style=" width: 101%;display:none; height: 30px; opacity: 0.7; position: absolute; left: 0px; top: 0;"> <span class="Centerer"></span> <img class="Centered" src="<?php echo $this->baseUrl(); ?>/public/images/loading_spinner.gif" width="20px"/> </div> </div> <div class="form-left pull-left"></div> </div> <div class="formvalue form-group clearfix"> <div class="form-left pull-left"><label for="bom_description" class="required">BOM Description:</label></div> <div class="input-group form-right pull-left"> <textarea rows="5" cols="200" name="bom_description" id="bom_description" value="" class="form-control" required></textarea> </div> <div class="form-left pull-left"></div> </div> </div> <a href="" style="display:none;"> <input type="reset" name="reset" id="reset-bom" value="Reset" class="btn btn-primary"> </a> </form> <form data-toggle="validator" enctype="application/x-www-form-urlencoded" action="#" method="post" id="addtobom" name="addtobom" class='addtobom'> <input type="hidden" value="" name="bom-id" id="bom-id"> <input type="hidden" value="" name="op-type" id="op-type"> <div class="bom_detail" id='bom-detail'> </div> <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example1"> <thead> <tr> <th>#</th> <th>Part no#</th> <th>Description</th> <th>Type</th> <th>Qty</th> <th>UOM</th> <th>Dwg #</th> <th>Dwg Rev #</th> <th>BOM #</th> <th>BOM Rev</th> <th>Weight</th> <th>Board Reference</th> <th>Component Value</th> <th>Case Style Package</th> <th>Fit Yes/No</th> <th>Side of Board Mounted1 or 2</th> <th>PTH or SMT</th> <th>Comments</th> <th>Action</th> </tr> </thead> <tbody> </tbody> </table> <div style='float:right;'> <a id='addnew' name='addnew' class='btn btn-primary' >Add New</a> <a id='addall' name='addall' class='btn btn-primary' >Save All</a> <a id='import' name='import' class='btn btn-primary' >Import</a> <a id='pdf' onclick="pdfOfBom('<?= $this->url(array('module' => 'admin', 'controller' => 'bom', 'action' => 'bomtopdf')) ?>');" name='PDF' target="_blank" class='btn btn-primary' >PDF</a> <a id='ecel' onclick="excelOfBom('<?= $this->url(array('module' => 'admin', 'controller' => 'bom', 'action' => 'exportexcel')) ?>');" target="_blank" class='btn btn-primary' >Ecel</a> </div> </form> </div>                        <script type="text/javascript">                            function validate_addbom() {
+        var e = document.forms.form_addbom.partno.value, t = document.forms.form_addbom.project.value, a = document.forms.form_addbom.bom_description.value;
+        return null == e || "" == e ? (alert("Partno must be filled out"), !1) : null == t || "" == t ? (alert("Project must be filled out"), !1) : null == a || "" == a ? (alert("Description must be filled out"), !1) : 1
+    }
+    function validate_addtobom() {
+        var e = 0, t = $("#addtobom").serializeJSON();
+        return(t.partnonew || t.qtynew || t.commentsnew) && ($(t.partnonew).each(function (t, a) {
+            return null == a || "" == a || "0" === a ? (alert("Partno of BOM must be filled out"), e++, !1) : void 0
+        }), $(t.qtynew).each(function (t, a) {
+            return null == a || "" == a || "0" === a ? (alert("qty must be filled out"), e++, !1) : void 0
+        }), $(t.commentsnew).each(function (t, a) {
+            return null == a || "" == a || "0" === a ? (alert("comments must be filled out"), e++, !1) : void 0
+        })), (t.partno || t.qty || t.comments) && ($(t.partno).each(function (t, a) {
+            return null == a || "" == a || "0" === a ? (alert("Partno of BOM must be filled out"), e++, !1) : void 0
+        }), $(t.qty).each(function (t, a) {
+            return null == a || "" == a || "0" === a ? (alert("qty must be filled out"), e++, !1) : void 0
+        }), $(t.comments).each(function (t, a) {
+            return null == a || "" == a || "0" === a ? (alert("comments must be filled out"), e++, !1) : void 0
+        })), 0 === e ? !0 : !1
+    }
+    function fnShowHideE(e) {
+        var t = $("#example1").dataTable();
+        $(e).each(function (e, a) {
+            t.fnSetColumnVis(a, !0)
+        })
+    }
+    function fnShowHideM(e) {
+        var t = $("#example1").dataTable();
+        $(e).each(function (e, a) {
+            t.fnSetColumnVis(a, !1)
+        })
+    }
+    function pdfOfBom(e) {
+        var t = $("#bom-id").val(), e = e + "/id/" + t, a = window.open(e, "_blank");
+        a.focus()
+    }
+    function excelOfBom(e) {
+        var t = $("#bom-id").val(), e = e + "/id/" + t, a = window.open(e, "_blank");
+        a.focus()
+    }
+    $(document).ready(function () {
+        function e(e) {
+            $.ajax({url: u + "/category", type: "post", data: "&id=" + e, success: function (e) {
+                    var t = new Array(11, 12, 13, 14, 15, 16);
+                    1 == e && $(t).each(function () {
+                        fnShowHideE(t)
+                    }), 2 == e && $(t).each(function () {
+                        fnShowHideM(t)
+                    })
+                }, complete: function () {
+                    $("#mask").hide()
+                }})
+        }
+        function t(e) {
+            $.ajax({url: u + "/view", type: "post", data: "&bom_id=" + e, success: function (e) {
+                    var t = $.parseJSON(e);
+                    if ($("#bom-id").val(t.id), $("#op-type").val("add"), t.pc)
+                        var a = '<p><span style="color:red;">Part Count:</span>' + t.pc + "</p>";
+                    else
+                        a = "";
+                    var n = '<p><span style="color:red;">BOM #:</span>' + t.bom + '</p><p><span style="color:red;">BOM REV#:</span>' + t.bom_rev + '</p><p><span style="color:red;">TOTAL WEIGHT:</span>' + t.totalweight + "</p>" + a + '<p><span style="color:red;">DATE:</span>' + t.date + "</p>";
+                    $("#bom-detail").html(n), $("#bom_id").val(t.id.id), $("#example1").dataTable().fnClearTable(), $(t.table).each(function (e, a) {
+                        var n = '<select update="' + a.id + '" id="part_' + a.id + '" class="partno" name="partno[]" required="true"><option>Slect Part no</option>';
+                        $(t.partno).each(function (e, t) {
+                            n += a.material_id == t.id ? '<option value="' + t.id + '" selected="true">' + t.part_no + "</option>" : '<option value="' + t.id + '">' + t.part_no + "</option>"
+                        }), n += "</select>";
+                        var o = '<select  id="uom_' + a.id + '" class="uom" name="uom[]" required="true"><option>Slect UOM</option>';
+                        $(t.uom).each(function (e, t) {
+                            o += a.uom == t.id ? '<option value="' + t.id + '" selected="true">' + t.uom + "</option>" : '<option value="' + t.id + '">' + t.uom + "</option>"
+                        }), o += "</select>";
+                        var r = '<input id="desc_' + a.id + '" type="text" value="' + a.material_desc + '" class="desc" readonly="true"><input type = "hidden" name = "bom_ref_id[]"  value = "' + a.id + '" >', i = '<input id="type_' + a.id + '" type="text" value="' + a.type + '" class="type" readonly="true">', d = '<input  name="qty[]" update="' + a.id + '" id="qty_' + a.id + '" type="number" value="' + a.quanty + '" class="qty" >', l = '<input id="deg_' + a.id + '" type="text" value="' + a.drawing_no + '" class="dwg" readonly="true">', u = '<input id="dwgr' + a.id + '" type="text" value="' + a.revision_no + '" class="dwgr" readonly="true">', s = '<input name="comments[]" update="' + a.id + '" id="comments_' + a.id + '" type="text" value="' + a.comments + '" class="comments">', c = '<input id="bom' + a.id + '" type="text" value="' + a.bom + '" class="bom" readonly="true">', m = '<input id="bomrev' + a.id + '" type="text" value="' + a.bomrev + '" class="bomrev" readonly="true">', p = '<input id="weight' + a.id + '" type="text" value="' + a.weight + '" class="weight" readonly="true"><input type="hidden" value="' + a.basic_weight + '" class="hiddenweight" readonly="true">', b = '<input id="br' + a.id + '" type="text" name="br[]" value="' + a.br + '" class="br" required="true">', v = '<input id="cv' + a.id + '" type="text" name="cv[]" value="' + a.cv + '" class="cv" required="true">', f = '<input id="csp' + a.id + '" type="text" name="csp[]" value="' + a.csp + '" class="csp" required="true">', y = '<input id="fyn' + a.id + '" type="text" name="fyn[]" value="' + a.fyn + '" class="fyn" required="true">', h = '<input id="sbm' + a.id + '" type="text" name="sbm[]" value="' + a.sbm + '" class="sbm" required="true">', w = '<input id="pthrsmt' + a.id + '" type="text" name="pthrsmt[]" value="' + a.pthrsmt + '" class="pthrsmt" required="true">', x = $("#example1").dataTable().fnSettings().fnRecordsTotal();
+                        $("#example1").dataTable().fnAddData([x + 1, n, r, i, d, o, l, u, c, m, p, b, v, f, y, h, w, s, '<a style="cursor:pointer" del="' + a.id + '" id="del' + a.id + '" class="deleterow">DEL</a><br/><a style="cursor:pointer" edit="' + a.id + '" id="edit' + a.id + '" class="updaterow"></a>'])
+                    }), $(".bom").removeClass("hidden"), $('#myTab a[href="#add-edit"]').tab("show")
+                }})
+        }
+        function a() {
+            $("#mask").show();
+            var e = $("#form_addbom").serialize();
+            $.post(u + "/create", {data: e}).done(function (t) {
+                console.log(e), "0" == t ? (alert("BOM Already created for this Project;"), $("#mask").hide()) : ($("#bom-id").val(t), $("#bom-edit-id").val(t), r(t), $("#partno").attr("disabled", "true"), $("#project").attr("disabled", "true"))
+            })
+        }
+        function n() {
+            $.ajax({url: u + "/refresh", type: "post", success: function (e) {
+                    var t = $.parseJSON(e);
+                    $("#example").dataTable().fnClearTable();
+                    var a = 1;
+                    $(t).each(function (t, n) {
+                        e = "1" === n.status ? "on" : "off";
+                        var o = '<a target="_blank" href="' + s + "/index/global/" + n.material_id + '" class="add-bom" id="' + n.material_id + '">' + n.bom_project_id + "</a>", r = n.bom_rev_id, i = n.material_desc, d = '<a href="#" class="edit-bom edit' + n.id + '" id="' + n.id + '">EDIT /</a><a href="#" class="view-bom" id="' + n.id + '">VIEW</a>', l = '<img class="imgswap on" id="approval_' + n.id + '" src="/asteria/public/images/tick_' + e + '.png">';
+                        $("#example").dataTable().fnAddData([a++, o, r, i, d, l])
+                    })
+                }})
+        }
+        function o() {
+            return $("#mask_project").show(), $.ajax({url: u + "/addallproject", type: "post", success: function (e) {
+                    var t = $.parseJSON(e);
+                    $(t).each(function (e, t) {
+                        $(t).each(function () {
+                            $(t).each(function (e, t) {
+                                $("#project option[value=" + t.project_id + "]").remove(), $("#project").append(new Option(t.project_name, t.project_id))
+                            })
+                        })
+                    })
+                }, complete: function () {
+                    var e = $("#partno option:selected").val();
+                    $.ajax({url: u + "/addnew", type: "post", data: "&create_bom_id=" + e, success: function (e) {
+                            var t = $.parseJSON(e);
+                            $(t.remove).each(function (e, t) {
+                                $(t).each(function (e, t) {
+                                    t.project_id && $("#project option[value=" + t.project_id + "]").remove()
+                                })
+                            }), $("#bom_description").val(t.desc), $("#mask_project").hide()
+                        }})
+                }}), 1
+        }
+        function r(e) {
+            var a = $("#addtobom").serializeJSON();
+            $.post(u + "/addall", {data: a}).done(function () {
+                t(e), n(), $("#mask").hide()
+            })
+        }
+        function i() {
+            var e = $("#form_addbom").serialize();
+            $.post(u + "/updatebom", {data: e}).done(function () {
+                $("#mask").hide(), n()
+            })
+        }
+        function d() {
+            var e = 0, t = $("#addtobom").serializeJSON();
+            return(t.brnew || t.cvnew || t.cspnew || t.fynnew || t.sbmnew || t.pthrsmtnew) && ($(t.brnew).each(function (t, a) {
+                return null == a || "" == a || "0" === a ? (alert("Board Refrence must be filled out"), e++, !1) : void 0
+            }), $(t.cvnew).each(function (t, a) {
+                return null == a || "" == a || "0" === a ? (alert("Component value must be filled out"), e++, !1) : void 0
+            }), $(t.cspnew).each(function (t, a) {
+                return null == a || "" == a || "0" === a ? (alert("Case style package must be filled out"), e++, !1) : void 0
+            }), $(t.sbmnew).each(function (t, a) {
+                return null == a || "" == a || "0" === a ? (alert("Fit Yes/No must be filled out"), e++, !1) : void 0
+            }), $(t.fynnew).each(function (t, a) {
+                return null == a || "" == a || "0" === a ? (alert("Side of Board Mounted1 or 2 must be filled out"), e++, !1) : void 0
+            }), $(t.pthrsmtnew).each(function (t, a) {
+                return null == a || "" == a || "0" === a ? (alert("PTH or SMT must be filled out"), e++, !1) : void 0
+            })), (t.br || t.cv || t.csp || t.fyn || t.sbm || t.pthrsmt) && ($(t.br).each(function (t, a) {
+                return null == a || "" == a || "0" === a ? (alert("Board Refrence must be filled out"), e++, !1) : void 0
+            }), $(t.cv).each(function (t, a) {
+                return null == a || "" == a || "0" === a ? (alert("Component value must be filled out"), e++, !1) : void 0
+            }), $(t.csp).each(function (t, a) {
+                return null == a || "" == a || "0" === a ? (alert("Case style package must be filled out"), e++, !1) : void 0
+            }), $(t.sbm).each(function (t, a) {
+                return null == a || "" == a || "0" === a ? (alert("Fit Yes/No must be filled out"), e++, !1) : void 0
+            }), $(t.fyn).each(function (t, a) {
+                return null == a || "" == a || "0" === a ? (alert("Side of Board Mounted1 or 2 must be filled out"), e++, !1) : void 0
+            }), $(t.pthrsmt).each(function (t, a) {
+                return null == a || "" == a || "0" === a ? (alert("PTH or SMT must be filled out"), e++, !1) : void 0
+            })), 0 === e ? 1 : !1
+        }
+        function l() {
+            $.ajax({url: u + "/projectadd", type: "post", success: function (e) {
+                    var t = $.parseJSON(e);
+                    $(t).each(function (e, t) {
+                        $(t).each(function () {
+                            $(t).each(function (e, t) {
+                                $("#project").append(new Option(t.name, t.id))
+                            })
+                        })
+                    })
+                }})
+        }
+        var u = "/asteria/admin/bom", s = "/asteria/admin/material";
+        $("#example1").dataTableExt.sErrMode = "throw", $(document).on("change", "#partno", function () {
+            var t = $("#partno option:selected").val();
+            $("#example1").dataTable().fnClearTable(), $("#mask").show(), e(t), o()
+        }), jQuery(".addbom").click(function () {
+            $("#example1").dataTable().fnSettings().fnRecordsTotal();
+            $("#addnew").show(), $("#addall").show()
+        }), jQuery(".materiallist").click(function () {
+            $("#bom-edit-id").val(""), $("#material-id").val(""), $("#bom-id").val(""), $("#bom-detail").html(""), $("#example1").dataTable().fnClearTable(), jQuery("#partno").removeAttr("disabled").attr("required", "true"), jQuery("#project").removeAttr("disabled").attr("required", "true"), jQuery("#reset-bom").trigger("click")
+        }), $("#addall").click(function () {
+            var e = $("#partno option:selected").val();
+            $.ajax({url: u + "/category", type: "post", data: "&id=" + e, success: function (e) {
+                    if ("1" === e && d()) {
+                        var t = validate_addbom(), n = ($("#example1").DataTable(), $("#example1").dataTable().fnSettings().fnRecordsTotal()), o = validate_addtobom();
+                        if (t)
+                            if (n > 0) {
+                                if (o) {
+                                    var l = $("#bom-edit-id").val();
+                                    l ? ($("#mask").show(), r(l), i()) : a()
+                                }
+                            } else
+                                alert("Please add BOM Line item material")
+                    }
+                    if ("2" === e) {
+                        var t = validate_addbom(), n = ($("#example1").DataTable(), $("#example1").dataTable().fnSettings().fnRecordsTotal()), o = validate_addtobom();
+                        if (t)
+                            if (n > 0) {
+                                if (o) {
+                                    var l = $("#bom-edit-id").val();
+                                    l ? ($("#mask").show(), r(l), i()) : a()
+                                }
+                            } else
+                                alert("Please add BOM Line item material")
+                    }
+                }})
+        }), $(document).on("click", "#example tbody tr td .edit-bom", function () {
+            var a = $(this).attr("id");
+            l(), $("#bom-id").val(a), $("#bom-edit-id").val(a), $("#addnew").show(), $("#addall").show(), $("#example1").dataTable().fnClearTable(), t(a), $.ajax({url: u + "/editbom", type: "post", data: "&edit_bom_id=" + a, success: function (t) {
+                    var a = $.parseJSON(t);
+                    e(a.material_id), $("#bom-edit-id").val(a.id), $("#partno").val(a.material_id), $("#material-id").val(a.material_id), $("#partno").attr("disabled", "true"), $("#project").attr("disabled", "true"), $("#project").val(a.project_id), $("#bom_description").val(a.desc), $('#myTab a[href="#addbom"]').tab("show")
+                }})
+        }), $(document).on("click", "#example tbody tr td .view-bom", function () {
+            var a = $(this).attr("id");
+            $("#bom-id").val(a), $("#bom-edit-id").val(a), $("#addnew").hide(), $("#addall").hide(), $("#example1").dataTable().fnClearTable(), t(a), $.ajax({url: u + "/editbom", type: "post", data: "&edit_bom_id=" + a, success: function (t) {
+                    var a = $.parseJSON(t);
+                    e(a.material_id), $("#bom-edit-id").val(a.id), $("#partno").val(a.material_id), $("#material-id").val(a.material_id), $("#partno").attr("disabled", "true"), $("#project").attr("disabled", "true"), $("#project").val(a.project_id), $("#bom_description").val(a.desc), $('#myTab a[href="#addbom"]').tab("show")
+                }, complete: function () {
+                    $("#example1 tbody tr td input").attr("disabled", "true"), $("#example1 tbody tr td select").attr("disabled", "true")
+                }})
+        }), $("#addnew").click(function () {
+            var e = $("#example1").DataTable(), t = $("#example1").dataTable().fnSettings().fnRecordsTotal();
+            if (t)
+                var a = e.page.info();
+            $("#example1 tbody tr").removeClass("current-bom");
+            var n = $("#partno option:selected").val();
+            n ? $.ajax({url: u + "/category", type: "post", data: "id=" + n, success: function () {
+                    $.ajax({url: u + "/addnew", type: "post", data: "&addnew_id=" + n, success: function (e) {
+                            var t = $.parseJSON(e), a = $("#example1").dataTable().fnSettings().fnRecordsTotal(), n = '<select class="partno partno' + a + '" name="partnonew[]" required="true"><option value="0">Slect Part no</option>';
+                            $(t.bom).each(function (e, t) {
+                                n += '<option value="' + t.id + '">' + t.part_no + "</option>"
+                            }), n += "</select>";
+                            var o = '<select class="uom uom' + a + '" name="uomnew[]" required="true"><option value="0">Slect Uom</option>';
+                            $(t.uom).each(function (e, t) {
+                                o += '<option value="' + t.id + '">' + t.uom + "</option>"
+                            }), o += "</select>";
+                            var r = '<input  type="text" value="" class="desc" readonly="true">', i = '<input type="text" value="" class="type" readonly="true">', d = '<input name="qtynew[]" type="number" value="" class="qty qty' + a + '" required="true">', l = '<input type="text" value="" class="dwg" readonly="true">', u = '<input type="text" value="" class="dwgr" readonly="true">', s = '<input type="text" value="" class="bom" readonly="true">', c = '<input type="text" value="" class="bomrev" readonly="true">', m = '<input type="text" value="" class="weight" readonly="true"><input type="hidden" value="" class="hiddenweight" readonly="true">', p = '<input name="commentsnew[]" type="text" value="" class="comments comments' + a + '" required="true">', b = '<input type="text" name="brnew[]" value="" class="brnew brnew' + a + '" required="true">', v = '<input type="text" name="cvnew[]" value="" class="cvnew cvnew' + a + '" required="true">', f = '<input type="text" name="cspnew[]" value="" class="cspnew cspnew' + a + '" required="true">', y = '<input type="text" name="fynnew[]" value="" class="fynnew fynnew' + a + '" required="true">', h = '<input type="text" name="sbmnew[]" value="" class="sbmnew sbmnew' + a + '" required="true">', w = '<input type="text" name="pthrsmtnew[]" value="" class="pthrsmtnew pthrsmtnew' + a + '" required="true">';
+                            $("#example1").dataTable().fnAddData([a + 1, n, r, i, d, o, l, u, s, c, m, b, v, f, y, h, w, p, '<a style="cursor:pointer" class="deleterow">DEL</a>'])
+                        }, complete: function () {
+                            t && $("#example1").dataTable().fnPageChange(a.pages - 1, !0)
+                        }})
+                }}) : alert("Please select BOM part no and Assign project.")
+        }), $(document).on("keyup", "#example1 tbody tr td .qty", function () {
+            var e = ($(this).parent("td").parent("tr").addClass("current-weight"), $(".current-weight td .hiddenweight").val()), t = $(".current-weight td .qty").val();
+            if (t)
+                var a = e * t;
+            else
+                var a = e;
+            $(".current-weight td .weight").val(a), $("#example1 tbody tr").removeClass("current-weight")
+        }), $(document).on("change", "#example1 tbody tr td .partno", function () {
+            {
+                var e = $(this).val();
+                $(this).parent("td").parent("tr").addClass("current-bom")
+            }
+            0 == e && ($(".current-bom td .desc").val(""), $(".current-bom td .type").val(""), $(".current-bom td .uom").val(""), $(".current-bom td .dwg").val(""), $(".current-bom td .dwgr").val(""), $("#example1 tbody tr").removeClass("current-bom")), 0 != e && $.ajax({type: "POST", url: u + "/addbom", data: "&bom_add=" + e, async: !1, success: function (e) {
+                    var t = $.parseJSON(e);
+                    $(".current-bom td .desc").val(t.material_desc), $(".current-bom td .type").val(t.type), $(".current-bom td .uom").val(t.uom), $(".current-bom td .dwg").val(t.drawing_no), $(".current-bom td .dwgr").val(t.revision_no), $(".current-bom td .bom").val(t.bom), $(".current-bom td .bomrev").val(t.bomrev), $(".current-bom td .weight").val(t.weight), $(".current-bom td .hiddenweight").val(t.weight), $("#example1 tbody tr").removeClass("current-bom")
+                }})
+        }), $(document).on("click", "#example1 tbody tr td .deleterow", function () {
+            var e = $(this).closest("tr"), a = e[0], n = $("#bom-id").val(), o = $(this).attr("del");
+            o ? ($("#mask").show(), $.ajax({type: "POST", url: u + "/delete", data: "&delid=" + o, success: function () {
+                    t(n), $("#example1").dataTable().fnDeleteRow(a), $("#mask").hide()
+                }})) : $("#example1").dataTable().fnDeleteRow(a)
+        }), $(document).on("click", "#example tbody tr td .imgswap", function () {
+            var e = $(this).attr("id"), t = e.split("_");
+            if ("imgswap" == $(this).attr("class")) {
+                $("#" + e).attr("src", "<?php echo $this->baseUrl(); ?>/public/images/tick_on.png"), this.src = this.src.replace("_off", "_on");
+                var a = "1"
+            } else {
+                $("#" + e).attr("src", "<?php echo $this->baseUrl(); ?>/public/images/tick_off.png"), this.src = this.src.replace("_on", "_off");
+                var a = "0"
+            }
+            $(this).toggleClass("on");
+            var n = "&type=changestatus&id=" + t[1] + "&status=" + a;
+            $.ajax({type: "POST", url: u + "/changestatus", data: n, success: function () {
+                }})
+        }), $("#import").click(function () {
+            $("#bom-importid").val($("#bom-id").val()), $("#bom-id").val() && $("#bomimport").modal()
+        })
+    });</script>                    </div>                    <div id="mask" style="display:none;width:100%;height:100%;background-color: #FDFDFD;opacity: .7;position: absolute;left:0;top:0;">                        <span class="Centerer"></span>                        <img class="Centered" src="<?php echo $this->baseUrl(); ?>/public/images/loading_spinner.gif" />                    </div>                </div>            </div>        </div>    </div></div><div id="bommodal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">    <div class="modal-header">        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>        <h3 id="bommodal-header">Import BOM</h3>    </div>    <div class="bommodal-body bommodal-create" style="padding: 20px;">    </div>    <div class="modal-footer">        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>    </div></div><div id="bomimport" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">    <div class="modal-header">        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>        <h3 id="bomimport-header">Import BOM Material List</h3>    </div>    <form enctype="multipart/form-data" method="post" role="form" action="#" data-toggle="validator" >        <div class="bommodal-body" style="padding: 20px;">            <input class="form-control" type="hidden" value="" name="bom-importid" id="bom-importid">            <div class="form-group">                <input type="file" name="file" id="file" size="150" required="true">                <p class="help-block">Only .xls/.xlsx File Import.</p>            </div>        </div>        <div class="modal-footer">            <button type="submit" class="btn btn-default" name="Import" value="Import">Import</button>            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>        </div>    </form></div>

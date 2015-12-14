@@ -1,0 +1,913 @@
+<style type="text/css">
+    .bs-example{
+    	margin: 20px;
+    }
+  .accordion-toggle {cursor: pointer;}
+  .accordion-content {display: none;}
+  .accordion-content.default {display: block;}
+  .accordion-content{padding:10px; border-bottom:1px solid #ccc;}
+  .accordion h4{
+	background-color:#f9f9f9;
+	padding:10px; 
+	font-size:16px;
+	border-bottom:1px solid #ccc; 
+  }
+  a, a:hover, a:focus{
+outline:0;	
+}
+#accordion{
+border:1px solid #ccc;
+margin:0;
+border-bottom:0;	
+}
+.accordion h4{
+margin:0;	
+}
+.bom_detail{    width: 99%;
+    height: 40px;
+    background-color: #ccc;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.form-addbom {
+/*  max-width: 60%;
+*/  padding: 19px 29px 29px;/*
+  margin: 50px auto 20px;
+  background-color: #fff;
+  border: 1px solid #e5e5e5;*/
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+.form-left{width:45% !important;}
+.form-right{width:50% !important;}
+</style>
+
+<script type="text/javascript">
+      $(document).ready(function(){
+           $('#accordion').find('.accordion-toggle').click(function(){
+          
+      //Expand or collapse this panel
+      $(this).next().slideToggle('fast');
+
+      //Hide the other panels
+     // $(".accordion-content").not($(this).next()).slideUp('fast');
+    });
+    
+    
+        function partNoFormat(){
+                
+                var cat_val         =   $('#cat_val').val(); 
+                var subcat_val      =   $('#subcat_val').val();
+                var mech_init_val   =   $('#mech_init_val').val();
+                var mech_fnl_val    =   $('#mech_fnl_val').val();
+                var design_val      =   $('#design_val').val();
+                var newid           =   $('#newid').val();
+                
+               if(cat_val == 'M' || cat_val == 'A'){
+                   var partfrmt = subcat_val+'-'+design_val+'-'+newid+'-'+mech_init_val+mech_fnl_val;
+                   $('#part_no').val(partfrmt);
+               } 
+               else{
+                   var partfrmt = subcat_val+'-'+design_val+'-'+newid;
+                   $('#part_no').val(partfrmt);
+               }
+               var drawing = subcat_val+'-'+newid;
+                $('#drawing_no').val(drawing);
+              
+          }
+          
+           $(document).on("click", ".addstatus", function(){
+            $('#materialform')[0].reset();
+            $('select#uom').attr('disabled',false);
+            $('#material_category').attr('disabled',false);
+            $('#material_sub_category').attr('disabled',false);
+            $('#material_type').attr('disabled',false);
+            $('#mech_position').attr('disabled',false);
+            $('#mech_finish').attr('disabled',false);
+            $('#stock_handling').attr('disabled',false);
+            $("#uploadfilename").html("");
+            $('#upload').removeClass("hidden");
+            $('.contenttab').html("Add New Material");
+        });
+       
+          $('.mech_position').change(function(){
+              var charac = $(this).attr("value");
+              $('#mech_init_val').val(charac);
+              partNoFormat();
+           });
+           
+           $('.mech_finish').change(function(){
+              var charac = $(this).attr("value");
+              $('#mech_fnl_val').val(charac);
+              partNoFormat();
+           });
+           
+         $('.material_category').change(function(){
+              var charac = $(this).attr("value");
+              $('#cat_val').val(charac);
+              $('#subcat_val').val('');
+                $('#mech_init_val').val('');
+                $('#mech_fnl_val').val('');
+               // alert(charac)
+               $('#design_base').val('0');
+                if(charac == 'M' || charac == 'A'){
+               $('.mechfields').removeClass("hidden");
+           }
+           else{
+               $('.mechfields').addClass("hidden");
+           }
+           
+             $("select#material_sub_category").html("");
+              $("select#material_sub_category").append("<option value=''>Select</option>");
+             var dataString ='&type=getgroupcategory&charac='+charac;
+            $.ajax({
+                type: "POST",
+                url: '<?=$this->url(array('controller'=>'material','action'=>'getmaterialsubcategory'))?>',
+                data: dataString,
+                success: function(j) {
+                    var k1;
+                    var json = $.parseJSON(j);
+                    $(json).each(function(i,val){
+                       $.each(val,function(k,v){
+                                    $("select#material_sub_category").append("<option value="+k+">"+v+"</option>");
+                        });
+                     });
+                    //$('div#addstatus').html(result);
+                    }
+                });
+               // partNoFormat();
+            });
+            
+            
+            $('.material_sub_category').change(function(){
+                var id = $(this).attr("value");
+                
+                $('#subcat_val').val('');
+                $('#mech_init_val').val('');
+                $('#mech_fnl_val').val('');
+                $('#mech_position').val('0');
+                $('#mech_finish').val('0');
+                var dataString ='&type=getsubcategorycode&id='+id;
+              //  alert(dataString)
+            $.ajax({
+                type: "POST",
+                url: '<?=$this->url(array('controller'=>'material','action'=>'getmaterialsubcategorycode'))?>',
+                data: dataString,
+                success: function(j) {
+            //alert(j)
+            var json = $.parseJSON(j);
+                        $(json).each(function(i,val){
+                            //alert(val.group_comp_char);
+                            if(val.group_comp_char) { $('#subcat_val').val(val.group_comp_char); }
+                            if(val.mech_position)   { $('#mech_init_val').val(val.mech_position); }
+                            if(val.mech_finish)     { $('#mech_fnl_val').val(val.mech_finish); }
+                            });
+                             partNoFormat();
+                    }
+                });
+               
+            });
+            
+             $('.design_base').change(function(){
+                var val = $(this).attr("value");
+                $('#design_val').val(val);
+                partNoFormat();
+                var cat_val = $('#cat_val').val();
+                if((val == 'A' && cat_val == 'M') || (val == 'A' && cat_val == 'A')){
+                    $('.mechfields').removeClass("hidden");
+                    }
+                    else{
+                        $('.mechfields').addClass("hidden");
+                    }
+           });
+            
+            $(document).on("click", ".editmaterial", function(){
+               $('#myTab a[href="#addstatus"]').tab('show');
+                var id = $(this).attr("id");
+             //   alert(id)
+             $('#newid').val('');
+             $('#mask').show();
+             $('.contenttab').html("Edit Material");
+           var dataString ='&type=getgroup&id='+id;
+            // alert(dataString);
+            $.ajax({
+                type: "POST",
+                url: '<?=$this->url(array('controller'=>'material','action'=>'getmaterial'))?>',
+                        data: dataString,
+                success: function(j) {
+                   // alert(result);
+                    var json = $.parseJSON(j);
+                    $(json).each(function(i,val){
+                        $.each(val,function(k,v){
+                             if(k=='status'){
+                                if(v=='0'){
+                                    $('#part_no').addClass('hidden');
+                                    }
+                                }
+                                if(k=='subcat'){
+                                     $.each(v,function(k1,v1){
+                                     $("select#material_sub_category").append("<option value="+k1+">"+v1+"</option>");
+                                  });
+                                  }
+                             if(k!='upload'){
+                              $('#'+k).val(v);  
+                             }
+                                 if(k=='upload'){ 
+                             // $('#upload').addClass("hidden") 
+                              $('#uploadfilename').html("<a href='<?= $this->baseUrl(); ?>/image/"+v+"' target='_blank'>"+v+"</a>");
+                            }
+                             if(k=='material_category' || k=='material_sub_category' || k=='material_type' || k=='mech_position' || k=='mech_finish' || k=='uom'|| k=='stock_handling'){
+                              $('#'+k).attr("disabled",true); 
+                              $('#'+k).removeClass(k);
+                             }
+                             if(k=='uomname'){
+                                $('.basic_uom').html(v)
+                              }
+                              if(k=='vendoruomval_1'){
+                                $('.vendor_uom_1').html(v)
+                              }
+                              if(k=='vendoruomval_2'){
+                                $('.vendor_uom_2').html(v)
+                              }
+                              if(k=='vendoruomval_2'){
+                                $('.vendor_uom_2').html(v)
+                              }
+                              if(k=='material_category'){
+                                $('#cat_val').val(v)
+                              }
+                              if(k=='subcat_val'){
+                              $('#subcat_val').val(v)
+                              }
+                              if(k=='design_base'){
+                                $('#design_val').val(v)
+                              }
+                              if(k=='mech_position'){
+                                $('#mech_init_val').val(v)
+                              }
+                              if(k=='mech_finish'){
+                                $('#mech_fnl_val').val(v)
+                              }
+                              if(k=='mech_finish' || k=='mech_position'){
+                               if(v=='0'){
+                                    $('.mechfields').addClass("hidden");
+                                }
+                                else{
+                                     $('.mechfields').removeClass("hidden");
+                                }
+                              }
+                             
+    });
+                    });
+                    $('#mask').hide();
+                }
+                   
+            });
+         });
+         
+          $(document).on("click", ".viewmaterial", function(){
+               $('#myTab a[href="#addstatus"]').tab('show');
+                var id = $(this).attr("id");
+             //   alert(id)
+              $('#mask').show();
+             $('.contenttab').html("View Material");
+           var dataString ='&type=getgroup&id='+id;
+            // alert(dataString);
+            $('#save_button').addClass("hidden");
+            $('#button_div').addClass("span9").removeClass("span7");
+            $.ajax({
+                type: "POST",
+                url: '<?=$this->url(array('controller'=>'material','action'=>'getmaterial'))?>',
+                        data: dataString,
+                success: function(j) {
+                    var k1;
+                    var json = $.parseJSON(j);
+                    $(json).each(function(i,val){
+                        $.each(val,function(k,v){
+                           // alert(k+"-"+v);
+                            if(k=='status'){
+                                if(v=='0'){
+                                    $('#part_no').addClass('hidden');
+                                }
+                            }
+                                if(k=='subcat'){
+                                     $.each(v,function(k1,v1){
+                                      //     alert(k1+"-"+v1);
+                                     $("select#material_sub_category").append("<option value="+k1+">"+v1+"</option>");
+                                  });
+                                  }
+                            if(k!='upload'){
+                              $('#'+k).val(v);  
+                              $('#'+k).attr("disabled",true); 
+                            }
+                            if(k=='upload'){ 
+                              $('#upload').addClass("hidden");
+                             $('#uploadfilename').html("<a href='<?= $this->baseUrl(); ?>/image/"+v+"' target='_blank'>"+v+"</a>");
+                            }
+                            if(k=='uomname'){
+                                $('.basic_uom').html(v)
+                              }
+                              if(k=='vendoruomval_1'){
+                                $('.vendor_uom_1').html(v)
+                              }
+                              if(k=='vendoruomval_2'){
+                                $('.vendor_uom_2').html(v)
+                              }
+                              if(k=='mech_finish' || k=='mech_position'){
+                               if(v=='0'){
+                                    $('.mechfields').addClass("hidden");
+                                }
+                                else{
+                                     $('.mechfields').removeClass("hidden");
+                                }
+                              }
+                           
+                               });
+                    });
+                     $('#mask').hide();
+                }
+            });
+         });
+       $(document).on("click", ".listtab", function(){
+            $('.contenttab').html("Add New Material");
+         });
+          
+          $(document).on("click", ".imgswap", function(){
+         var id = $(this).attr("id");
+         var vendor_id = id.split("_"); 
+         $('#mask').show();
+            if ($(this).attr("class") == "imgswap") {
+                $('#'+id).attr('src', '<?php echo $this->baseUrl();?>/public/images/tick_on.png')
+                this.src = this.src.replace("_off", "_on");
+                var status = '1';
+            } else {
+                $('#'+id).attr('src', '<?php echo $this->baseUrl();?>/public/images/tick_off.png')
+                this.src = this.src.replace("_on", "_off");
+                var status = '0';
+            }
+            $(this).toggleClass("on");
+            
+             var dataString ='&type=changestatusmaterial&vendorid='+vendor_id[1]+'&status='+status;
+           // alert(dataString)
+            $.ajax({
+                type: "POST",
+                url: '<?=$this->url(array('controller'=>'material','action'=>'changestatusmaterial'))?>',
+                        data: dataString,
+                success: function(j) {
+                    //alert(result);
+//                    location.reload(true);
+                    window.location.replace("<?=$this->url(array('controller'=>'material','action'=>'index'))?>");
+                    $('#mask').hide();
+                    //$('div#addstatus').html(result);
+                }
+    });
+       });
+        
+        $('.oem').live('click',function() {
+        var id = $('.oem:checked').attr("id");
+        var id = id.split("_"); 
+             var id = id[1];
+             var vendorname = $('select#vendor_'+id).find('option:selected').attr("name");
+                    $('#oem_name').val(vendorname);
+                    $('#oem_pdt_id').val($('#vendor_pdt_id_'+id).val());
+                    $('#oem_pdt_desc').val($('#vendor_pdt_desc_'+id).val());
+                    $('#oem_lead_time').val($('#lead_time_'+id).val());
+        
+    });
+           
+
+        $('select#uom').change(function(){
+               var val = $('select#uom').find('option:selected').attr("name");
+                $('.basic_uom').html(val);
+                
+         });
+                
+             $('select.vendoruom').live('change',function() {
+               var id = $(this).attr("id"); 
+                var vendor_id = id.split("_"); 
+                var val = $('select#vendoruom_'+vendor_id[1]).find('option:selected').attr("name");
+//                alert(vendor_id[0]);
+//                alert(vendor_id[1]);
+
+                var basicuom = $('select#uom').find('option:selected').attr("name");
+ 
+                $('.vendor_uom_'+vendor_id[1]).html(val);
+                if(basicuom == val){
+                    $('#conv_vend_'+vendor_id[1]).val('1').attr("readonly",true);
+                    $('#conv_vend_basic_'+vendor_id[1]).val('1').attr("readonly",true);
+                }
+                else{
+                    $('#conv_vend_'+vendor_id[1]).attr("readonly",false);
+                    $('#conv_vend_basic_'+vendor_id[1]).attr("readonly",false);
+                }
+                
+                        });
+                
+         $('#addvendor').click(function(){
+             var count = $('#vendorrows').children().length;
+             var i = count+1;
+             $('#vendorrows').append("<tr>\n\
+            <td style='width:20px;'><input type='radio' name='oem' class='oem' id='id_"+i+"' value='' class='form-control'></td>\n\
+            <td><select style='width:100px;' name='vendor[]' id='vendor_"+i+"' required='true'><option value='0'>Select</option><?php   foreach ($this->vendorlist as $vendor) { ?><option  value='<?php echo $vendor[id] ?>' name='<?= $vendor[vendor_name] ?>'><?php echo $vendor[vendor_name] ?></option><?php } ?></select></td>\n\
+            <td><input style='width:50px;' type='text' name='vendor_pdt_id[]' id='vendor_pdt_id_"+i+"' value='' class='form-control' required='true'></td>\n\
+            <td><input style='width:100px;' type='text' name='vendor_pdt_desc[]' id='vendor_pdt_desc_"+i+"' value='' class='form-control' required='true'></td>\n\
+            <td><input style='width:30px;' type='text' name='lead_time[]' id='lead_time_"+i+"' value='' class='form-control' required='true' maxlength='3'></td>\n\
+            <td><select style='width:90px;' name='vendoruom[]' id='vendoruom_"+i+"' class='vendoruom' required='true'><option value='0'>Select</option><?php   foreach ($this->uom as $uom) { ?><option  value='<?php echo $uom[id] ?>' name='<?php echo $uom[uom] ?>'><?php echo $uom[uom] ?></option><?php } ?></select></td>\n\
+            <td><input style='width:30px;' type='text' name='list_price[]' id='list_price_"+i+"' value='' class='form-control' required='true'></td>\n\
+            <td><input style='width:30px;' type='text' name='moq[]' id='moq_"+i+"' value='' class='form-control' required='true'></td>\n\
+            <td><input style='width:20px;' type='text' name='conv_vend_basic[]' id='conv_vend_basic_"+i+"' value='' class='form-control'><span class='basic_uom'></span> = <input style='width:20px;' type='text' name='conv_vend[]' id='conv_vend_"+i+"' value='' class='form-control'><span class='vendor_uom_"+i+"'></span></td>\n\
+            <td><a class='deleterow' id='del_"+i+"' style='cursor:pointer;'><?php echo 'DEL'; ?></a></td></tr>");
+            });
+            
+           $(document).on("click", "#example2 tbody tr td .deleterow", function(){
+              
+//                 var row = $(this).closest('tr');
+//                 var nRow = row[0];
+//                 $('#example2').dataTable().fnDeleteRow(nRow);
+            var hm = $('#vendorrows').children().length;
+            counter = parseInt(hm);
+            
+                var id = $(this).attr("id");
+             var id = id.split("_"); 
+             var id = id[1];
+            //alert(id)
+            $(this).parent().parent().remove();
+            start = parseInt(id)+ 1;
+            
+            for(i=start;i<=counter;i++)
+               {
+                   //alert(start)
+                   lesser_i = i-1; 
+                   //alert(lesser_i);
+                   $('input#id_'+i).attr('id','id_'+lesser_i);
+                   $('select#vendor_'+i).attr({'id':'vendor_'+lesser_i,'name':'vendor[]'});
+                   $('input#vendor_pdt_id_'+i).attr({'id':'vendor_pdt_id_'+lesser_i,'name':'vendor_pdt_id[]'});
+                   
+                    $('input#vendor_pdt_desc_'+i).attr({'id':'vendor_pdt_desc_'+lesser_i,'name':'vendor_pdt_desc[]'});
+                     $('input#lead_time_'+i).attr({'id':'lead_time_'+lesser_i,'name':'lead_time[]'});
+                     $('select#vendoruom_'+i).attr({'id':'vendoruom_'+lesser_i,'name':'vendoruom[]'});
+                     $('input#list_price_'+i).attr({'id':'moq_'+lesser_i,'name':'moq[]'});
+                     $('input#moq_'+i).attr({'id':'list_price_'+lesser_i,'name':'list_price[]'});
+                      $('input#conv_vend_basic_'+i).attr({'id':'conv_vend_basic_'+lesser_i,'name':'conv_vend_basic[]'});
+                       $('input#conv_vend_'+i).attr({'id':'conv_vend_'+lesser_i,'name':'conv_vend[]'});
+                        $('a#del_'+i).attr('id','del_'+lesser_i);
+                   
+                   }
+            });
+        
+           
+           $(document).on("change", ".vendorchange", function(){
+                var id = $(this).attr("id");
+                var id = id.split("_"); 
+                var id = id[1];
+              //  alert(id)
+            $('select#vendoruom_'+id).attr("required",true);
+            $('#conv_vend_'+id).attr("required",true);
+            $('#conv_vend_basic_'+id).attr("required",true);
+    });
+     });
+</script>
+    <?php echo $this->render('materiallist.phtml');  ?> 
+
+<div class="span9" id="content">
+     <?php echo $this->render('globalmessage/globalmessage.phtml'); ?>
+    
+    
+<!-- CLIENTS LIST-->
+      
+    <div class="row-fluid" style="height:525px;">
+                        <div class="span12">
+                            <!-- block -->
+                            <div class="block">
+                                <div class="navbar navbar-inner block-header">
+                                    <div class="muted pull-left">Material Master</div>
+                                    <div class="pull-right"><span class="badge badge-info"><?=$this->books1;?></span>
+
+                                    </div>
+                                </div>
+                                 <div class="accordion block-content collapse in" id="accordion2">
+  
+                                  <ul class="nav nav-tabs" id="myTab">
+  <li class="active"><a href="#materiallist" class="listtab">Material List</a></li>
+  <li class="addstatus"><a href="#addstatus" class="contenttab">Add New Material</a></li>
+  </ul>
+ 
+<div class="tab-content">
+  <div class="tab-pane active" id="materiallist">
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example">
+                                        <thead>
+                                            <tr>
+                                                <th>Part No</th>
+                                                <th>Material Description</th>
+                                                <th>Stock</th>
+                                                <th>UOM</th>
+                                                <th>Action</th>
+                                                <th>Approval</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($this->material as $value) { ?>
+                                            <tr>
+                                              
+                                                <td><?php if($value[status] == '0'){ echo "NA"; } else { echo $value[part_no]; }  ?></td>
+                                                <td><?php echo $value[material_desc] ?></td>
+                                                <td>NA</td>
+                                                <td><?php echo $value[uomname] ?></td>
+                                                <td>
+                                                    <a  class="viewmaterial view<?php echo $value[id]; ?>" id="<?php echo $value[id]; ?>" style="cursor:pointer;"><?php echo ' VIEW'; ?></a>
+                                                    <a  class="editmaterial edit<?php echo $value[id]; ?>" id="<?php echo $value[id]; ?>" style="cursor:pointer;"><?php echo '/ EDIT'; ?></a>
+                                                    <a href="<?php echo $this->baseUrl();?>/admin/material/deletematerial/delete/<?php echo $value[id]; ?>" class="book_delete" style="cursor:pointer;"><?php echo '/ DEL '; ?></a>
+                                                    
+                                                </td>
+                                                <td>
+                                                    <?php if($value[status] == '0'){ ?>
+                                                    <img class="imgswap" id="approval_<?php echo $value[id]; ?>" src="<?php echo $this->baseUrl();?>/public/images/tick_off.png"/>
+                                                    <?php }if($value[status] == '1'){ ?>
+                                                    <img class="imgswap on" id="approval_<?php echo $value[id]; ?>" src="<?php echo $this->baseUrl();?>/public/images/tick_on.png"/>
+                                                <?php } ?>
+                                                </td>
+                                             </tr>
+                                            <?php  } ?>
+                                        </tbody>
+                                    </table>
+  </div>
+    
+    
+  <div class="tab-pane" id="addstatus">
+      <!--enctype="application/x-www-form-urlencoded"--> 
+      <form enctype="multipart/form-data" action="<?=$this->url(array('controller'=>'material','action'=>'savematerial'))?>" method="post" id="materialform">
+        <input type="hidden" name="id" id="id" value="" >
+        
+        <input type="hidden" id="newid" value="<?=$this->newid;?>">
+        
+         <input type="hidden" id="cat_val"          value="">
+         <input type="hidden" id="subcat_val"       value="">
+         <input type="hidden" id="design_val"       value="">
+         <input type="hidden" id="mech_init_val"    value="">
+         <input type="hidden" id="mech_fnl_val"     value="">
+        
+          <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="part_no" class="required">Part No:</label></div>
+              <div class="form-right pull-left"><input type="text" name="part_no" id="part_no" value="" class="form-control" required="true" readonly></div>
+          </div>
+          <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="material_desc" class="required">Material Description:</label></div>
+              <div class="form-right pull-left"><input type="text" name="material_desc" id="material_desc" value="" class="form-control" required="true"></div>
+          </div>
+         <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="uom" class="required">UOM:</label></div>
+              <div class="form-right pull-left">
+                    <select name="uom" id="uom" required="true">
+                            <option value="" name="">Select</option>
+                      <?php   foreach ($this->uom as $uom) { ?>
+                                <option value="<?php echo $uom[id] ?>" name="<?php echo $uom[uom] ?>"><?php echo $uom[uom] ?></option>
+                       <?php } ?>
+                         </select>
+                </div>
+         </div>
+         <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="material_status" class="required">Material Status:</label></div>
+              <div class="form-right pull-left">
+                  <select name="material_status" id="material_status" required="true">
+                      <option value="">Select</option>
+                      <?php   foreach ($this->materialstatus as $materialstatus) { ?>
+                                <option  value="<?php echo $materialstatus[id] ?>"><?php echo $materialstatus[name] ?></option>
+                       <?php } ?>
+                  </select>
+              </div>
+            </div>
+         <div class="formvalue pull-left">
+                <div class="form-left pull-left"><label for="drawing_no" class="required">Drawing No:</label></div>
+                <div class="form-right pull-left"><input type="text" name="drawing_no" id="drawing_no" value="" class="form-control" required="true" readonly></div>
+            </div>
+         
+            <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="revision_no" class="required">Revision No:</label></div>
+              <div class="form-right pull-left"><input type="text" name="revision_no" id="revision_no" value="" class="form-control" required="true" readonly></div>
+            </div>
+         
+         <div style="clear:both"></div>
+            <div class="formvalue pull-left">
+              <div class="form-left pull-left" ><label for="upload" class="required">Upload:</label></div>
+              
+              <div class="form-right pull-left"><input type="file" name="upload" id="upload" value="Upload" class="form-control" multiple="true"></div>
+            </div>
+          
+        
+        <div class="formvalue pull-left">
+             <span id="uploadfilename"></span>
+            </div>
+         
+         
+        <div class="clearfix"></div>
+     <div class="bs-example">
+  <div id="accordion">
+  <h4 class="accordion-toggle">Material Classifications</h4>
+  <div class="accordion-content default">
+
+          
+      
+      <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="material_category" class="required">Material Major Category:</label></div>
+              <div class="form-right pull-left">
+                   <select class="material_category" name="material_category" id="material_category" required="true">
+                      <option value="">Select</option>
+                      <?php   foreach ($this->materialgroupcategory as $materialgroupcategory) { ?>
+                                <option  value="<?php echo $materialgroupcategory[charac] ?>"><?php echo $materialgroupcategory[category] ?></option>
+                       <?php } ?>
+                  </select>
+                  
+              </div>
+            </div>
+        <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="material_sub_category" class="required">Material Sub Category:</label></div>
+              <div class="form-right pull-left">
+                  <select class="material_sub_category" name="material_sub_category" id="material_sub_category" required="true">
+                            <option value="">Select</option>
+                  </select>
+                 
+              </div>
+            </div>
+      
+      <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="material_type" class="required">Material Type:</label></div>
+              <div class="form-right pull-left">
+                  <select class="material_type" name="material_type" id="material_type" required="true">
+                      <option value="">Select</option>
+                      <?php   foreach ($this->materialtype as $materialtype) { ?>
+                                <option  value="<?php echo $materialtype[id] ?>"><?php echo $materialtype[type] ?></option>
+                       <?php } ?>
+                  </select>
+                  
+              </div>
+            </div>
+      
+      <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="design_base" class="required">Design Base:</label></div>
+              <div class="form-right pull-left">
+                  <select class="design_base" name="design_base" id="design_base" required="true">
+                      <option value="">Select</option>
+                      <?php   foreach ($this->designbase as $des) { ?>
+                                <option  value="<?php echo $des[code] ?>"><?php echo $des[designbase] ?></option>
+                       <?php } ?>
+                    </select>
+               </div>
+          </div> 
+       
+      <div class="formvalue pull-left mechfields">
+              <div class="form-left pull-left"><label for="mech_position" class="required">Position Category:</label></div>
+              <div class="form-right pull-left">
+                  <select class="mech_position" name="mech_position" id="mech_position">
+                      <option value="0">Select</option>
+                            <?php   foreach ($this->position as $cat) { ?>
+                                <option  value="<?php echo $cat[code] ?>"><?php echo $cat[descr] ?></option>
+                       <?php } ?>
+                             
+                         </select>
+                    </div>
+                    </div>
+        <div class="formvalue pull-left mechfields">
+              <div class="form-left pull-left"><label for="mech_finish" class="required">Finish Category:</label></div>
+              <div class="form-right pull-left">
+                   <select class="mech_finish" name="mech_finish" id="mech_finish">
+                            <option value="0">Select</option>
+                            <?php   foreach ($this->final as $cat) { ?>
+                                <option  value="<?php echo $cat[code] ?>"><?php echo $cat[descr] ?></option>
+                            <?php } ?>
+                  </select>
+          </div>
+          </div>
+      
+      <div class="clearfix"></div>
+       </div>
+  <h4 class="accordion-toggle">Vendor Information</h4>
+  <div class="accordion-content default">
+              
+                            <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example">
+                                        <thead>
+                                            <tr>
+                                                <th>OEM Name</th>
+                                                <th>OEM Pdt ID</th>
+                                                <th>OEM Pdt Desc</th>
+                                                <th>OEM Lead Time</th>
+                                                </tr>
+                                        </thead>
+                                        <tbody>
+      
+                                            <tr>
+      
+                                                <td><input type="text" name="oem_name" id="oem_name" value="" class="form-control" ></td>
+                                                <td><input type="text" name="oem_pdt_id" id="oem_pdt_id" value="" class="form-control" ></td>
+                                                <td><input type="text" name="oem_pdt_desc" id="oem_pdt_desc" value="" class="form-control" ></td>
+                                                <td><input type="text" name="oem_lead_time" id="oem_lead_time" value="" class="form-control" maxlength='3' onkeypress="return isNumber(event)"></td>
+                                                </tr>
+      
+                                        </tbody>
+                                    </table>
+              
+      <div class="table-responsive">
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example2">
+                                        <thead>
+                                            <tr>
+                                                <th>OEM</th>
+                                                <th>Vendor</th>
+                                                <th>Pdt ID</th>
+                                                <th>Pdt Desc</th>
+                                                <th>Lead Time in Days</th>
+                                                <th>UOM</th>
+                                                <th>List Price</th>
+                                                <th>MOQ</th>
+                                                <th>Conversion Factor</th>
+<!--                                            <th>Action</th>-->
+                                                </tr>
+                                        </thead>
+                                        <tbody id="vendorrows">
+                                           <tr>
+                                                <td style="width:20px;"><input type="radio" name="oem" class="oem" id="id_1" value="" class="form-control"></td>
+                                                <input type="hidden" name="vendor_id[]" id="vendor_id_1" value=""/>
+                                                <td><select style="width:100px;" name="vendor[]" id="vendor_1" class="vendorchange">
+                      <option value="0">Select</option>
+                                                        <?php   foreach ($this->vendorlist as $vendor) { ?>
+                                                                  <option  value="<?php echo $vendor[id] ?>" name="<?= $vendor[vendor_name] ?>"><?php echo $vendor[vendor_name] ?></option>
+                                                         <?php } ?>
+                                                           </select>
+                                                </td>
+                                                <td><input style="width:50px;" type="text" name="vendor_pdt_id[]" id="vendor_pdt_id_1" value="" class="form-control"></td>
+                                                <td><input style="width:100px;" type="text" name="vendor_pdt_desc[]" id="vendor_pdt_desc_1" value="" class="form-control" ></td>
+                                                <td><input style="width:30px;" type="text" name="lead_time[]" id="lead_time_1" value="" maxlength='3' class="form-control" onkeypress="return isNumber(event)"></td>
+                                                <td><select style="width:90px;" name="vendoruom[]" id="vendoruom_1" class="vendoruom" >
+                                                    <option value="">Select</option>
+                      <?php   foreach ($this->uom as $uom) { ?>
+                                                        <option  value="<?php echo $uom[id] ?>" name="<?php echo $uom[uom] ?>"><?php echo $uom[uom] ?></option>
+                       <?php } ?>
+                         </select>
+                                                </td>
+                                                <td><input style="width:30px;" type="text" name="list_price[]" id="list_price_1" value="" class="form-control" onkeypress="return isNumber(event)"></td>
+                                                <td><input style="width:30px;" type="text" name="moq[]" id="moq_1" value="" class="form-control" onkeypress="return isNumber(event)"></td>
+                                                <td>
+                                                    <input style="width:20px;" type="text" name="conv_vend[]" id="conv_vend_1" value="" class="form-control" onkeypress="return isNumber(event)">
+                                                    <span class="vendor_uom_1"></span> = 
+                                                    <input style="width:20px;" type="text" name="conv_vend_basic[]" id="conv_vend_basic_1" value="" class="form-control" onkeypress="return isNumber(event)">
+                                                    <span class="basic_uom"></span>
+                                                </td>
+<!--                                                 <td><a class="deleterow" id="del_1" style="cursor:pointer;"><?php echo 'DEL'; ?></a></td>-->
+                                           </tr>
+                                           
+                                           <tr>
+                                                <td style="width:20px;"><input type="radio" name="oem" class="oem" id="id_2" value="" class="form-control"></td>
+                                                <input type="hidden" name="vendor_id[]" id="vendor_id_2" value=""/>
+                                                <td><select style="width:100px;" name="vendor[]" id="vendor_2" class="vendorchange">
+                                                        <option value="">Select</option>
+                                                        <?php   foreach ($this->vendorlist as $vendor) { ?>
+                                                                  <option  value="<?php echo $vendor[id] ?>" name="<?= $vendor[vendor_name] ?>"><?php echo $vendor[vendor_name] ?></option>
+                                                         <?php } ?>
+                    </select>
+                                                </td>
+                                                <td><input style="width:50px;" type="text" name="vendor_pdt_id[]" id="vendor_pdt_id_2" value="" class="form-control" ></td>
+                                                <td><input style="width:100px;" type="text" name="vendor_pdt_desc[]" id="vendor_pdt_desc_2" value="" class="form-control" ></td>
+                                                <td><input style="width:30px;" type="text" name="lead_time[]" id="lead_time_2" value="" maxlength='3' class="form-control" onkeypress="return isNumber(event)"></td>
+                                                <td><select style="width:90px;" name="vendoruom[]" id="vendoruom_2" class="vendoruom" >
+                                                    <option value="">Select</option>
+                                              <?php   foreach ($this->uom as $uom) { ?>
+                                                        <option  value="<?php echo $uom[id] ?>" name="<?php echo $uom[uom] ?>"><?php echo $uom[uom] ?></option>
+                                               <?php } ?>
+                                                 </select>
+                                                </td>
+                                                <td><input style="width:30px;" type="text" name="list_price[]" id="list_price_2" value="" class="form-control" onkeypress="return isNumber(event)"></td>
+                                                <td><input style="width:30px;" type="text" name="moq[]" id="moq_2" value="" class="form-control" onkeypress="return isNumber(event)"></td>
+                                                <td>
+                                                    <input style="width:20px;" type="text" name="conv_vend[]" id="conv_vend_2" value="" class="form-control" onkeypress="return isNumber(event)">
+                                                    <span class="vendor_uom_2"></span> =
+                                                    <input style="width:20px;" type="text" name="conv_vend_basic[]" id="conv_vend_basic_2" value="" class="form-control" onkeypress="return isNumber(event)">
+                                                    <span class="basic_uom"></span> 
+                                                  
+                                                  
+                                                </td>
+<!--                                                <td><a class="deleterow" id="del_2" style="cursor:pointer;"><?php echo 'DEL'; ?></a></td>-->
+                                           </tr>
+                                           
+                                        </tbody>
+                                    </table>
+<!--          <input class='btn btn-primary pull-right' type="button"  id="addvendor" value="Add Vendor" class="btn btn-default" />-->
+              </div>
+       
+                  
+       
+<div class="clearfix"></div>
+  </div>
+  
+  <h4 class="accordion-toggle">Inventory Information</h4>
+  <div class="accordion-content default">
+
+      <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="min_stock" class="required">Min Stock :</label></div>
+              <div class="form-right pull-left">
+                  <input type="text" name="min_stock" id="min_stock" value="" class="form-control" onkeypress="return isNumber(event)" style="width:70px;" >
+                   <span class="basic_uom"></span> 
+            </div>
+      
+            </div>
+      
+        <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="stock_handling" class="required">Stock Management:</label></div>
+              <div class="form-right pull-left">
+                  <select name="stock_handling" id="stock_handling" required="true">
+                      <option value="">Select</option>
+                      <option  value="Item">Item Based</option>
+                      <option  value="Batch">Batch Based</option>
+                  </select>
+              </div>
+            </div>
+      
+       
+<div class="clearfix"></div>
+            </div>
+      
+<!--   <h4 class="accordion-toggle">Costing Information</h4>
+  <div class="accordion-content">
+
+            <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="moving_price" class="required">Moving Avg Price :</label></div>
+              <div class="form-right pull-left"><input type="text" name="moving_price" id="moving_price" value="" class="form-control"></div>
+            </div>
+        
+            <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="manuf_cost" class="required">Manufacturing Cost :</label></div>
+              <div class="form-right pull-left"><input type="text" name="manuf_cost" id="manuf_cost" value="" class="form-control"></div>
+            </div>
+          
+         <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="gen_price" class="required">Generated Price :</label></div>
+              <div class="form-right pull-left"><input type="text" name="gen_price" id="gen_price" value="" class="form-control"></div>
+            </div>
+        
+        
+<div class="clearfix"></div>
+  </div>-->
+    
+    <h4 class="accordion-toggle">Other Information</h4>
+  <div class="accordion-content default">
+    
+
+ 
+            <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="mat_life" class="required">Material Life Details:</label></div>
+              <div class="form-right pull-left"><input type="text" name="mat_life" id="mat_life" value="" class="form-control" ></div>
+</div>
+      
+            <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="weight" class="required">Weight:</label></div>
+              <div class="form-right pull-left"><input type="text" name="weight" id="weight" value="" class="form-control" onkeypress="return isNumber(event)" style="width:70px;">
+                   <span>&nbsp;grams</span> 
+      </div>
+            </div>
+  
+            <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="addn_info" class="required">Addn. Info:</label></div>
+                   <div class="form-right pull-left">
+                  <textarea rows="2" cols="30" name="addn_info" id="addn_info" class="inputDisabled"></textarea></div>
+               </div>
+ 
+
+
+<div class="clearfix"></div>
+                   </div>
+
+
+                   </div>
+               </div>
+
+               <div id="button_div" class="clearfix span7" style="float: right;" >
+                   <div class="span2" id="save_button">
+ <input class='btn btn-primary' type="submit" name="deptregister" id="deptregister" value="Save" class="btn btn-default" />
+                   </div>
+
+                   <div class="span1" id="back_button">
+                       <a href="/../asteria/admin/material"><input class='btn btn-primary' type="button" name="back" id="back" value="Back" class="btn btn-default" /></a>
+                   </div>
+               </div>
+           </form>
+         
+       </div> 
+       
+       
+       
+        
+    </div>
+                                    
+</div>
+                            <!-- /block -->
+                        </div>
+                        
+                    </div>
+
+</div></div>
+
+
+
+

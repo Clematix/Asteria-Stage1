@@ -1,0 +1,51 @@
+<?php echo $this->render('usermanagement.phtml');  ?>
+<?php if(isset($this->errorMessage)){ echo $this->errorMessage;}  ?>
+<?php // echo $value = Zend_Registry::get('index');?>
+      <div class="span9">
+           <div class="row-fluid">
+                        <!-- block -->
+                        <div class="block">
+                            <div class="navbar navbar-inner block-header">
+                                <div class="muted pull-left">Role Management</div>
+                            </div>
+                            <div class="block-content collapse in">
+                                <div class="span9">
+                                    <?php //echo $this->form;?>
+                                    <form enctype="application/x-www-form-urlencoded" action="http://localhost/asteria/admin/auth/signup" method="post" name="">
+                                        <dl class="zend_form">
+<dt id="firstname-label"><label for="firstname" class="required">First Name:</label></dt>
+<dd id="firstname-element">
+<input type="text" name="firstname" id="firstname" value="" class="form-control"></dd>
+<dt id="lastname-label"><label for="lastname" class="required">Last Name:</label></dt>
+<dd id="lastname-element">
+<input type="text" name="lastname" id="lastname" value="" class="form-control"></dd>
+<dt id="email-label"><label for="email" class="required">Email:</label></dt>
+<dd id="email-element">
+<input type="text" name="email" id="email" value="" class="form-control"></dd>
+<dt id="password-label"><label for="password" class="required">Password:</label></dt>
+<dd id="password-element">
+<input type="password" name="password" id="password" value="" class="form-control"></dd>
+<dt id="confirmPassword-label"><label for="confirmPassword" class="required">Confirm Password: *</label></dt>
+<dd id="confirmPassword-element">
+<input type="password" name="confirmPassword" id="confirmPassword" value="" class="form-control"></dd>
+<dt id="department-label"><label for="department" class="required">Department</label></dt>
+<dd id="department-element">
+<select name="department" id="department" class="form-control">
+    <option value="admin">admin</option>
+</select></dd>
+<dt id="group-label"><label for="group" class="required">Group</label></dt>
+<dd id="group-element">
+<select name="group" id="group" class="form-control">
+    <option value="admin">admin</option>
+</select></dd>
+<dt id="register-label">&nbsp;</dt><dd id="register-element">
+<input type="submit" name="register" id="register" value="Sign up" class="btn btn-default"></dd>
+<dt id="reset-label">&nbsp;</dt><dd id="reset-element">
+<input type="reset" name="reset" id="reset" value="Reset" class="btn btn-default"></dd></dl></form>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /block -->
+                    </div>
+              </div>

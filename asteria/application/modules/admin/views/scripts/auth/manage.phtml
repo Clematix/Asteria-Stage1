@@ -1,0 +1,81 @@
+<?php echo $this->render('usermanagement.phtml');  ?> 
+
+<div class="span9" id="content">
+    <div class="row">
+                        
+                        	<div class="navbar">
+                            	<div class="navbar-inner">
+	                                <ul class="breadcrumb">
+	                                    <i class="icon-chevron-left hide-sidebar"><a href='#' title="Hide Sidebar" rel='tooltip'>&nbsp;</a></i>
+	                                    <i class="icon-chevron-right show-sidebar" style="display:none;"><a href='#' title="Show Sidebar" rel='tooltip'>&nbsp;</a></i>
+	                                    <li>
+	                                        <a href="#">User Management</a> <span class="divider">/</span>	
+	                                    </li>
+	                                    <li>
+	                                        <a href="#">Clients</a> <span class="divider">/</span>	
+	                                    </li>
+	                                    
+	                                </ul>
+                            	</div>
+                        	</div>
+                    	</div>
+    
+<!-- CLIENTS LIST-->
+      
+    <div class="row">
+                        <div class="span12" id="">
+                            <!-- block -->
+                            <div class="block">
+                                <div class="navbar navbar-inner block-header">
+                                    <div class="muted pull-left">Add Employees</div>
+                                    <div class="pull-right"><span class="badge badge-info"><?=$this->member1;?></span>
+
+                                    </div>
+                                </div>
+                                <div class="block-content collapse in">
+                                    <form enctype="application/x-www-form-urlencoded" action="<?=$this->url(array('controller'=>'auth','action'=>'addemployee'))?>" method="post" name="">
+                                        <dl class="zend_form">
+<dt id="firstname-label"><label for="firstname" class="required">First Name:</label></dt>
+<dd id="firstname-element">
+<input type="text" name="firstname" id="firstname" value="" class="form-control"></dd>
+<dt id="lastname-label"><label for="lastname" class="required">Last Name:</label></dt>
+<dd id="lastname-element">
+<input type="text" name="lastname" id="lastname" value="" class="form-control"></dd>
+<dt id="email-label"><label for="email" class="required">Email:</label></dt>
+<dd id="email-element">
+<input type="text" name="email" id="email" value="" class="form-control"></dd>
+<dt id="password-label"><label for="password" class="required">Password:</label></dt>
+<dd id="password-element">
+<input type="password" name="password" id="password" value="" class="form-control"></dd>
+<dt id="confirmPassword-label"><label for="confirmPassword" class="required">Confirm Password: *</label></dt>
+<dd id="confirmPassword-element">
+<input type="password" name="confirmPassword" id="confirmPassword" value="" class="form-control"></dd>
+<dt id="department-label"><label for="department" class="required">Department</label></dt>
+<dd id="department-element">
+<select name="department" id="department" class="form-control">
+    <option value="admin">admin</option>
+</select></dd>
+<dt id="group-label"><label for="group" class="required">Group</label></dt>
+<dd id="group-element">
+<select name="group" id="group" class="form-control">
+    <option value="admin">admin</option>
+</select></dd>
+<dt id="register-label">&nbsp;</dt><dd id="register-element">
+<input type="submit" name="register" id="register" value="Sign up" class="btn btn-default"></dd>
+<dt id="reset-label">&nbsp;</dt><dd id="reset-element">
+<input type="reset" name="reset" id="reset" value="Reset" class="btn btn-default"></dd></dl></form>
+                                </div>
+                            </div>
+                            <!-- /block -->
+                        </div>
+                        
+    </div>
+   
+
+    
+
+</div>
+
+
+
+

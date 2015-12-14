@@ -1,0 +1,282 @@
+
+<script type="text/javascript" charset="utf-8">
+   
+   
+    jQuery(document).ready(function () {
+        
+        
+  jQuery("#register").show();
+jQuery('.customerlist').click(function () {
+     jQuery(".addcustomer").html('Add New Customer');
+     document.getElementById("customer").reset();
+     jQuery('.form-control').removeAttr('readonly');
+     jQuery("#register").show();
+});
+
+jQuery('.delete').click(function () {
+     if(confirm("Are you sure you want to delete this?")){
+     }
+    else{
+        return false;
+    }});
+
+
+        jQuery('.edit_customer').click(function () {
+            jQuery('#mask').show();
+            jQuery('#myTab a[href="#addcustomer"]').tab('show');
+            var id = jQuery(this).attr("id");
+            jQuery("#register").show();
+            
+             jQuery(".addcustomer").html('Edit Customer');
+          
+            var dataString = '&edit_id=' + id;
+            jQuery.ajax({
+                type: "POST",
+                url: '<?= $this->url(array('controller' => 'customer', 'action' => 'manage')) ?>',
+                data: dataString,
+                success: function (j) {
+
+                    var json = jQuery.parseJSON(j);              
+
+                    jQuery(json).each(function (i, val) {
+                        jQuery.each(val, function (k, v) {
+                            jQuery('#' + k).removeAttr('readonly');
+                            jQuery('#' + k).val(v);
+                        });
+                    });
+                    
+                    jQuery('#mask').hide();
+                    
+
+                }
+            });
+        });
+        
+        
+        jQuery('.view_customer').click(function () {
+        jQuery('#mask').show();
+            jQuery('#myTab a[href="#addcustomer"]').tab('show');
+            var id = jQuery(this).attr("id");
+            jQuery("#register").hide();
+             jQuery(".addcustomer").html('View Customer');
+          
+            var dataString = '&edit_id=' + id;
+            jQuery.ajax({
+                type: "POST",
+                url: '<?= $this->url(array('controller' => 'customer', 'action' => 'manage')) ?>',
+                data: dataString,
+                success: function (j) {
+
+                    var json = jQuery.parseJSON(j);              
+
+                    jQuery(json).each(function (i, val) {
+                        jQuery.each(val, function (k, v) {
+
+                            jQuery('#' + k).val(v);
+                            jQuery('#' + k).attr('readonly','true');
+                        });
+                    });
+                    
+                    jQuery('#mask').hide();
+                    
+
+                }
+            });
+        });
+
+    });
+    
+    
+
+</script>
+
+ 
+
+<div class="span12" id="content">
+    <?php echo $this->render('globalmessage/globalmessage.phtml'); ?>
+
+    <!--DELETE BOOK-->
+    <div id="accordion">
+
+        <div class="row-fluid">
+            <div class="span12">
+                <!-- block -->
+                <div class="block">
+                    <div class="navbar navbar-inner block-header">
+                        <div class="muted pull-left">Customer Management</div>
+
+                    </div>
+                    <div class="block-content collapse in">
+ <?php if($this->permission['view']==1){ ?>
+                        <ul class="nav nav-tabs" id="myTab">
+                            <li class="active"><a href="#customerlist" class="customerlist">Customer List</a></li>
+                             
+                            <li><a href="#addcustomer" class="addcustomer">Add New Customer</a></li>
+                         
+
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="customerlist">
+                                <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example">
+                                    <thead>
+                                        <tr>
+                                            <th>SI No</th>
+                                            <th>Customer Name</th>
+                                            <th>Contact Person</th>
+                                            <th>Email</th>
+                                            <th>Telephone</th>
+                                            <th>Country</th>
+                                            <th>Region</th>
+                                            <th>Industry</th>
+                                            <th style="width:150px;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $i = 1;
+                                        foreach ($this->customerlist as $customerlist) {
+                                            ?>
+                                            <tr><td><?= $i++; ?></td>
+                                                <td><?= $customerlist['company_name'] ?></td>
+                                                <td><?= $customerlist['contact_person'] ?></td>
+                                                <td><?= $customerlist['email'] ?></td>
+                                                <td><?= $customerlist['telephone'] ?></td>
+                                                <td><?= $customerlist['country'] ?></td>
+                                                <td><?= $customerlist['region'] ?></td>
+                                                <td><?= $customerlist['industry'] ?></td>
+
+                                                <td>
+                                                    <a href="#" class="view_customer" id="<?= $customerlist['customer_id'] ?>">
+                                                <?php echo 'VIEW'; ?></a>
+                                                    
+                                                    <?php if($this->permission['edit']==1){ ?>
+                                                    <a href="#" class="edit_customer" id="<?= $customerlist['customer_id'] ?>">
+                                                <?php echo '/ EDIT'; ?></a>
+                                                    
+                                                    <a href="<?php echo $this->baseUrl(); ?>/admin/customer/manage/delete_id/<?= $customerlist['customer_id'] ?>" class="delete">
+                                                        <?php echo '/ DEL '; ?></a>
+                                                     <?php }?>
+                                                    
+                                                   
+                                                </td>
+
+                                        </tr><?php } ?>
+
+                                    </tbody>
+                                </table>
+                            </div>      
+
+                            <div class="tab-pane" id="addcustomer">
+                               
+					
+                                
+                                <form role="form"  action="<?= $this->url(array('controller' => 'customer', 'action' => 'manage')) ?>" name='customer' method="post" id="customer" >
+                                    <input type="hidden" name="customer_id" id="customer_id" value="" >
+                                     
+                                            <div class="formvalue form-group clearfix">
+                                        <div class="form-left pull-left">
+                                            <label for="companyname" class="required">Customer Name:</label></div>
+                                        <div class="input-group form-right pull-left field-widget">
+                                            <input type="text" name="company_name" onkeypress="return isAlphaSpace(event)"  id="company_name" value="" class="form-control required" required="true" maxlength="25">
+                                        </div>
+                                                
+                                          
+                                    </div>
+                                    <div class="formvalue form-group clearfix">
+                                        <div class="form-left pull-left">
+                                            <label for="contact_person" class="required">Contact Person:</label></div>
+                                        <div class="input-group form-right pull-left">
+                                            <input type="text" name="contact_person" id="contact_person" value="" onkeypress="return isAlphaSpace(event)" class="form-control input-text" required="true">
+                                        </div>
+                                          
+                                    </div>
+
+
+
+
+                                     <div class="formvalue form-group clearfix">                                        
+                                        <div class="form-left pull-left"><label for="company_address" class="required">Company Address:</label></div>
+                                        <div class="input-group form-right pull-left">
+                                            <textarea rows="5" cols="200" name="company_address" id="company_address" value="" class="form-control" required="true" ></textarea>
+
+                                        </div>
+                                          
+                                    </div>
+
+                                     <div class="formvalue form-group clearfix">                                        
+                                        <div class="form-left pull-left">
+                                            <label for="email" class="required">Email:</label></div>
+                                        <div class="input-group form-right pull-left">
+                                            <input autocomplete="off" pattern='^(([^<>()[\]\\.,;:#!~$%^&*\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$' maxlength="50" type="email" name="email" id="email" value="" data-error="Please enter valid email" class="form-control" required="true">
+                                        </div>
+                                           
+                                    </div>
+
+                                     <div class="formvalue form-group clearfix">                                        
+                                        <div class="form-left pull-left"><label for="country" class="required">Country:</label></div>
+                                        <div class="input-group form-right pull-left">
+                                            <input type="text" name="country"  onkeypress="return isAlphaSpace(event)" maxlength="50" id="country" value="" class="form-control input-text required-entry validate-password" required="true"></div>
+                                      </div>
+
+                                     <div class="formvalue form-group clearfix">                                        
+                                        <div class="form-left pull-left">
+                                            <label for="region" class="required">Region: </label>
+                                        </div>
+                                        <div class="input-group form-right pull-left">
+                                            <input type="text" name="region" id="region" onkeypress="return isAlphaSpace(event)" maxlength="20" value="" class="form-control input-text required-entry validate-cpassword" required="true">
+                                        </div>
+                                           
+                                    </div>
+                                    
+                                     <div class="formvalue form-group clearfix">                                        
+                                        <div class="form-left pull-left">
+                                            <label for="industry" class="required">Industry: </label>
+                                        </div>
+                                        <div class="input-group form-right pull-left">
+                                            <input type="text" name="industry" onkeypress="return isAlphaSpace(event)" maxlength="50" id="industry" value="" class="form-control input-text required-entry validate-cpassword" required="true">
+                                        </div>
+                                           
+                                    </div>
+
+                                     <div class="formvalue form-group clearfix">                                        
+                                        <div class="form-left pull-left">
+                                            <label for="telephone" class="required">Telephone: </label>
+                                        </div>
+                                        <div class="input-group form-right pull-left">
+                                            <input type="tel" name="telephone" onkeypress="return isNumber(event)" maxlength="20" id="telephone" value="" class="form-control input-text required-entry validate-cpassword" required="true" autocomplete="off">
+                                        </div>
+                                           
+                                    </div>
+                                    
+                                    
+                                    
+                               <div id="button_div" class="clearfix span7" style="float: right;" >
+<div class="span2" id="save_button">
+    <?php if($this->permission['create']==1){ ?>     
+ <input class='btn btn-primary' type="submit" name="register" id="register" value="Save" class="btn btn-default" />
+  <?php } ?>
+</div>
+
+
+<div class="span1" id="back_button">
+    <a href=""><input class='btn btn-primary' type="button" name="back" id="back" value="Back" class="btn btn-default" /></a>
+</div>
+      </div>
+                                     
+                                </form>
+                          
+                            </div>      
+                        </div>
+                       <?php } else  { echo 'You are not customerorized person to access this module'; } ?>    
+                    </div>
+                </div>
+                <!-- /block -->
+            </div>
+
+        </div>
+        <!--END-->
+
+    </div>
+
+
+</div>
+

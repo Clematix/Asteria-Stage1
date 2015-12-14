@@ -1,0 +1,31 @@
+
+ 
+
+
+    
+    <div class="container" id="login">
+    
+
+      <form class="form-signin" method="post" id="login-form">
+        <h3 class="form-signin-heading">SIGN IN</h3>
+        <input type="email" name="email" id="email" class="input-block-level input-text required-entry validate-email" placeholder="Email address" required="true" style="height:36px;">
+        <input type="password" name="password" id="password" class="input-block-level input-text required-entry validate-password" placeholder="Password" required="true">
+        <label class="checkbox">
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+        <button class="btn btn-large btn-primary validation-passed" type="submit">Sign in</button>
+        <label class="checkbox"><?php if(isset($this->errorMessage)){ echo $this->errorMessage;} ?>
+                </label>
+<!--        <label class="checkbox"><br />
+          <a href="<?=$this->url(array('controller'=>'auth','action'=>'signup'))?>">New users click here?</a> &nbsp;
+    	  <a href="<?=$this->url(array('controller'=>'auth','action'=>'forgotpassword'))?>">Forgot Password?</a>
+        </label>-->
+      
+	</form>
+    </div> <!-- /container -->
+   
+    <style>
+        h3{ margin: 0 auto;
+    text-align: center;
+    margin-bottom: 20px;}
+        </style>

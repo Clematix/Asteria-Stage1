@@ -1,0 +1,82 @@
+
+<?php echo $this->render('navebar/leftnavbar.phtml'); ?> 
+
+
+<div class="span9" id="content">
+     <?php echo $this->render('globalmessage/globalmessage.phtml'); ?>
+    
+     <!--DELETE BOOK-->
+    <div id="accordion">
+        
+    <div class="row-fluid">
+                        <div class="span12">
+                            <!-- block -->
+                            <div class="block">
+                                <div class="navbar navbar-inner block-header">
+                                    <div class="muted pull-left">Eployees List</div>
+                                    <div class="pull-right"><span class="badge badge-info"><?=$this->books1;?></span>
+
+                                    </div>
+                                </div>
+                                <div class="block-content collapse in">
+                                    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example">
+                                        <thead>
+                                            <tr>
+                                                <th>SI No</th>
+                                                <th>First Name</th>
+                                                <th>Last Name</th>
+                                                <th>Email</th>
+                                                <th>Department</th>
+                                                <th>Group</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php $i=1; foreach($this->emplist as $emplist){ ?>
+                                            <tr><td><?=$i++;?></td>
+                                                <td><?=$emplist['firstname']?></td>
+                                                <td><?=$emplist['lastname']?></td>
+                                                <td><?=$emplist['email']?></td>
+                                                <td><?=$emplist['department']?></td>
+                                                 <td><?=$emplist['group']?></td>
+                                                
+                                                <td>
+                                                    <a href="#" class="book_delete">
+                                                    <?php echo 'DEL '; ?></a>
+                                                    <?php //echo $this->baseUrl();?><?php //echo $this->filename[$i]['id']; ?>
+                                                    <a href="#" class="book_edit">
+                                                        <?php echo '/ EDIT'; ?></a>
+                                                </td>
+                                            <?php }?>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- /block -->
+                        </div>
+                        
+                    </div>
+    <!--END-->
+    
+      
+    
+    
+
+    
+</div>
+
+
+</div>
+
+<script type="text/javascript" charset="utf-8">
+			jQuery(document).ready( function () {
+				jQuery('#example').dataTable( {
+					"sDom": 'T<"clear">lfrtip',
+					"oTableTools": {
+						"sSwfPath": "<?php echo $this->baseUrl();?>/public/media/swf/copy_csv_xls_pdf.swf"
+					}
+				} );
+			} );
+		</script>

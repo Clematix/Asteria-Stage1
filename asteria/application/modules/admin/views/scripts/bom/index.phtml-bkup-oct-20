@@ -1,0 +1,1270 @@
+
+
+<style type="text/css">
+    .bs-example{
+    	margin: 20px;
+    }
+  .accordion-toggle {cursor: pointer;}
+  .accordion-content {display: none;}
+  .accordion-content.default {display: block;}
+  .accordion-content{padding:10px; border-bottom:1px solid #ccc;}
+  .accordion h4{
+	background-color:#f9f9f9;
+	padding:10px; 
+	font-size:16px;
+	border-bottom:1px solid #ccc; 
+  }
+  a, a:hover, a:focus{
+outline:0;	
+}
+#accordion{
+border:1px solid #ccc;
+margin:0;
+border-bottom:0;	
+}
+.accordion h4{
+margin:0;	
+}
+.bom_detail{   
+    width: 98%;
+    height: auto;
+    /*border: 1px solid #DDDDDD;;*/
+    background-color: #f5f5f5;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    padding: 5px;
+    box-shadow: 1px 1px 3px -1px;
+}
+.bom_detail p{margin: 0 auto;}
+
+.form-addbom {
+/*  max-width: 60%;
+*/  padding: 19px 29px 29px;/*
+  margin: 50px auto 20px;
+  background-color: #fff;
+  border: 1px solid #e5e5e5;*/
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+.form-left{width:45% !important;}
+.form-right{width:50% !important;}
+
+td select{width: 100px !important;
+/*border: none;*/
+    background-color: transparent;
+    box-shadow: none;
+    margin: 0px !important;}
+td input{width: 80px !important;
+/*border: none !important;*/
+    /*background-color: transparent !important;*/
+    box-shadow: none !important;
+    margin: 0px !important;}
+#example1 .table td{    padding: 8px 4px 0 5px !important;}
+
+*
+{
+    padding: 0;
+    margin: 0;
+}
+#mask
+{
+    position:absolute;
+    width:100%;
+    height:100%;
+    text-align: center; /*handles the horizontal centering*/
+}
+#mask_project
+{
+    position:absolute;
+    width:100%;
+    height:100%;
+    text-align: center; /*handles the horizontal centering*/
+}
+/*handles the vertical centering*/
+.Centerer
+{
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+.Centered
+{
+    display: inline-block;
+    vertical-align: middle;
+}
+.DTTT_container{display:none;}
+#example1_filter{display:none;}
+</style>
+
+
+
+<div class="span12" id="content">
+       <?php echo $this->render('globalmessage/globalmessage.phtml'); ?>
+    
+      
+    <div class="row block-content">
+                        <div class="span12">
+                            <!-- block -->
+                            <div class="block">
+                                <div class="navbar navbar-inner block-header">
+                                    <div class="muted pull-left">Bill of Material</div>
+                                    
+                                </div>
+                                 <div class="accordion block-content collapse in" id="accordion2">
+  
+                                  <ul class="nav nav-tabs" id="myTab">
+  <li class="active materiallist"><a href="#materiallist">Bill of Material List</a></li>
+  <li class="addbom createoradd"><a href="#addbom">Create or Edit BOM</a></li>
+  
+  </ul>
+ 
+                                     
+<div class="tab-content">
+  <div class="tab-pane active" id="materiallist">
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example">
+                                        <thead>
+                                            <tr> 
+                                                <th>#</th>
+                                                <th>BOM#</th>
+                                                <th>BOM Rev#</th>
+                                                <th>Description</th>
+                                                <th>Action</th>
+                                                <th>Status</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                             <?php $i=1; foreach($this->bom as $bom){ ?>
+                                            <tr><td><?=$i++;?></td>
+                                                <td><a target="_blank"  href="<?=$this->url(array('module'=>'admin','controller'=>'material','action'=>'index'))?>/index/global/<?=$bom['material_id']?>" class="add-bom" id="<?=$bom['material_id']?>">
+                                             <?=$bom['bom_project_id']?>
+                                                    </a></td>
+                                                <td><?php if($bom['bom_rev_id']){echo $bom['bom_rev_id'];} else{ echo 'NONE'; } ?></td>
+
+                                                
+                                                
+         <td><?=$bom['bom_description']?></td>                                      
+         <td>
+
+                                                   
+                                                    <a href="#" class="edit-bom edit<?=$bom['id']?> " id="<?=$bom['id']?>">
+                                                <?php echo 'EDIT / '; ?></a>
+                                                        <a href="#" class="view-bom" id="<?=$bom['id']?>">
+                                                <?php echo 'VIEW'; ?></a>
+                                            
+                                                </td> 
+                                                
+                                                 <td>
+                                                <?php if($bom['status'] == '0'){ ?>
+                                                    <img class="imgswap" id="approval_<?php echo $bom['id']; ?>" src="<?php echo $this->baseUrl();?>/public/images/tick_off.png"/>
+                                                    <?php }  if($bom['status'] == '1'){ ?>
+                                                    <img class="imgswap on" id="approval_<?php echo $bom['id']; ?>" src="<?php echo $this->baseUrl();?>/public/images/tick_on.png"/>
+                                                    <?php } ?>
+                                                 </td>
+                                            
+                                            </tr>
+                                            <?php }?>
+                                            
+                                        </tbody>
+                                    </table>
+  </div>
+    
+    
+  
+  
+    <div class="tab-pane" id="addbom">
+
+                   <form  enctype="application/x-www-form-urlencoded" action="#" method="post" id="form_addbom" name="form_addbom" class='form_addbom'>
+                       
+        <div class='bom_detail'>
+
+            <input type="hidden" name="bom-edit-id" id="bom-edit-id" class="bom-edit-id" value="" />
+            <input type="hidden" name="material-id" id="material-id" class="material-id" value="" />
+            
+            <div class="formvalue form-group clearfix">
+                <div class="form-left pull-left"><label for="partno" class="required">Part no:</label></div>
+                <div class="input-group form-right pull-left">
+           
+                    <select name="partno" id="partno" class="form-control" required>
+                        <option value="">Select Part No</option>
+                        <?php foreach ($this->material as $_material): ?>
+                            <option value="<?= $_material['id'] ?>"><?= $_material['part_no'] ?></option>
+                        <?php endforeach; ?>
+
+                    </select>              
+                </div>
+                <div class="form-left pull-left"></div>
+            </div>
+
+            <div class="formvalue form-group clearfix">
+                <div class="form-left pull-left"><label for="project" class="required">Project:</label></div>
+                <div class="input-group form-right pull-left" style="position:relative;">
+
+                    <select name="project" id="project" class="form-control" required>
+                        <option value="">Select Project</option>
+                        <?php foreach ($this->project as $_project): ?>
+                            <option value="<?= $_project['project_id'] ?>"><?= $_project['project_name'] ?></option>
+                        <?php endforeach; ?>
+
+
+                    </select> 
+                    <div id="mask_project" style="
+                         width: 101%;display:none;
+    height: 30px;
+    opacity: 0.7;
+    position: absolute;
+    left: 0px;
+    top: 0;">
+                                        
+                                         <span class="Centerer"></span>
+                                             <img class="Centered" src="<?php echo $this->baseUrl();?>/public/images/loading_spinner.gif" width="20px"/>
+                                       
+                                     </div>
+                </div>
+                <div class="form-left pull-left"></div>
+            </div>
+                
+<div class="formvalue form-group clearfix">
+                <div class="form-left pull-left"><label for="bom_description" class="required">BOM Description:</label></div>
+                <div class="input-group form-right pull-left">
+
+                <textarea rows="5" cols="200" name="bom_description" id="bom_description" value="" class="form-control" required></textarea>
+         
+                </div>
+                <div class="form-left pull-left"></div>
+            </div>
+
+        </div>
+
+
+                        <a href="" style="display:none;">
+                                <input type="reset" name="reset" id="reset-bom" value="Reset" class="btn btn-primary">
+                               </a>
+                   </form>
+        
+        <form data-toggle="validator"  enctype="application/x-www-form-urlencoded" action="#" method="post" id="addtobom" name="addtobom" class='addtobom'>
+
+        <input type="hidden" value="" name="bom-id" id="bom-id">
+        <input type="hidden" value="" name="op-type" id="op-type">
+        <div class="bom_detail" id='bom-detail'>
+          
+
+        </div>
+        
+     <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example1">
+        
+                                        <thead>
+                                            <tr> 
+                                                <th>#</th>
+                                                <th>Part no#</th>
+                                                <th>Description</th>
+                                                <th>Type</th>
+                                                <th>Qty</th>
+                                                <th>UOM</th>
+                                                <th>Dwg #</th>
+                                                <th>Dwg Rev #</th>
+                                                <th>BOM #</th>
+                                                <th>BOM Rev</th>
+                                                <th>Weight</th>
+                                                <th>Board Reference</th>
+                                                <th>Component Value</th>
+                                                <th>Case Style Package</th>
+                                                <th>Fit Yes/No</th>
+                                                <th>Side of Board Mounted1 or 2</th>
+                                                <th>PTH or SMT</th>
+                                                <th>Comments</th>
+                                                <th>Action</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                            
+                                        </tbody>
+                                    </table>
+        
+        <div style='float:right;'>
+             
+             <a id='addnew'  name='addnew' class='btn btn-primary' >Add New</a>
+             <a id='addall'  name='addall' class='btn btn-primary' >Save All</a>
+             <a id='import'  name='import' class='btn btn-primary' >Import</a>
+             <a id='pdf' onclick="pdfOfBom('<?=$this->url(array('module'=>'admin','controller'=>'bom','action'=>'bomtopdf'))?>');"  target="_blank" class='btn btn-primary' >PDF</a>
+             <a id='ecel' onclick="excelOfBom('<?=$this->url(array('module'=>'admin','controller'=>'bom','action'=>'exportexcel'))?>');" target="_blank" class='btn btn-primary' >Excel</a>
+
+        </div>
+                           </form>   
+    </div>
+    
+
+
+     <script type="text/javascript">
+   
+   
+         
+         function validate_addbom() {
+
+                        var x = document.forms["form_addbom"]["partno"].value;
+                        var y = document.forms["form_addbom"]["project"].value;
+                        var z = document.forms["form_addbom"]["bom_description"].value;
+                            if (x == null || x == "") {
+                                alert("Partno must be filled out");
+                                return false;
+                                 }
+                            if (y == null || y == "") {
+                                alert("Project must be filled out");
+                                return false;
+                                 }
+                            if (z == null || z == "") {
+                                alert("Description must be filled out");
+                                return false;
+                                 }    return 1; 
+                        }
+    function validate_addtobom() {
+             var i=0;
+                        var x;
+                        var y;
+                        var z;
+                        var a;
+                        var b;
+                        var c;
+                        var formdata = $('#addtobom').serializeJSON();
+                        if(formdata.partnonew || formdata.qtynew || formdata.commentsnew){
+                        $(formdata.partnonew).each(function(k, v) {
+                            if ((v== null || v== "" || v === '0') ) {
+                               alert("Partno of BOM must be filled out");i++;
+                                 return false;
+                             } 
+                        });
+
+                        $(formdata.qtynew).each(function(k, v) {
+ if ((v== null || v== "" || v === '0') ) {
+                                 alert("qty must be filled out");i++;
+                                 return false;
+                             }
+                            
+                        });
+                      
+                        $(formdata.commentsnew).each(function(k, v) {
+ if ((v== null || v== "" || v === '0') ) {
+                                 alert("comments must be filled out");i++;
+                                 return false;
+                             }
+                            
+                        });
+                         
+                    }
+                    
+                     if(formdata.partno || formdata.qty || formdata.comments){
+                         $(formdata.partno).each(function(k, v) {
+                             if ((v== null || v== "" || v === '0') ) {
+                                  alert("Partno of BOM must be filled out");i++;
+                                 return false;
+                             }
+                            
+                        });
+                        $(formdata.qty).each(function(k, v) {
+                             if ((v== null || v== "" || v === '0') ) {
+                                 alert("qty must be filled out");i++;
+                                 return false;
+                             }
+                            
+                        });
+                        $(formdata.comments).each(function(k, v) {
+                             if ((v== null || v== "" || v === '0') ) {
+                                 alert("comments must be filled out");i++;
+                                 return false;
+                             }
+                            
+                        });
+                       
+
+                     }
+                                          
+                           if(i===0){
+                                 return true;}else{return false;}
+                        }
+           
+                        
+                        
+         
+
+   function fnShowHideE(iCol)
+    {
+    var oTable = $('#example1').dataTable();
+
+$(iCol).each(function(k,v) {
+                          oTable.fnSetColumnVis( v,true );
+                         });
+    }
+    
+    function fnShowHideM(iCol)
+    {
+    var oTable = $('#example1').dataTable();
+    
+     $(iCol).each(function(k,v) {
+                          oTable.fnSetColumnVis( v,false );
+                         });
+
+    }
+   function pdfOfBom(url) {
+       var id = $('#bom-id').val();
+       var url=url+'/id/'+id;
+       var win = window.open(url, '_blank');
+       win.focus();
+                       }
+                       function excelOfBom(url) {
+       var id = $('#bom-id').val();
+       var url=url+'/id/'+id;
+       var win = window.open(url, '_blank');
+       win.focus();
+                       }
+  
+    
+$(document).ready(function() {
+      var url='/asteria/admin/bom';
+       var urlmaterial='/asteria/admin/material';
+    $('#example1').dataTableExt.sErrMode = 'throw';
+    
+    
+                       
+                        function addnew(id){
+                           
+                          
+          $.ajax({
+            url: url+'/category',
+            type: 'post',
+            data: '&id=' + id,
+            success: function(data) {
+                var EL = new Array(11,12,13,14,15,16);
+                if(data==1){
+                    $(EL).each(function(k,v) {
+                          fnShowHideE(EL);
+                         });
+                }
+                
+                if(data==2){
+                    $(EL).each(function(k,v) {
+                          fnShowHideM(EL);
+                         });
+                }
+                                   
+            },complete:function(){
+                 $('#mask').hide();
+            }
+        });
+       
+   }
+     $(document).on("change", "#partno", function() {
+         var id = $("#partno option:selected" ).val();
+          $('#mask').show();
+          addnew(id);
+          projectAdd();
+
+    });
+    
+     function addtobom(bomid) {
+        
+        $.ajax({
+            url: url+'/view',
+            type: 'post',
+            data: '&bom_id=' + bomid,
+
+            success: function(j) {
+                var json = $.parseJSON(j);
+                $('#bom-id').val(json.id);
+                $('#op-type').val('add');
+                
+                if(json.pc ){
+                    var pc='<p><span style="color:red;">Part Count:</span>' + json.pc + '</p>';
+                }else{pc='';}
+                var bom_material = '<p><span style="color:red;">BOM #:</span>' + json.bom + '</p><p><span style="color:red;">BOM REV#:</span>' + json.bom_rev + '</p><p><span style="color:red;">TOTAL WEIGHT:</span>' + json.totalweight + '</p>' + pc + '<p><span style="color:red;">DATE:</span>' + json.date + '</p>';
+                $('#bom-detail').html(bom_material);
+                $('#bom_id').val(json.id.id);
+ 
+                $('#example1').dataTable().fnClearTable();
+                $(json.table).each(function(k, v) {
+                    var partno = '<select update="' + v.id + '" id="part_' + v.id + '" class="partno" name="partno[]" required="true"><option value="">Slect Part no</option>';
+                    $(json.partno).each(function(m, n) {
+                        if (v.material_id == n.id) {
+                            partno += '<option value="' + n.id + '" selected="true">' + n.part_no + '</option>';
+                        } else {
+                            partno += '<option value="' + n.id + '">' + n.part_no + '</option>';
+                        }
+
+                    });
+                    partno += '</select>';
+                    
+                     var uom = '<select  id="uom_' + v.id + '" class="uom" name="uom[]" required="true"><option>Slect UOM</option>';
+                    $(json.uom).each(function(m, n) {
+                        if (v.uom == n.id) {
+                            uom += '<option value="' + n.id + '" selected="true">' + n.uom + '</option>';
+                        } else {
+                            uom += '<option value="' + n.id + '">' + n.uom + '</option>';
+                        }
+
+                    });
+                    uom += '</select>';
+                    
+                    var desc = '<input id="desc_' + v.id + '" type="text" value="' + v.material_desc + '" class="desc" readonly="true">\n\
+                                    <input type="hidden" name="bom_ref_id[]"  value="' + v.id + '">';
+                    var type = '<input id="type_' + v.id + '" type="text" value="' + v.type + '" class="type" readonly="true">';
+                    var qty = '<input onkeypress="return IsNumeric(event)"  name="qty[]" update="' + v.id + '" id="qty_' + v.id + '" type="text" value="' + v.quanty + '" class="qty" >';
+//                    var uom = '<input id="uom_' + v.id + '" type="text" value="' + v.uom + '" class="uom" readonly="true">';
+                    var dwg = '<input id="deg_' + v.id + '" type="text" value="' + v.drawing_no + '" class="dwg" readonly="true">';
+                    var dwgr = '<input id="dwgr' + v.id + '" type="text" value="' + v.revision_no + '" class="dwgr" readonly="true">';
+                    var comments = '<input name="comments[]" update="' + v.id + '" id="comments_' + v.id + '" type="text" value="' + v.comments + '" class="comments">';
+                    
+                    var bom='<input id="bom' + v.id + '" type="text" value="' + v.bom + '" class="bom" readonly="true">';
+                    var bomrev='<input id="bomrev' + v.id + '" type="text" value="' + v.bomrev + '" class="bomrev" readonly="true">';
+                    var weight='<input id="weight' + v.id + '" type="text" value="' + v.weight + '" class="weight" readonly="true"><input type="hidden" value="'+v.basic_weight+'" class="hiddenweight" readonly="true">';
+                   
+                    var BR ='<input onkeypress="return isAlphaNumeric(event)" id="br' + v.id + '" type="text" name="br[]" value="' + v.br + '" class="br" required="true">';
+                var CV ='<input onkeypress="return isAlphaNumeric(event)" id="cv' + v.id + '" type="text" name="cv[]" value="' + v.cv + '" class="cv" required="true">';
+                var CSP ='<input onkeypress="return isAlphaNumeric(event)" id="csp' + v.id + '" type="text" name="csp[]" value="' + v.csp + '" class="csp" required="true">';
+                
+                var FYN ='<input onkeypress="return isAlphaNumeric(event)" id="fyn' + v.id + '" type="text" name="fyn[]" value="' + v.fyn + '" class="fyn" required="true">';
+                var SBM ='<input  onkeypress="return isAlphaNumeric(event)" id="sbm' + v.id + '" type="text" name="sbm[]" value="' + v.sbm + '" class="sbm" required="true">';
+                var PTHrSMT ='<input onkeypress="return isAlphaNumeric(event)" id="pthrsmt' + v.id + '" type="text" name="pthrsmt[]" value="' + v.pthrsmt + '" class="pthrsmt" required="true">';
+    
+    var i = $('#example1').dataTable().fnSettings().fnRecordsTotal();
+                   
+
+                    $('#example1').dataTable().fnAddData(
+                        [i + 1, partno, desc, type, qty, uom, dwg, dwgr,bom,bomrev,weight,BR,CV,CSP,FYN,SBM,PTHrSMT,comments, '<a style="cursor:pointer" del="' + v.id + '" id="del' + v.id + '" class="deleterow">DEL</a><br/><a style="cursor:pointer" edit="' + v.id + '" id="edit' + v.id + '" class="updaterow"></a>']);
+
+
+                });
+                $('.bom').removeClass('hidden');
+
+                $('#myTab a[href="#add-edit"]').tab('show');
+            }
+        });
+    }
+   
+function createBom()
+{    $('#mask').show();
+     var formdata = $('#form_addbom').serialize();
+        $.post(url+'/create', {'data': formdata })
+            .done(function(id) {
+                       console.log(formdata);
+         if(id=='0'){alert('BOM Already created for this Project;');$('#mask').hide();}
+         else{
+              $('#bom-id').val(id);
+              $('#bom-edit-id').val(id);
+              addBom(id);
+              $('#partno').attr('disabled','true');
+              $('#project').attr('disabled','true');
+               }
+                         });
+}
+
+//function refreshBOM() {
+//        $.ajax({
+//            url: url+'/refresh',
+//            type: 'post',
+//            data:'&id=1',
+//            success: function(j) {
+//                var json = $.parseJSON(j);
+//                $('#example').dataTable().fnClearTable();
+//                var i=1;
+//                $(json).each(function(k, v) {
+//                    if(v.status === '1'){j='on';}
+//                    else{j='off';}
+//                    var a='<a target="_blank" href="'+urlmaterial+'/index/global/'+v.material_id+'" class="add-bom" id="'+v.material_id+'">'+v.bom_project_id+'</a>';
+//                    var b=v.bom_rev_id;
+//                    var c=v.material_desc;
+//                    var d='<a href="#" class="edit-bom edit'+v.id+'" id="'+v.id+'">EDIT /</a><a href="#" class="view-bom" id="'+v.id+'">VIEW</a>';
+//                    var e='<img class="imgswap on" id="approval_'+v.id+'" src="/asteria/public/images/tick_'+j+'.png">';
+//                    $('#example').dataTable().fnAddData([i++,a,b,c,d,e]);
+//                     
+//
+//                });
+//           
+//            }
+//        });
+//    }
+  
+     function projectDel()
+         {
+            $.ajax({
+            url: url+'/projectdel',
+            type: 'post',
+            success: function(j) {
+                var json = $.parseJSON(j);
+                $(json).each(function(k, v) {
+                    $(v).each(function(a, b) {
+                        $(v).each(function(c, d) {
+                    $("#project option[value="+d.project_id+"]").remove();
+                   
+                        });
+                 });
+
+                });
+           
+            },
+            complete: function(){
+                var lengt = $('#project').children('option').length;
+                if(lengt === 1){
+                   
+                    $("#project").append(new Option('No project available',''));
+                }
+            
+            }
+        });
+         }
+         
+         function projectAdd()
+         {
+             $('#mask_project').show();
+            $.ajax({
+            url: url+'/addallproject',
+            type: 'post',
+            success: function(j) {
+                var json = $.parseJSON(j);
+//                console.log(json);
+                $(json).each(function(k, v) {
+                    $(v).each(function(a, b) {
+                        $(v).each(function(c, d) {
+                       $("#project option[value="+d.project_id+"]").remove();
+                       $("#project").append(new Option(d.project_name,d.project_id));
+                   
+                        });
+                 });
+
+                });
+           
+            },
+            complete: function(){
+                 var id = $("#partno option:selected" ).val();
+                 $.ajax({
+            url: url+'/addnew',
+            type: 'post',
+            data: '&create_bom_id=' + id,
+            success: function(j) {
+                var json = $.parseJSON(j);
+                $(json.remove).each(function(a, b) {
+//                    console.log(json.remove);
+                    $(b).each(function(c, d) {
+                        if(d.project_id){
+                        
+                    $("#project option[value="+d.project_id+"]").remove();
+                   
+                        }
+                   
+                        });
+                    });
+                  $('#bom_description').val(json.desc);
+                  $('#mask_project').hide();   
+            }
+        });
+                
+                }
+            
+            
+        });
+        return 1;
+         }
+         
+//          $(document).on("change", "#partno", function() {
+//          var id = $("#partno option:selected" ).val();
+//          projectAdd();
+//          $('#mask').show();
+//
+//     
+//    });
+         
+         
+         jQuery('.addbom').click(function () {
+            var i = $('#example1').dataTable().fnSettings().fnRecordsTotal();
+           if(i=='0'){
+//            projectDel();
+        }
+            $('#addnew').show();
+            $('#addall').show();
+            
+            });
+
+
+     jQuery('.materiallist').click(function () {
+//          projectAdd();
+    
+     $('#bom-edit-id').val('');
+     $('#material-id').val('');
+     $('#bom-id').val('');
+     $('#bom-detail').html('');
+     
+     $('#example1').dataTable().fnClearTable();
+     jQuery('#partno').removeAttr('disabled').attr('required','true');
+     jQuery('#project').removeAttr('disabled').attr('required','true');
+     jQuery('#reset-bom').trigger('click');
+    
+});
+
+function addBom(id)
+{     
+     var formdata = $('#addtobom').serializeJSON();
+        $.post(url+'/addall', {'data': formdata })
+            .done(function(data) {
+                       addtobom(id);
+//                       refreshBOM();
+                       $('#mask').hide();
+                       
+                         });
+}
+
+function editBom()
+{    
+     var formdata = $('#form_addbom').serialize();
+        $.post(url+'/updatebom', {'data': formdata })
+            .done(function(data) {
+                       $('#mask').hide();
+//                       refreshBOM();
+                         });
+}
+
+function validateE() {
+             var i=0;
+                        var x;
+                        var y;
+                        var z;
+                        var a;
+                        var b;
+                        var c;
+                        var formdata = $('#addtobom').serializeJSON();
+                        if(formdata.brnew || formdata.cvnew || formdata.cspnew || formdata.fynnew || formdata.sbmnew || formdata.pthrsmtnew){
+                        $(formdata.brnew).each(function(k, v) {
+                            if ((v== null || v== "" || v === '0') ) {
+                               alert("Board Refrence must be filled out");i++;
+                                 return false;
+                             } 
+                        });
+
+                        $(formdata.cvnew).each(function(k, v) {
+ if ((v== null || v== "" || v === '0') ) {
+                                 alert("Component value must be filled out");i++;
+                                 return false;
+                             }
+                            
+                        });
+                      
+                        $(formdata.cspnew).each(function(k, v) {
+ if ((v== null || v== "" || v === '0') ) {
+                                 alert("Case style package must be filled out");i++;
+                                 return false;
+                             }
+                            
+                        });
+                        $(formdata.sbmnew).each(function(k, v) {
+ if ((v== null || v== "" || v === '0') ) {
+                                 alert("Fit Yes/No must be filled out");i++;
+                                 return false;
+                             }
+                            
+                        });
+                        $(formdata.fynnew).each(function(k, v) {
+ if ((v== null || v== "" || v === '0') ) {
+                                 alert("Side of Board Mounted1 or 2 must be filled out");i++;
+                                 return false;
+                             }
+                            
+                        });
+                        $(formdata.pthrsmtnew).each(function(k, v) {
+ if ((v== null || v== "" || v === '0') ) {
+                                 alert("PTH or SMT must be filled out");i++;
+                                 return false;
+                             }
+                            
+                        });
+                         
+                    }
+                     if(formdata.br || formdata.cv || formdata.csp || formdata.fyn || formdata.sbm || formdata.pthrsmt){
+                        $(formdata.br).each(function(k, v) {
+                            if ((v== null || v== "" || v === '0') ) {
+                               alert("Board Refrence must be filled out");i++;
+                                 return false;
+                             } 
+                        });
+
+                        $(formdata.cv).each(function(k, v) {
+ if ((v== null || v== "" || v === '0') ) {
+                                 alert("Component value must be filled out");i++;
+                                 return false;
+                             }
+                            
+                        });
+                      
+                        $(formdata.csp).each(function(k, v) {
+ if ((v== null || v== "" || v === '0') ) {
+                                 alert("Case style package must be filled out");i++;
+                                 return false;
+                             }
+                            
+                        });
+                        $(formdata.sbm).each(function(k, v) {
+ if ((v== null || v== "" || v === '0') ) {
+                                 alert("Fit Yes/No must be filled out");i++;
+                                 return false;
+                             }
+                            
+                        });
+                        $(formdata.fyn).each(function(k, v) {
+ if ((v== null || v== "" || v === '0') ) {
+                                 alert("Side of Board Mounted1 or 2 must be filled out");i++;
+                                 return false;
+                             }
+                            
+                        });
+                        $(formdata.pthrsmt).each(function(k, v) {
+ if ((v== null || v== "" || v === '0') ) {
+                                 alert("PTH or SMT must be filled out");i++;
+                                 return false;
+                             }
+                            
+                        });
+                         
+                    }
+                  
+                                          
+                           if(i===0){
+                                 return 1;}else{return false;}
+                        }
+
+$('#addall').click(function() {
+    var id = $("#partno option:selected" ).val();
+
+  
+  $.ajax({
+            url: url+'/category',
+            type: 'post',
+            data: '&id=' + id,
+            success: function(data) {
+              if(data==='1')
+              {if(validateE()){
+                    var check_addbom = validate_addbom();
+        var table = $('#example1').DataTable();
+        var i = $('#example1').dataTable().fnSettings().fnRecordsTotal();
+        var check_addtobom=validate_addtobom();   
+      if(check_addbom) {
+                    if(i>0) {if(check_addtobom){
+
+                                    var editid=$('#bom-edit-id').val();
+                         
+                                            if(editid){
+                                               
+                                                $('#mask').show();
+                                                addBom(editid);
+                                                editBom();
+                                                
+                                         }
+                                else{
+                                   createBom();
+                                    }
+                                }
+
+                               }
+                             
+   else{
+       alert('Please add BOM Line item material');
+      }
+       }
+                  
+                  }
+              }
+              if(data==='2')
+              {
+                    var check_addbom = validate_addbom();
+        var table = $('#example1').DataTable();
+        var i = $('#example1').dataTable().fnSettings().fnRecordsTotal();
+        var check_addtobom=validate_addtobom();   
+      if(check_addbom) {
+                    if(i>0) {if(check_addtobom){
+
+                                    var editid=$('#bom-edit-id').val();
+                         
+                                            if(editid){
+                                               
+                                                $('#mask').show();
+                                                addBom(editid);
+                                                editBom();
+                                                
+                                         }
+                                else{
+                                   createBom();
+                                    }
+                                }
+
+                               }
+                             
+   else{
+       alert('Please add BOM Line item material');
+      }
+       }
+              }
+              
+            }
+          
+        });
+       
+      
+   
+ });
+ 
+ function projectAddAll()
+         {
+            $.ajax({
+            url: url+'/projectadd',
+            type: 'post',
+            success: function(j) {
+                var json = $.parseJSON(j);
+                $(json).each(function(k, v) {
+                    $(v).each(function(a, b) {
+                        $(v).each(function(c, d) {
+     
+                       $("#project").append(new Option(d.name,d.id));
+                   
+                        });
+                 });
+
+                });
+           
+            }
+        });
+         }
+    
+  
+
+   
+       $(document).on("click", "#example tbody tr td .edit-bom", function() {
+        var id = $(this).attr("id");
+        projectAddAll();
+        $('#bom-id').val(id);
+        $('#bom-edit-id').val(id);
+        $('#addnew').show();
+        $('#addall').show();
+        $('#example1').dataTable().fnClearTable();
+        addtobom(id);
+        $.ajax({
+            url: url+'/editbom',
+            type: 'post',
+            data: '&edit_bom_id=' + id,
+
+            success: function(j) {
+               
+                var json = $.parseJSON(j);
+              addnew(json.material_id);
+                    $('#bom-edit-id').val(json.id);
+                    $('#partno').val(json.material_id);
+                    $('#material-id').val(json.material_id);
+                    $('#partno').attr('disabled','true');
+                    $('#project').attr('disabled','true');
+                    $('#project').val(json.project_id);
+                    $('#bom_description').val(json.desc);
+                    $('#myTab a[href="#addbom"]').tab('show');
+            }
+        });
+    });
+     
+    
+    $(document).on("click", "#example tbody tr td .view-bom", function() {
+      
+      
+        var id = $(this).attr("id");
+        $('#bom-id').val(id);
+        $('#bom-edit-id').val(id);
+        $('#addnew').hide();
+        $('#addall').hide();
+        $('#example1').dataTable().fnClearTable();
+        addtobom(id);
+        $.ajax({
+            url: url+'/editbom',
+            type: 'post',
+            data: '&edit_bom_id=' + id,
+
+            success: function(j) {
+               
+                var json = $.parseJSON(j);
+                addnew(json.material_id);
+                    $('#bom-edit-id').val(json.id);
+                    $('#partno').val(json.material_id);
+                    $('#material-id').val(json.material_id);
+                    $('#partno').attr('disabled','true');
+                    $('#project').attr('disabled','true');
+                    $('#project').val(json.project_id);
+                    $('#bom_description').val(json.desc);
+                    $('#myTab a[href="#addbom"]').tab('show');
+            },complete:function(){
+                $('#example1 tbody tr td input').attr('disabled','true');
+                $('#example1 tbody tr td select').attr('disabled','true');
+            }
+        });
+    });
+    
+
+
+    $("#addnew").click(function() {
+      
+        var table = $('#example1').DataTable();
+        var i = $('#example1').dataTable().fnSettings().fnRecordsTotal();
+       if(i) {var info = table.page.info();}
+        $('#example1 tbody tr').removeClass('current-bom');
+        var bomid =$( "#partno option:selected" ).val();
+        if(bomid){
+            $.ajax({
+                 url: url+'/category',
+            type: 'post',
+            data: 'id=' + bomid,
+            success: function(data) {
+              
+                   $.ajax({
+            url: url+'/addnew',
+            type: 'post',
+            data: '&addnew_id=' + bomid,
+
+            success: function(j) {
+                var json = $.parseJSON(j);
+                var i = $('#example1').dataTable().fnSettings().fnRecordsTotal();
+                var partno = '<select class="partno partno' + i + '" name="partnonew[]" required="true"><option value="">Slect Part no</option>';
+                $(json.bom).each(function(k, v) {
+                    partno += '<option value="' + v.id + '">' + v.part_no + '</option>';
+                });
+                partno += '</select>';
+                
+                var uom = '<select class="uom uom' + i + '" name="uomnew[]" required="true"><option value="">Slect Uom</option>';
+                $(json.uom).each(function(k, v) {
+                    uom += '<option value="' + v.id + '">' + v.uom + '</option>';
+                });
+                uom += '</select>';
+                
+                var desc = '<input  type="text" value="" class="desc" readonly="true">';
+                var type = '<input type="text" value="" class="type" readonly="true">';
+                var qty = '<input name="qtynew[]" type="text" value="" onkeypress="return IsNumeric(event)" class="qty qty' + i + '" required="true">';
+                var dwg = '<input type="text" value="" class="dwg" readonly="true">';
+                var dwgr = '<input type="text" value="" class="dwgr" readonly="true">';
+                
+                var bom = '<input type="text" value="" class="bom" readonly="true">';
+                var bomrev = '<input type="text" value="" class="bomrev" readonly="true">';
+                var weight = '<input type="text" value="" class="weight" readonly="true"><input type="hidden" value="" class="hiddenweight" readonly="true">';
+                
+                var comments = '<input onkeypress="return isAlphaNumeric(event)" name="commentsnew[]" type="text" value="" class="comments comments' + i + '" required="true">';
+                var BR ='<input type="text" onkeypress="return isAlphaNumeric(event)" name="brnew[]" value="" class="brnew brnew' + i + '" required="true">';
+                var CV ='<input type="text" onkeypress="return isAlphaNumeric(event)" name="cvnew[]" value="" class="cvnew cvnew' + i + '" required="true">';
+                var CSP ='<input type="text" onkeypress="return isAlphaNumeric(event)" name="cspnew[]" value="" class="cspnew cspnew' + i + '" required="true">';
+                
+                var FYN ='<input type="text" onkeypress="return isAlphaNumeric(event)" name="fynnew[]" value="" class="fynnew fynnew' + i + '" required="true">';
+                var SBM ='<input type="text" onkeypress="return isAlphaNumeric(event)" name="sbmnew[]" value="" class="sbmnew sbmnew' + i + '" required="true">';
+                var PTHrSMT ='<input type="text" onkeypress="return isAlphaNumeric(event)" name="pthrsmtnew[]" value="" class="pthrsmtnew pthrsmtnew' + i + '" required="true">';
+
+                $('#example1').dataTable().fnAddData(
+                    [i + 1, partno, desc, type, qty, uom, dwg, dwgr,bom,bomrev,weight,BR,CV,CSP,FYN,SBM,PTHrSMT, comments,'<a style="cursor:pointer" class="deleterow">DEL</a>']);
+            },
+            complete: function(j) {
+               
+                if(i) {$('#example1').dataTable().fnPageChange(info.pages - 1, true);}
+
+            }
+        });
+                
+            }
+            });
+            
+        
+        }else{alert('Please select BOM part no and Assign project.')}
+       
+
+
+    });
+    
+    $(document).on("keyup", "#example1 tbody tr td .qty", function(){
+       
+      var row = $(this).parent('td').parent('tr').addClass('current-weight');
+      var weight=$('.current-weight td .hiddenweight').val();
+      var qty=$('.current-weight td .qty').val();
+      if(qty){var tw=weight*qty;}else{var tw=weight;}
+      $('.current-weight td .weight').val(tw);
+      $('#example1 tbody tr').removeClass('current-weight');
+     });
+   
+    $(document).on("change", "#example1 tbody tr td .partno", function() {
+        var id = $(this).val();
+
+        var row = $(this).parent('td').parent('tr').addClass('current-bom');
+        if (id == 0) {
+            $('.current-bom td .desc').val('');
+            $('.current-bom td .type').val('');
+            $('.current-bom td .uom').val('');
+            $('.current-bom td .dwg').val('');
+            $('.current-bom td .dwgr').val('');
+            $('#example1 tbody tr').removeClass('current-bom');
+        }
+        if (id != 0) {
+            $.ajax({
+                type: 'POST',
+                url:url+'/addbom',
+                data: '&bom_add=' + id,
+                async: false,
+                success: function(response) {
+                    var json = $.parseJSON(response);
+                    
+                    $('.current-bom td .desc').val(json.material_desc);
+                    $('.current-bom td .type').val(json.type);
+                    $('.current-bom td .uom').val(json.uom);
+                    $('.current-bom td .dwg').val(json.drawing_no);
+                    $('.current-bom td .dwgr').val(json.revision_no);
+                    $('.current-bom td .bom').val(json.bom);
+                    $('.current-bom td .bomrev').val(json.bomrev);
+                    $('.current-bom td .weight').val(json.weight);
+                    $('.current-bom td .hiddenweight').val(json.weight);
+                    $('#example1 tbody tr').removeClass('current-bom');
+
+                }
+            });
+        }
+
+
+    });
+
+
+    
+    
+    $(document).on("click", "#example1 tbody tr td .deleterow", function() {
+
+        var row = $(this).closest('tr');
+        var nRow = row[0];
+        var id = $('#bom-id').val();
+        var delid = $(this).attr('del');
+        if (delid) {
+            $('#mask').show();
+            $.ajax({
+                type: 'POST',
+                url: url+'/delete',
+                data: '&delid=' + delid,
+                success: function(response) {
+                    addtobom(id);
+                    $('#example1').dataTable().fnDeleteRow(nRow);
+                    $('#mask').hide();
+                }
+            });
+        } else {
+            $('#example1').dataTable().fnDeleteRow(nRow);
+        }
+
+    });
+
+ 
+  
+
+   
+
+  
+
+
+
+$(document).on("click", "#example tbody tr td .imgswap", function() {
+        var id = $(this).attr("id");
+        var vendor_id = id.split("_");
+        if ($(this).attr("class") == "imgswap") {
+            $('#' + id).attr('src', '<?php echo $this->baseUrl();?>/public/images/tick_on.png')
+            this.src = this.src.replace("_off", "_on");
+            var status = '1';
+        } else {
+            $('#' + id).attr('src', '<?php echo $this->baseUrl();?>/public/images/tick_off.png')
+            this.src = this.src.replace("_on", "_off");
+            var status = '0';
+        }
+        $(this).toggleClass("on");
+
+        var dataString = '&type=changestatus&id=' + vendor_id[1] + '&status=' + status;
+
+        $.ajax({
+            type: "POST",
+            url: url+'/changestatus',
+            data: dataString,
+            success: function(j) {
+                
+            }
+        });
+    });
+
+
+
+
+
+
+
+
+    $('#import').click(function() {
+         $('#bom-importid').val($('#bom-id').val());
+         if($('#bom-id').val())
+         {
+         $('#bomimport').modal();
+         }
+    });
+
+    function showModal(title, message) {
+        $('#bommodal-header').html(title);
+        $('.bommodal-create').html('<p>' + message + '</p>');
+        $('#bommodal').modal();
+    }
+    
+    
+
+});
+</script>
+       
+
+        
+        
+  
+ 
+    
+   </div>
+                                     <div id="mask" style="display:none;width:100%;height:100%;background-color: #FDFDFD;opacity: .7;position: absolute;left:0;top:0;">
+                                        
+                                         <span class="Centerer"></span>
+                                             <img class="Centered" src="<?php echo $this->baseUrl();?>/public/images/loading_spinner.gif" />
+                                       
+                                     </div>
+                            </div>
+                            <!-- /block -->
+                           
+                        </div>
+                        
+                    </div>
+  
+
+    
+
+</div></div>
+
+
+<div id="bomimport" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="bomimport-header">Import BOM Material List</h3>
+  </div>
+     <form enctype="multipart/form-data" method="post" role="form" action="#" data-toggle="validator" >
+  <div class="bommodal-body" style="padding: 20px;">
+     
+           <input class="form-control" type="hidden" value="" name="bom-importid" id="bom-importid">
+          <div class="form-group">
+       
+         <input type="file" name="file" id="file" size="150" required="true">
+        <p class="help-block">Only .xls/.xlsx File Import.</p>
+    </div>
+    
+     
+  </div>
+  <div class="modal-footer">
+      <button type="submit" class="btn btn-default" name="Import" value="Import">Import</button>
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
+     </form>
+</div>
+
+
+

@@ -1,0 +1,12 @@
+<div id="chatWrapper">
+    <form id="chatForm" onSubmit="Chat.doIt('admin'); return false;">
+        <div>
+            <textarea id="chatContent" cols="60" rows="20" readonly="readonly"></textarea>
+        </div>
+        <div>
+            <input type="hidden" id="sessId" name="sessId" value="<?php echo $this->sessId; ?>" />
+            <input type="text" id="chatMessage" name="message" />
+            <input type="submit" name="submit" value="Send" />
+        </div>
+    </form>
+</div>

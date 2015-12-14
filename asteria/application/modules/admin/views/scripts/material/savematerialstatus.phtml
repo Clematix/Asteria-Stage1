@@ -1,0 +1,240 @@
+ <script type="text/javascript">
+     
+   $(document).ready(function(){
+       
+        
+       
+      $(document).on("click", ".addstatus", function(){
+          $('#status_form')[0].reset();
+           $('#save_button').removeClass("hidden");
+           $('.inputDisabled').removeAttr("readonly");
+            $('#button_div').addClass("span7").removeClass("span9");
+       });
+       
+        
+           $(document).on("click", ".editstatus", function(){
+               $('#myTab a[href="#addstatus"]').tab('show');
+                var id = $(this).attr("id");
+             //   alert(id)
+           var dataString ='&type=getpatient&id='+id;
+            // alert(dataString);
+            $.ajax({
+                type: "POST",
+                url: '<?=$this->url(array('controller'=>'material','action'=>'getmaterialstatus'))?>',
+                        data: dataString,
+                success: function(j) {
+                   // alert(result);
+                    var json = $.parseJSON(j);
+                    $(json).each(function(i,val){
+                        $.each(val,function(k,v){
+                              
+                              $('#'+k).val(v);     
+                    });
+                    });
+                    //$('div#addstatus').html(result);
+                }
+            });
+         });
+         
+         
+           $(document).on("click", ".viewstatus", function(){
+               $('#myTab a[href="#addstatus"]').tab('show');
+                var id = $(this).attr("id");
+             //   alert(id)
+             $('#mask').show();
+             $('.contenttab').html("View Material Status");
+             $('#save_button').addClass("hidden");
+             $('#button_div').addClass("span9").removeClass("span7");
+           var dataString ='&type=getpatient&id='+id;
+            // alert(dataString);
+            $.ajax({
+                type: "POST",
+                url: '<?=$this->url(array('controller'=>'material','action'=>'getmaterialstatus'))?>',
+                        data: dataString,
+                success: function(j) {
+                   // alert(result);
+                    var json = $.parseJSON(j);
+                    $(json).each(function(i,val){
+                        $.each(val,function(k,v){
+                              $('#'+k).val(v); 
+                                $('#'+k).attr("readonly",true); 
+                                $('#mask').hide();
+                    });
+                    });
+                    //$('div#addstatus').html(result);
+                }
+            });
+         });
+         
+         $(document).on("click", ".listtab", function(){
+            $('.contenttab').html("Add New Material Status");
+         });
+         
+          $( "#status_form" ).submit(function( event ) {
+            var name = $('#name').val();
+            var name = name.trim();
+            var charac = $('#charac').val();
+            var charac = charac.trim();
+            var priority = $('#priority').val();
+            var priority = priority.trim();
+    
+            if(name == ''){
+               $('#name').focus();
+               return false;
+            }
+            if(charac == ''){
+               $('#charac').focus();
+               return false;
+            }
+            if(priority == ''){
+               $('#priority').focus();
+               return false;
+            }
+            
+     });
+    
+            $(document).on("click", ".imgswap", function(){
+         var id = $(this).attr("id");
+         var vendor_id = id.split("_"); 
+         $('#mask').show();
+            if ($(this).attr("class") == "imgswap") {
+                $('#'+id).attr('src', '<?php echo $this->baseUrl();?>/public/images/tick_on.png')
+                this.src = this.src.replace("_off", "_on");
+                var status = '1';
+            } else {
+                $('#'+id).attr('src', '<?php echo $this->baseUrl();?>/public/images/tick_off.png')
+                this.src = this.src.replace("_on", "_off");
+                var status = '0';
+            }
+            $(this).toggleClass("on");
+            
+             var dataString ='&type=changestatusmaterial_status&vendorid='+vendor_id[1]+'&status='+status;
+           // alert(dataString)
+            $.ajax({
+                type: "POST",
+                url: '<?=$this->url(array('controller'=>'material','action'=>'changestatusmaterialstatus'))?>',
+                        data: dataString,
+                success: function(j) {
+                        window.location.replace("<?=$this->url(array('controller'=>'material','action'=>'statusmaster'))?>");
+                        $('#mask').hide();
+                   // alert(j);
+                    //$('div#addstatus').html(result);
+                }
+     });
+       });
+    
+     });
+ </script>
+ <?php echo $this->render('materiallist.phtml');  ?> 
+
+<div class="span9" id="content">
+     <?php echo $this->render('globalmessage/globalmessage.phtml'); ?>
+    
+<!-- CLIENTS LIST-->
+      
+        <div class="row-fluid" style="height:525px;">
+                        <div class="span12">
+                            <!-- block -->
+                            <div class="block">
+                                <div class="navbar navbar-inner block-header">
+                                    <div class="muted pull-left">Material Status Master</div>
+                                    <div class="pull-right"><span class="badge badge-info"><?=$this->books1;?></span>
+
+                                    </div>
+                                </div>
+                                 <div class="accordion block-content collapse in" id="accordion2">
+  
+                                  <ul class="nav nav-tabs" id="myTab">
+  <li class="active"><a href="#materiallist" class="listtab">Material Status List</a></li>
+  <li class="addstatus"><a href="#addstatus" class="contenttab">Add New Material Status</a></li>
+  </ul>
+ 
+<div class="tab-content">
+  <div class="tab-pane active" id="materiallist">
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example">
+                                        <thead>
+                                            <tr>
+                                                <th>Status Name</th>
+                                                <th>Status Code</th>
+                                                <th>Action</th>
+                                                <th>Approval</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($this->materialstatus as $value) { ?>
+                                            <tr><td><?php echo $value[name] ?></td>
+                                                <td><?php echo $value[charac] ?></td>
+                                                <td>
+                                                    <a  class="viewstatus" id="<?php echo $value[id]; ?>" style="cursor:pointer;"><?php echo 'VIEW'; ?></a>
+                                                    <a href="<?php echo $this->baseUrl();?>/admin/material/delete/delete/<?php echo $value[id]; ?>" class="book_delete" style="cursor:pointer;"><?php echo '/ DEL '; ?></a>
+                                                    <!--<a  class="editstatus" id="<?php echo $value[id]; ?>" style="cursor:pointer;"><?php echo '/ EDIT'; ?></a>-->
+                                                </td>
+                                                <td>
+                                                    <?php if($value[status] == '0'){ ?>
+                                                    <img class="imgswap" id="approval_<?php echo $value[id]; ?>" src="<?php echo $this->baseUrl();?>/public/images/tick_off.png"/>
+                                                    <?php }  if($value[status] == '1'){ ?>
+                                                    <img class="imgswap on" id="approval_<?php echo $value[id]; ?>" src="<?php echo $this->baseUrl();?>/public/images/tick_on.png"/>
+                                                    <?php } ?>
+                                                </td>
+                                            <?php  } ?>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+  </div>
+    
+    
+  <div class="tab-pane" id="addstatus">
+      <form enctype="application/x-www-form-urlencoded" action="<?=$this->url(array('controller'=>'material','action'=>'savematerialstatus'))?>" method="post" id="status_form">
+        <input type="hidden" name="id" id="id" value="" class="inputDisabled">
+          <div class="formvalue clearfix">
+              <div class="form-left pull-left"><label for="firstname" class="required">Status Name:</label></div>
+              <div class="form-right pull-left"><input type="text" name="name" id="name" value="<?php echo $this->data[name]; ?>" class="form-control inputDisabled" required="true" maxlength="20"></div>
+          </div>
+          <div class="formvalue clearfix">
+              <div class="form-left pull-left"><label for="charac" class="required">Status Code:</label></div>
+              <div class="form-right pull-left"><input type="text" name="charac" id="charac" value="" class="form-control inputDisabled" required="true" maxlength="20"></div>
+          </div>
+          
+          <div class="formvalue clearfix">
+              <div class="form-left pull-left"><label for="desc" >Description:</label></div>
+              <div class="form-right pull-left">
+                  <!--<input type="text" name="desc" id="desc" value="" class="form-control inputDisabled" maxlength="100">-->
+                <textarea name="desc" id="desc" class="inputDisabled" rows='3' cols='5'></textarea>
+          </div>
+          </div>
+          
+          
+<div id="button_div" class="clearfix span7" style="float: right;" >
+<div class="span2" id="save_button">
+ <input class='btn btn-primary' type="submit" name="deptregister" id="deptregister" value="Save" class="btn btn-default" />
+</div>
+
+<div class="span1" id="back_button">
+    <a href="/../asteria/admin/material/statusmaster"><input class='btn btn-primary' type="button" name="back" id="back" value="Back" class="btn btn-default" /></a>
+</div>
+      </div>
+
+</form>
+      
+      </div>
+  
+  
+</div>
+ 
+</div>
+        
+                            </div>
+                            <!-- /block -->
+                        </div>
+                        
+                    </div>
+   
+
+    
+
+</div>
+
+
+
+

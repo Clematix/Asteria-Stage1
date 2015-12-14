@@ -1,0 +1,163 @@
+<style type="text/css">
+    .formvalue{
+         width: 100%;
+         float: left;
+    }
+    .form-left{
+        padding: 1% 5% 0 0;
+    text-align: right;
+    width: 40%;
+    }
+    .form-right {
+    width: 55%;
+}
+    </style>
+    
+     <script type="text/javascript">
+   
+     function checkpassword() {
+        var pass1 = document.getElementById("npassword").value;
+        var pass2 = document.getElementById("rnpassword").value;
+
+        if (pass1 != pass2) {
+           alert('Password and confirm Password Mismatch');
+            document.getElementById("npassword").style.borderColor = "#E34234";
+            document.getElementById("rnpassword").style.borderColor = "#E34234";
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    
+    
+    </script>
+<div class="span3" ></div>
+<div class="span6" id="content">
+     <?php echo $this->render('globalmessage/globalmessage.phtml'); ?>
+    
+
+      
+    <div class="row-fluid">
+                        <div class="span12" >
+                            <!-- block -->
+                            <div class="block">
+                                <div class="navbar navbar-inner block-header">
+                                    <div class="muted pull-left">Personal Details</div>
+                                   
+
+                                    </div>
+                                </div>
+                                <div class="block-content collapse in" id="accordion2">
+                                    <form enctype="application/x-www-form-urlencoded" onsubmit="return checkpassword()" action="<?=$this->url(array('controller'=>'auth','action'=>'profile'))?>" method="post" name="">
+                    <input type="hidden" name="id" id="id" value="<?php echo $this->userdetails['id'];?>" >
+                                    <div class="formvalue">
+                                        <div class="form-left pull-left">
+                                            <label for="firstname" class="required">First Name:</label></div>
+                                        <div class="form-right pull-left">
+                                            <input type="text" name="firstname" id="firstname" value="<?php echo $this->userdetails['firstname'];?>" class="form-control input-text validate-alpha required-entry" >
+                                        </div>
+                                    </div>
+
+                                    <div class="formvalue">                                        
+                                        <div class="form-left pull-left"><label for="lastname" class="required">Last Name:</label></div>
+                                        <div class="form-right pull-left">
+                                            <input type="text" name="lastname" id="lastname" value="<?php echo $this->userdetails['lastname'];?>" class="form-control" required="true">
+                                        </div>
+                                    </div>   
+                    
+                    <div class="formvalue">                                        
+                                        <div class="form-left pull-left"><label for="E-mail" class="required">E-mail</label></div>
+                                        <div class="form-right pull-left">
+                                            <input type="email" name="email" id="email" value="<?php echo $this->userdetails['email'];?>" class="form-control" required="true" disabled="true">
+                                        </div>
+                                    </div> 
+                    <div class="formvalue">                                        
+                                        <div class="form-left pull-left"><label for="Change Password" class="required">Change Password</label></div>
+                                        <div class="form-right pull-left">
+                                            <input type="checkbox" name="changepassword" id="changepassword" value="" class="form-control" >
+                                        </div>
+                                    </div> 
+                    
+                    
+                    
+                    <div id="change_password" style="display:none;">
+                        
+                        <div class="formvalue">                                        
+                                        <div class="form-left pull-left"><label for="Current Password" class="required">Current Password</label></div>
+                                        <div class="form-right pull-left">
+                                            <input type="password" minlength="6" maxlength="10"  name="password" id="password" value="" class="form-control" placeholder="Enter password">
+                                        </div>
+                                    </div> 
+                        
+                        <div class="formvalue">                                        
+                                        <div class="form-left pull-left"><label for="New password" class="required">New password</label></div>
+                                        <div class="form-right pull-left">
+                                            <input type="password" minlength="6" maxlength="10"  name="npassword" id="npassword" value="" class="form-control" placeholder="Enter new password">
+                                        </div>
+                                    </div> 
+                        <div class="formvalue">                                        
+                                        <div class="form-left pull-left"><label for="Re-enter New password" class="required">Re-enter New password</label></div>
+                                        <div class="form-right pull-left">
+                                            <input type="password" minlength="6" maxlength="10"  name="rnpassword" id="rnpassword" value="" class="form-control" placeholder="Re-enter New password" >
+                                        </div>
+                                    </div> 
+                        
+                    </div>
+          <div class="formvalue">                                        
+                                        <div class="form-left pull-left">
+                                        </div>
+                                        <div class="form-right pull-left">
+                                            <input type="submit" name="register" id="register" value="save" class="btn btn-primary">
+                                        </div>
+                                    </div>                          
+                                    
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- /block -->
+                        </div>
+                        
+    </div>
+   
+
+    
+
+
+
+
+<div class="span3" ></div>
+<script type="text/javascript">
+    
+          
+jQuery(document).ready(function () {
+    
+    var ifr = jQuery('#change_password');
+     var cp = jQuery('#password');
+      var ccp = jQuery('#npassword');
+       var nccp = jQuery('#rnpassword');
+    
+
+jQuery('#changepassword').click(function () {
+ 
+ ifr.toggle(function(){
+        if(ifr.is(':visible'))
+        {
+            cp.attr('required', 'true');
+             ccp.attr('required', 'true');
+              nccp.attr('required', 'true');
+        }
+        else {
+            cp.removeAttr('required');
+             ccp.removeAttr('required');
+              nccp.removeAttr('required');
+        }
+    });
+      
+ 
+});
+
+});
+
+</script>
+

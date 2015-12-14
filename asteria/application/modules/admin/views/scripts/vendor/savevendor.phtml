@@ -1,0 +1,396 @@
+ <script src="<?php echo $this->baseUrl();?>/public/js/location.js"></script>
+
+<style type="text/css">
+    .bs-example{
+    	margin: 20px;
+    }
+  .accordion-toggle {cursor: pointer;}
+  .accordion-content {display: none;}
+  .accordion-content.default {display: block;}
+  .accordion-content{padding:10px; border-bottom:1px solid #ccc;}
+  .accordion h4{
+	background-color:#f9f9f9;
+	padding:10px; 
+	font-size:16px;
+	border-bottom:1px solid #ccc; 
+  }
+  a, a:hover, a:focus{
+outline:0;	
+}
+#accordion{
+border:1px solid #ccc;
+margin:0;
+border-bottom:0;	
+}
+.accordion h4{
+margin:0;	
+}
+</style>
+   
+   <script type="text/javascript">
+     
+   $(document).ready(function(){
+       
+        
+       $(document).on("click", ".addstatus", function(){
+             $('#vendorform')[0].reset();
+            $('#save_button').removeClass("hidden");
+           $('.inputDisabled').removeAttr("readonly");
+            $('#button_div').addClass("span7").removeClass("span9");
+       });
+       
+            $(document).on("click", ".editvendor", function(){
+               $('#myTab a[href="#addstatus"]').tab('show');
+                var id = $(this).attr("id");
+             //   alert(id)
+             $('#mask').show();
+            $('.contenttab').html("Edit Vendor");
+           var dataString ='&type=getvendor&id='+id;
+            // alert(dataString);
+            $.ajax({
+                type: "POST",
+                url: '<?=$this->url(array('controller'=>'vendor','action'=>'getvendorvalue'))?>',
+                        data: dataString,
+                success: function(j) {
+                   // alert(result);
+                    var json = $.parseJSON(j);
+                    $(json).each(function(i,val){
+                        $.each(val,function(k,v){
+                            //  alert(k+"-"+v)
+                              $('#'+k).val(v);     
+                    });
+                    $('#mask').hide();
+                    });
+                    //$('div#addstatus').html(result);
+                }
+            });
+         });
+    
+    $(document).on("click", ".listtab", function(){
+            $('.contenttab').html("Add New Vendor");
+         });
+       $(document).on("click", ".viewgroup", function(){
+               $('#myTab a[href="#addstatus"]').tab('show');
+                var id = $(this).attr("id");
+              //  alert(id)
+              $('#mask').show();
+            $('.contenttab').html("View Vendor");
+           var dataString ='&type=getvendor&id='+id;
+            // alert(dataString);
+            $('#save_button').addClass("hidden");
+            $('#button_div').addClass("span9").removeClass("span7");
+            $.ajax({
+                type: "POST",
+                url: '<?=$this->url(array('controller'=>'vendor','action'=>'getvendorvalue'))?>',
+                        data: dataString,
+                success: function(j) {
+                   // alert(result);
+                    var json = $.parseJSON(j);
+                    $(json).each(function(i,val){
+                        $.each(val,function(k,v){
+                              
+                              $('#'+k).val(v);  
+                              $('#'+k).attr("readonly",true); 
+                           
+                               });
+                               $('#mask').hide();
+                    });
+                    //$('div#addstatus').html(result);
+                }
+            });
+         });
+         $(document).on("click", ".imgswap", function(){
+         var id = $(this).attr("id");
+         var vendor_id = id.split("_"); 
+         $('#mask').show();
+            if ($(this).attr("class") == "imgswap") {
+                $('#'+id).attr('src', '<?php echo $this->baseUrl();?>/public/images/tick_on.png')
+                this.src = this.src.replace("_off", "_on");
+                var status = '1';
+            } else {
+                $('#'+id).attr('src', '<?php echo $this->baseUrl();?>/public/images/tick_off.png')
+                this.src = this.src.replace("_on", "_off");
+                var status = '0';
+            }
+            $(this).toggleClass("on");
+            
+             var dataString ='&type=approvevendor&vendorid='+vendor_id[1]+'&status='+status;
+            //alert(dataString)
+            $.ajax({
+                type: "POST",
+                url: '<?=$this->url(array('controller'=>'vendor','action'=>'approvevendor'))?>',
+                        data: dataString,
+                success: function(j) {
+                   // alert(result);
+                   window.location.replace("<?=$this->url(array('controller'=>'vendor','action'=>'index'))?>");
+                    $('#mask').hide();
+//                    var json = $.parseJSON(j);
+//                    $(json).each(function(i,val){
+//                        $.each(val,function(k,v){
+//                              
+//                              $('#'+k).val(v);     
+//     });
+//                    });
+                    //$('div#addstatus').html(result);
+                }
+            });
+           
+            
+        });
+    
+         
+    
+     });
+ </script>
+     
+    
+     
+        
+     <?php //echo $this->render('vendorlist.phtml');  ?> 
+
+<div class="span12" id="content">
+     <?php echo $this->render('globalmessage/globalmessage.phtml'); ?>
+    
+    
+<!-- CLIENTS LIST-->
+      
+    <div class="row-fluid" style="height:525px;">
+                        <div class="span12">
+                            <!-- block -->
+                            <div class="block">
+                                <div class="navbar navbar-inner block-header">
+                                    <div class="muted pull-left">Vendor List</div>
+                                    <div class="pull-right"><span class="badge badge-info"><?=$this->books1;?></span>
+
+                                    </div>
+                                </div>
+                                 <div class="accordion block-content collapse in" id="accordion2">
+  
+                                  <ul class="nav nav-tabs" id="myTab">
+  <li class="active"><a href="#materiallist" class="listtab">Vendor List</a></li>
+  <li class="addstatus"><a href="#addstatus" class="contenttab">Add New Vendor</a></li>
+  </ul>
+ 
+<div class="tab-content">
+  <div class="tab-pane active" id="materiallist">
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable" id="example">
+                                        <thead>
+                                            <tr>
+                                                <th>Vendor Name</th>
+                                                <th>Contact Person</th>
+                                                <th>Phone</th>
+                                                <th>Email</th>
+                                                <th>Action</th>
+                                                <th>Approval</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($this->vendor as $value) { ?>
+                                            <tr>
+                                                <td><?php echo $value[vendor_name] ?></td>
+                                                <td><?php echo $value[contact_person] ?></td>
+                                                <td><?php echo $value[contact_phone] ?></td>
+                                                <td><?php echo $value[contact_email] ?></td>
+                                                <td>
+                                                    <a  class="viewgroup" id="<?php echo $value[id]; ?>" style="cursor:pointer;"><?php echo ' VIEW'; ?></a>
+                                                    <a  class="editvendor" id="<?php echo $value[id]; ?>" style="cursor:pointer;"><?php echo '/ EDIT'; ?></a>
+                                                    <a href="<?php echo $this->baseUrl();?>/admin/vendor/deletevendor/delete/<?php echo $value[id]; ?>" class="book_delete" style="cursor:pointer;"><?php echo '/ DEL '; ?></a>
+                                                    </td>
+                                                <td>
+                                                    <?php if($value[status] == '0'){ ?>
+                                                    <img class="imgswap" id="approval_<?php echo $value[id]; ?>" src="<?php echo $this->baseUrl();?>/public/images/tick_off.png"/></td>
+                                                    <?php }  if($value[status] == '1'){ ?>
+                                                    <img class="imgswap on" id="approval_<?php echo $value[id]; ?>" src="<?php echo $this->baseUrl();?>/public/images/tick_on.png"/></td>
+                                                <?php } ?>
+                                            <?php  } ?>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+  </div>
+    
+    
+  <div class="tab-pane" id="addstatus">
+      <form enctype="application/x-www-form-urlencoded" action="<?=$this->url(array('controller'=>'vendor','action'=>'savevendor'))?>" method="post" name="" id="vendorform">
+        <input type="hidden" name="id" id="id" value="" >
+          
+  <div class="bs-example">
+    <div id="accordion">
+  <h4 class="accordion-toggle">Vendor Information</h4>
+  <div class="accordion-content default">
+
+                   <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="vendor_name" class="required">Vendor Name:</label></div>
+              <div class="form-right pull-left"><input type="text" name="vendor_name" id="vendor_name" value="" class="form-control" required="true" onkeypress="return isAlphaSpace(event)" maxlength="20"></div>
+          </div>
+        
+        
+          <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="vendor_address" class="required">Address:</label></div>
+              <div class="form-right pull-left">
+                  <textarea rows="4" cols="50" name="vendor_address" id="vendor_address" value="" class="form-control" required="true"></textarea>
+        </div>
+          </div>
+          
+        <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="vendor_country" class="required">Country:</label></div>
+              <div class="form-right pull-left">
+<!--                  <input type="text" name="vendor_country" id="vendor_country" value="" class="form-control" required="true">-->
+              
+                                <select name="vendor_country" class="countries" id="vendor_country" required="true">
+                                  <option value="">Select Country</option>
+                                  </select>
+              </div>
+                </div>
+              
+          <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="contact_person" class="required">Contact Person:</label></div>
+              <div class="form-right pull-left"><input type="text" name="contact_person" id="contact_person" value="" class="form-control" required="true" onkeypress="return isAlphaSpace(event)" maxlength="20"></div>
+          </div>    
+          
+      <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="contact_phone" class="required">Tel no.:</label></div>
+              <div class="form-right pull-left"><input type="text" name="contact_phone" id="contact_phone" value="" class="form-control" required="true" onkeypress="return isNumber(event)" maxlength="10"></div>
+          </div>
+          <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="contact_email" class="required">Email Id:</label></div>
+              <div class="form-right pull-left"><input type="text" name="contact_email" id="contact_email" value="" class="form-control" required="true" maxlength="30" pattern='^(([^<>()[\]\\.,;:#!~$%^&*\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'></div>
+          </div>
+        <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="mfg_code" class="required">Mfg Code:</label></div>
+              <div class="form-right pull-left"><input type="text" name="mfg_code" id="mfg_code" value="" class="form-control" required="true" onkeypress="return isAlpha(event)" maxlength="3" style="text-transform: uppercase;"></div>
+          </div>
+       
+      
+      <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="vendor_category" class="required">Category:</label></div>
+              <div class="form-right pull-left">
+                                <select name="vendor_category" id="vendor_category" required="true">
+                                  <option value="0">Select Category</option>
+                                  <option value="A">Approved</option>
+                                  <option value="NotA">Not Approved</option>
+                                  <option value="OB">Obsolete</option>
+                                  <option value="NA">NA</option>
+                                  <option value="OT">Others</option>
+                                  </select>
+              </div>
+                </div>
+       
+<div class="clearfix"></div>
+  </div>
+  <h4 class="accordion-toggle">Tax Information</h4>
+  <div class="accordion-content default">
+
+                   <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="pan_no" class="required">PAN No.:</label></div>
+              <div class="form-right pull-left"><input type="text" name="pan_no" id="pan_no" value="" class="form-control" required="true" maxlength="25"></div>
+          </div>
+         <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="tin_no" class="required">TIN No.:</label></div>
+              <div class="form-right pull-left"><input type="text" name="tin_no" id="tin_no" value="" class="form-control" required="true" maxlength="25"></div>
+          </div>
+         <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="vat_no" class="required">VAT No.:</label></div>
+              <div class="form-right pull-left"><input type="text" name="vat_no" id="vat_no" value="" class="form-control" required="true" maxlength="25"></div>
+          </div>
+         <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="cst_no" class="required">CST No.:</label></div>
+              <div class="form-right pull-left"><input type="text" name="cst_no" id="cst_no" value="" class="form-control" required="true" maxlength="25"></div>
+          </div>
+         <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="st_no" class="required">ST No.:</label></div>
+              <div class="form-right pull-left"><input type="text" name="st_no" id="st_no" value="" class="form-control" required="true" maxlength="25"></div>
+          </div>
+              
+              
+       
+<div class="clearfix"></div>
+  </div>
+  <h4 class="accordion-toggle">Bank Details</h4>
+  <div class="accordion-content default">
+
+                   <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="bank_name" class="required">Bank Name:</label></div>
+              <div class="form-right pull-left"><input type="text" name="bank_name" id="bank_name" value="" class="form-control" required="true" maxlength="25"></div>
+          </div>
+        <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="acc_name" class="required">Account Name:</label></div>
+              <div class="form-right pull-left"><input type="text" name="acc_name" id="acc_name" value="" class="form-control" required="true" maxlength="25"></div>
+          </div>
+        <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="bank_acc_no" class="required">Account No.:</label></div>
+              <div class="form-right pull-left"><input type="text" name="bank_acc_no" id="bank_acc_no" value="" class="form-control" required="true" maxlength="25"></div>
+          </div>
+        <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="bank_branch" class="required">Branch Name:</label></div>
+              <div class="form-right pull-left"><input type="text" name="bank_branch" id="bank_branch" value="" class="form-control" required="true" maxlength="25"></div>
+          </div>
+        <div class="formvalue pull-left">
+              <div class="form-left pull-left"><label for="bank_ifsc" class="required">IFSC Code:</label></div>
+              <div class="form-right pull-left"><input type="text" name="bank_ifsc" id="bank_ifsc" value="" class="form-control" required="true" maxlength="25"></div>
+          </div>
+              
+              
+       
+<div class="clearfix"></div>
+  </div>
+</div>
+</div>
+
+<div id="button_div" class="clearfix span7" style="float: right;" >
+<div class="span2" id="save_button">
+ <input class='btn btn-primary' type="submit" name="deptregister" id="deptregister" value="Save" class="btn btn-default" />
+</div>
+ 
+<div class="span1" id="back_button">
+    <a href=""><input class='btn btn-primary' type="button" name="back" id="back" value="Back" class="btn btn-default" /></a>
+</div>
+      </div>
+
+</form>
+      
+      </div>
+  
+  
+</div>
+ 
+<script>
+  $(function () {
+      $('#myTab a[href="#<?php echo $this->showid;?>"]').tab('show');
+    $('#myTab a').click(function (e) {
+  e.preventDefault();
+  $(this).tab('show');
+})
+  })
+</script>   
+                                     
+                                     
+                                     
+</div>
+        
+                            </div>
+                            <!-- /block -->
+                        </div>
+                        
+                    </div>
+   
+<script type="text/javascript">
+  $(document).ready(function($) {
+    $('#accordion').find('.accordion-toggle').click(function(){
+
+      //Expand or collapse this panel
+      $(this).next().slideToggle('fast');
+
+      //Hide the other panels
+      $(".accordion-content").not($(this).next()).slideUp('fast');
+
+    });
+  });
+</script>
+    
+
+</div>
+
+
+
+

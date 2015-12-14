@@ -1,0 +1,36 @@
+<?php $module=$this->modules[$this->moduleid];
+      $resource_name=$this->resources;
+      $resource_path=$this->resourcepath;
+
+      $resource_name[$this->moduleid];
+     
+//      echo '<pre>';
+//      echo count($resource_name);
+//      print_r($resource_path[$this->moduleid]);exit;
+    ?>
+<div class="span3" id="sidebar">
+                    <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
+                        <li class="active">
+                            <a href="#"><?php echo $module['name'];?></a>
+                        </li>
+                        
+                        <?php for($i=0;$i<100;$i++) {
+                            if($resource_path[$this->moduleid][$i]['resourcepath'])
+                            {?>
+                        <li class="<?php if($i==$this->resourceid){echo 'active1';} ?>">
+                            <a href="<?php echo $this->baseUrl();?>/admin/<?php echo $resource_path[$this->moduleid][$i]['resourcepath']?>">
+                              <?php echo $resource_name[$this->moduleid][$i]['resourcename']; ?>
+                            </a>
+                        </li>
+                            <?php } }?>
+                        
+                        
+                        
+                        
+                    </ul>
+                </div>
+
+
+
+
+

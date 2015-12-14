@@ -1,0 +1,75 @@
+<?php echo $this->m2; ?>
+
+<?php //print $translate->_("Hello") . "\n";?>
+
+<?php if(isset($this->message)) :?>
+    <div class="notification">
+
+    <?php echo $this->message ;?>
+
+    </div>    
+ <?php endif;?>
+
+<div id="main_container">
+
+<form name="chat-form" id="chat-form" method="post" />
+Name *: <input type="text" name="name" id="name" />
+Email *: <input type="hidden" name="to" id="to" value="admin"/>
+<input type="text" name="email" id="email" size="25" data-rule-required="true" data-rule-email="true" data-msg-required="Please enter your email address" data-msg-email="Please enter a valid email address"/>
+		<p>
+			<input class="submit" type="submit" value="Submit"/>
+		</p>
+</form>
+
+<div id="chat_link">
+<a href="javascript:void(0)" onclick="javascript:chatWith($('#name').val(),$('#email').val(),'admin')">Chat With Admin</a>
+</div>
+<!-- YOUR BODY HERE -->
+
+</div>
+
+  <script>
+  
+  // When the browser is ready...
+  $(function() {
+  
+    // Setup form validation on the #register-form element
+    $("#chat-form").validate({
+    
+        // Specify the validation rules
+        rules: {
+            name: "required",
+//            lastname: "required",
+            email: {
+                required: true,
+                email: true
+            },
+        },
+        
+        // Specify the validation error messages
+        messages: {
+            firstname: "Please enter your Name",
+//            lastname: "Please enter your last name",
+//            password: {
+//                required: "Please provide a password",
+//                minlength: "Your password must be at least 5 characters long"
+//            },
+            email: "Please enter a valid email address",
+//            agree: "Please accept our policy"
+        },
+        
+        submitHandler: function(form) {
+            
+            
+           $('#chat_link').show('slow');
+           $('#chat-form').hide('fast');
+            return false;
+//            form.submit();
+        }
+    });
+    
+   
+
+  });
+  
+  </script>

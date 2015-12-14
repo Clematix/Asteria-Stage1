@@ -1,0 +1,158 @@
+<?php 
+    if($this->values->date >0)
+    {
+    //Date    
+    $eff_date = new Zend_Date($this->values->date, 'dd-mm-yyyy', 'en');
+    $eff_date = $eff_date->get('dd/mm/yyyy'); 
+    //Start and End Time
+    $startdate = $this->values->date.' '.$this->values->start;
+    $enddate = $this->values->date.' '.$this->values->end;
+    $starttime = new Zend_Date($startdate);
+    $endtime = new Zend_Date($enddate);
+    $start = $starttime->toString('HH:mm');
+    $end = $endtime->toString('HH:mm');
+    } 
+    else { 
+    $eff_date='';
+    $start ='';
+    $end ='';
+    } 
+    
+    
+?>
+
+
+
+<div class="row">
+
+            
+
+          
+           
+            <div class="span9" id="content">
+            <div class="row-fluid">
+                  <?php
+                    if(isset($this->errorMessage)){
+                    ?>
+                    <div class="alert alert-error">
+                            <button class="close" data-dismiss="alert">&times;</button>
+                            <strong>Error!</strong> <?=$this->errorMessage;?>.
+                    </div>        
+
+                     <?php } ?>
+                        	<div class="navbar">
+                            	<div class="navbar-inner">
+	                                <ul class="breadcrumb">
+	                                    <i class="icon-chevron-left hide-sidebar"><a href='#' title="Hide Sidebar" rel='tooltip'>&nbsp;</a></i>
+	                                    <i class="icon-chevron-right show-sidebar" style="display:none;"><a href='#' title="Show Sidebar" rel='tooltip'>&nbsp;</a></i>
+	                                    <li>
+	                                        <a href="<?=$this->url(array('module'=>'admin','controller'=>'auth','action'=>'home'))?>">Dashboard</a> <span class="divider">/</span>	
+	                                    </li>
+	                                    
+	                                    <li class="active">Timesheet</li>
+	                                </ul>
+                            	</div>
+                        	</div>
+                    	</div>
+                
+                
+                
+                   <div class="row-fluid">
+                        <!-- block -->
+                        <div class="block">
+                            <div class="navbar navbar-inner block-header">
+                                <div class="muted pull-left">Actual</div>
+                            </div>
+                            <div class="block-content collapse in">
+                                <div class="span12">
+                                    <form action="" id="contact-form" class="form-horizontal" method="post" enctype="multipart/form-data">
+                                      <fieldset>
+                                        <legend>Daily Input</legend>
+                                        
+                                        <div class="control-group">
+                                          <label class="control-label" for="date01">Date input</label>
+                                          <div class="controls">
+                                              
+                                            <input type="text" class="input-xlarge datepicker" id="date" name="date" value="<?=$eff_date?>" placeholder="dd/mm/yyyy">
+                                            <p class="help-block">Select Date from picker you want to update in Time Sheet</p>
+                                          </div>
+                                        </div>
+                                        
+                                        <div class="control-group">
+                                          <label class="control-label" for="select01">Select Category</label>
+                                          <div class="controls">
+                                            <select name="category" id="category" class="chzn-select">
+                                              <option>Select</option>
+                                              <?php
+                                                for($i=0;$i<count($this->categories);$i++){
+                                                ?>
+                                                    <option value="<?=$this->categories[$i]['id']?>" <?php if($this->projects[$i]['id'] == $this->values->catid){ echo "selected=selected"; } ?>>
+                                                    <?=$this->categories[$i]['name']?>
+                                                    </option>
+                                                <?php
+                                                }
+                                                ?>
+                                            </select>
+                                          </div>
+                                        </div>
+                                        <div class="control-group" id="ajax_content" <?php if($this->values->id ==''){ ?> style="display:none; <?php } ?>">
+                                        <label class="control-label" for="name">Project</label>
+                                        <div class="controls">
+                                        <select class="chzn-select" name="projects" id="projects">
+                                            <option value="">Select</option>
+                                            <?php
+                                            for($i=0;$i<count($this->projects);$i++){
+                                            ?>
+                                            <option value="<?=$this->projects[$i]['id']?>" <?php if($this->projects[$i]['id'] == $this->values->pid){ echo "selected=selected"; } ?>>
+                                            <?=$this->projects[$i]['name']?>
+                                            </option>
+                                            <?php
+                                            }
+                                            ?>
+                                         </select>
+                                        </div>
+                                        </div>
+                                         <div class="control-group">
+                                        <label class="control-label" for="email">Start</label>
+                                        <div class="controls">
+                                        <input type="text" class="input-xlarge" name="start" id="start" value="<?=$start?>" placeholder="hh:mm">
+                                        </div>
+                                        </div>
+                                        <div class="control-group">
+                                        <label class="control-label" for="subject">End</label>
+                                        <div class="controls">
+
+                                        <input type="text" class="input-xlarge" name="end" id="end" value="<?=$end?>" placeholder="hh:mm">
+                                        </div>
+                                        </div>
+                                       
+                                        
+                                        <div class="control-group">
+                                          <label class="control-label" for="textarea2">Descriptions</label>
+                                          <div class="controls">
+                                            <textarea class="input-xlarge textarea" placeholder="Enter Desciptions ..." style="width: 610px; height: 200px" name="descp" id="descp"><?=$this->values->descp?></textarea>
+                                          </div>
+                                        </div>
+                                        
+                                        <div class="form-actions">
+                                            <input type="hidden" name="id" value="<?=$this->values->id?>">
+                                          <button type="submit" class="btn btn-primary" name="Submit">Save changes</button>
+                                          <button type="reset" class="btn">Cancel</button>
+                                        </div>
+                                      </fieldset>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /block -->
+                    </div>
+                
+                
+            
+           
+            </div>
+            
+            
+            
+            
